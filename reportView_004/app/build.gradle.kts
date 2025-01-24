@@ -42,7 +42,7 @@ dependencies {
     implementation("com.google.android.material:material:1.9.")
     implementation ("androidx.navigation:navigation-fragment-ktx:2.7.2")
     implementation ("androidx.navigation:navigation-ui-ktx:2.7.2")
-//    implementation("com.github.barteksc:android-pdf-viewer:3.2.0-beta.3")
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
 
 
     implementation(libs.androidx.core.ktx)

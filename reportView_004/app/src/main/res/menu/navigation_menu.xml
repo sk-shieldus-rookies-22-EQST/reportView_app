@@ -44,4 +44,20 @@
         android:id="@+id/userPurchaseFragment"
         android:icon="@drawable/search_icon_black"
         android:title="결재내역" />
+    <item
+        android:id="@+id/userBookListFragment"
+        android:icon="@drawable/search_icon_black"
+        android:title="내 서제" />
+    <item
+        android:id="@+id/eachBoardFragment"
+        android:icon="@drawable/search_icon_black"
+        android:title="게시글 상세" />
+    <item
+        android:id="@+id/qnaWriterFragment"
+        android:icon="@drawable/search_icon_black"
+        android:title="게시글 작성" />
+    <item
+        android:id="@+id/reWriterFragment"
+        android:icon="@drawable/search_icon_black"
+        android:title="게시글 수정" />
 </menu>

@@ -19,7 +19,7 @@ import com.example.reportview_003.utils.SessionManager
 class UserBookListFragment: Fragment() {
 
     private lateinit var userBookList: RecyclerView
-    private var bookData: MutableList<Map<String, Any>> = mutableListOf()
+    private lateinit var bookData: MutableList<MutableMap<String,Any>>
 
     override fun onCreateView(
         inflater: LayoutInflater,

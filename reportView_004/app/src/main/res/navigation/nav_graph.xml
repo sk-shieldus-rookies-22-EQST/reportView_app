@@ -60,6 +60,12 @@
         tools:layout="@layout/board_main" />
 
     <fragment
+        android:id="@+id/eachBoardFragment"
+        android:name="com.example.reportview_003.ui.board.EachBoardFragment"
+        android:label="Board"
+        tools:layout="@layout/qna_detail_main" />
+
+    <fragment
         android:id="@+id/purchaseFragment"
         android:name="com.example.reportview_003.ui.purchase.PurchaseFragment"
         android:label="purchase"
@@ -94,4 +100,22 @@
         android:name="com.example.reportview_003.ui.user.UserPurchaseFragment"
         android:label="user purchase list"
         tools:layout="@layout/user_purchase_main" />
+
+    <fragment
+        android:id="@+id/userBookListFragment"
+        android:name="com.example.reportview_003.ui.user.UserBookListFragment"
+        android:label="user purchase list"
+        tools:layout="@layout/user_book_main" />
+
+    <fragment
+        android:id="@+id/qnaWriterFragment"
+        android:name="com.example.reportview_003.ui.board.QnaWriterFragment"
+        android:label="user purchase list"
+        tools:layout="@layout/qna_write_main" />
+
+    <fragment
+        android:id="@+id/reWriterFragment"
+        android:name="com.example.reportview_003.ui.board.ReWriteFragment"
+        android:label="user purchase list"
+        tools:layout="@layout/qna_write_main" />
 </navigation>
