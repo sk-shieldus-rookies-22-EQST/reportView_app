@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/listFragment">
+<!--페이지 to 페이지 동작을 action으로 명시 해줘야 함-->
+    <action
+        android:id="@+id/action_currentFragment_to_listFragment"
+        app:destination="@id/listFragment" />
+    <!-- Login Fragment -->
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.reportview_003.ui.auth.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/login_main">
+        <action
+            android:id="@+id/action_login_to_list"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_findIdFragment"
+            app:destination="@id/findIDFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_findPwFragment"
+            app:destination="@id/findPWFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_bookDetailFragment"
+            app:destination="@id/bookDetailFragment" />
+    </fragment>
+
+    <!-- List Fragment -->
+    <fragment
+        android:id="@+id/listFragment"
+        android:name="com.example.reportview_003.ui.view.ListFragment"
+        android:label="List"
+        tools:layout="@layout/list_main" >
+        <action
+            android:id="@+id/action_listFragment_to_bookDetailFragment"
+            app:destination="@id/bookDetailFragment" />
+    </fragment>
+
+    <!-- Book Detail Fragment -->
+    <fragment
+        android:id="@+id/bookDetailFragment"
+        android:name="com.example.reportview_003.ui.view.BookDetailFragment"
+        android:label="Book Detail"
+        tools:layout="@layout/book_detail_main" />
+
+    <fragment
+        android:id="@+id/bookviewFragment"
+        android:name="com.example.reportview_003.ui.view.BookViewFragment"
+        android:label="Book"
+        tools:layout="@layout/book_view" />
+
+    <!-- Board Fragment -->
+    <fragment
+        android:id="@+id/boardFragment"
+        android:name="com.example.reportview_003.ui.board.BoardFragment"
+        android:label="Board"
+        tools:layout="@layout/board_main" />
+
+    <fragment
+        android:id="@+id/purchaseFragment"
+        android:name="com.example.reportview_003.ui.purchase.PurchaseFragment"
+        android:label="purchase"
+        tools:layout="@layout/purchase_main" />
+
+    <fragment
+        android:id="@+id/findIDFragment"
+        android:name="com.example.reportview_003.ui.auth.FindIDFragment"
+        android:label="find id"
+        tools:layout="@layout/find_id" />
+
+    <fragment
+        android:id="@+id/findPWFragment"
+        android:name="com.example.reportview_003.ui.auth.FindPWFragment"
+        android:label="find pw"
+        tools:layout="@layout/find_pw" />
+
+    <fragment
+        android:id="@+id/signupFragment"
+        android:name="com.example.reportview_003.ui.auth.SignupFragment"
+        android:label="signup"
+        tools:layout="@layout/signup_main" />
+
+    <fragment
+        android:id="@+id/userinfofragment"
+        android:name="com.example.reportview_003.ui.user.UserFragment"
+        android:label="Board"
+        tools:layout="@layout/userinfo_main" />
+
+    <fragment
+        android:id="@+id/userPurchaseFragment"
+        android:name="com.example.reportview_003.ui.user.UserPurchaseFragment"
+        android:label="user purchase list"
+        tools:layout="@layout/user_purchase_main" />
+</navigation>

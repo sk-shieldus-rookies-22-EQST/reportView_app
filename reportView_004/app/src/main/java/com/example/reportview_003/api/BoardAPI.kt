@@ -1,0 +1,21 @@
+package com.example.reportview_003.api
+
+import com.example.reportview_003.model.board.*
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.POST
+import retrofit2.http.Path
+
+interface BoardAPI {
+    @POST("board/qna")
+    fun render(): Call<BoardResponse>
+
+    @POST("board/qna/{id}")
+    fun showQna(@Path("id") id: Int): Call<BoardQnAResponse>
+
+    @POST("board/qna/write")
+    fun writeQnA(@Body request: BoardWriteRequest): Call<BoardWriteResponse>
+
+    @POST("board/qna/comment")
+    fun writeComment(@Body request: BoardCommentRequest): Call<BoardCommentResponse>
+}
