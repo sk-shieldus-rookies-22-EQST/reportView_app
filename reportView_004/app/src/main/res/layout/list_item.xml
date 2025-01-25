@@ -57,6 +57,14 @@
 
         </LinearLayout>
 
+
     </LinearLayout>
+
+        <ImageView
+            android:id="@+id/book_cart"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:src="@drawable/add_cart"/>
 
 </LinearLayout>

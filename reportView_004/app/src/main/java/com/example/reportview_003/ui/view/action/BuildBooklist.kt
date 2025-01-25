@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.navigation.NavController
 import com.bumptech.glide.Glide
 import com.example.reportview_003.R
@@ -40,7 +41,8 @@ class BuildBooklist(
                 view.findViewById(R.id.book_title),
                 view.findViewById(R.id.book_author),
                 view.findViewById(R.id.book_price),
-                view.findViewById(R.id.book_img)
+                view.findViewById(R.id.book_img),
+                view.findViewById(R.id.book_cart)
             )
             view.tag = holder
         } else {
@@ -64,6 +66,12 @@ class BuildBooklist(
             .placeholder(R.drawable.download_black)
             .into(holder.bookImg)
 
+        // 장바구니 클릭 리스너 설정
+        holder.bookCart.setOnClickListener {
+            // 장바구니 동작 구현
+            Toast.makeText(context, "장바구니에 담겼습니다.", Toast.LENGTH_SHORT).show()
+        }
+
         // 클릭 리스너에 NavController 전달
         view.setOnClickListener {
             true
@@ -77,6 +85,7 @@ class BuildBooklist(
         val bookTitle: TextView,
         val bookAuthor: TextView,
         val bookPrice: TextView,
-        val bookImg: ImageView
+        val bookImg: ImageView,
+        val bookCart: ImageView
     )
 }
