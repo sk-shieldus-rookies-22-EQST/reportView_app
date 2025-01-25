@@ -1,6 +1,7 @@
 package com.example.reportview_003
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
@@ -49,6 +50,8 @@ class ActiveMain : AppCompatActivity() {
                 R.id.findIDFragment,
                 R.id.findPWFragment,
                 R.id.signupFragment,
+                R.id.userPurchaseFragment,
+                R.id.userBookListFragment,
             ), drawerLayout
         )
 
@@ -64,6 +67,7 @@ class ActiveMain : AppCompatActivity() {
                         // 로그아웃 로직
                         SessionManager.clearSession(this)
                         Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+
                         updateNavigationMenu()
 
                         navController.navigate(R.id.listFragment)
@@ -100,19 +104,23 @@ class ActiveMain : AppCompatActivity() {
 
     private fun updateNavigationMenu() {
         val menu = navigationView.menu
+
+        Log.d("ActiveMain", "updateNavigationMenu 호출됨 세션 확인: ${SessionManager.isLoggedIn(this)}")
+
         menu.clear()
 
         // 기본 메뉴
         addMenuItem(menu, R.id.listFragment, 1, "홈", R.drawable.home_black)
-        addMenuItem(menu, R.id.boardFragment, 3, "게시판", R.drawable.web_black)
-        addMenuItem(menu, R.id.bookDetailFragment, 5, "책 상세", R.drawable.books_black)
-        addMenuItem(menu, R.id.purchaseFragment, 6, "결제", R.drawable.books_black)
+        addMenuItem(menu, R.id.boardFragment, 6, "게시판", R.drawable.web_black)
+        addMenuItem(menu, R.id.bookDetailFragment, 7, "책 상세", R.drawable.purchase_black)
+        addMenuItem(menu, R.id.purchaseFragment, 3, "장바구니", R.drawable.cart_black)
 
         if (SessionManager.isLoggedIn(this)) {
             // 로그인 상태 메뉴
             addMenuItem(menu, R.id.loginFragment, 0, "로그아웃", R.drawable.logout_black)
             addMenuItem(menu, R.id.userinfofragment, 2, "내 정보", R.drawable.person_black)
-            addMenuItem(menu, R.id.userBookListFragment, 4, "내 서제", R.drawable.books_black)
+            addMenuItem(menu, R.id.userBookListFragment, 4, "내 서제", R.drawable.book_black)
+            addMenuItem(menu, R.id.userPurchaseFragment, 5, "결제내역", R.drawable.purchase_black)
         } else {
             // 로그아웃 상태 메뉴
             addMenuItem(menu, R.id.loginFragment, 0, "로그인", R.drawable.login_black)

@@ -32,6 +32,13 @@ object SessionManager {
         return getPreferences(context).getBoolean(KEY_IS_LOGGED_IN, false)
     }
 
+    fun saveUserID(context: Context, userID: String) {
+        val editor = getPreferences(context).edit()
+        editor.putString("user_id", userID)
+        editor.apply()
+    }
+
+
     fun clearSession(context: Context) {
         val editor = context.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE).edit()
         editor.clear()

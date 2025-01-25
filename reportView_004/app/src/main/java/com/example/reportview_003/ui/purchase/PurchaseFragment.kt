@@ -9,19 +9,23 @@ import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.reportview_003.App
 import com.example.reportview_003.R
 import com.example.reportview_003.api.PurchaseAPI
+import com.example.reportview_003.model.purchase.CartRequest
 import com.example.reportview_003.model.purchase.CartResponse
 import com.example.reportview_003.ui.purchase.action.GetPurchaseCart
 import com.example.reportview_003.ui.purchase.action.PurchaseCartAdapter
+import com.example.reportview_003.utils.SessionManager
 
 class PurchaseFragment : Fragment() {
 
     private lateinit var purchaseCartList: ListView
     private lateinit var purchaseCartTotalprice: TextView
     private lateinit var purchaseCartButton: Button
-    var cartID: Int = 0
+    private var cartId: Int = 0
+    private var cartList: MutableList<MutableMap<String, Any>>? = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,10 +42,17 @@ class PurchaseFragment : Fragment() {
         purchaseCartButton = view.findViewById(R.id.purchase_cart_button)
 
         val getPurchaseCart = GetPurchaseCart(requireContext(), purchaseAPI)
-        // 디바이스에 저장된 book id 값
-        getPurchaseCart.loadPurchaseCart(mutableListOf(1,2,3)) { response ->
+
+        val cartreq = CartRequest(
+            user_id = SessionManager.getUserID(requireContext())
+        )
+
+        // 사용자 id 값으로 카트에 있는 데이터 조회
+        getPurchaseCart.loadPurchaseCart(cartreq) { response ->
             if (isAdded) {
                 if (response != null){
+                    cartId = response.cart_id
+                    cartList = response.book_list
                     updateUI(response)
                 } else {
                     Log.e("PurchaseFragment", "Fragment is not attached to a context while loading data.")
@@ -49,12 +60,25 @@ class PurchaseFragment : Fragment() {
             }
         }
 
+        purchaseCartButton.setOnClickListener {
+            // 불러온 값을 다음 단계로 전달
+            val bundle = Bundle()
+            bundle.putInt("cart_id", cartId)
+            bundle.putSerializable("cart_list", ArrayList(cartList))
+
+            findNavController().navigate(R.id.action_purchaseFragment_to_purchaseProcessFragment, bundle)
+        }
+
         return view
     }
 
     private fun updateUI(cartResponse: CartResponse) {
-        purchaseCartTotalprice.text = cartResponse.total_price.toString()
-        cartID = cartResponse.cart_id
+        val totalPrice = cartResponse.book_list.sumOf {
+            val priceString = it["price"] as? String
+                priceString?.toIntOrNull() ?: 0
+        }
+
+        purchaseCartTotalprice.text = "합계 : ${totalPrice}"
 
         val app = requireActivity().application as App
         val purchaseAPI = app.retrofit.create(PurchaseAPI::class.java)

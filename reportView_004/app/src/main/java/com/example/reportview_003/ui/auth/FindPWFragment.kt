@@ -59,7 +59,7 @@ class FindPWFragment: Fragment(), View.OnClickListener {
                 if (data != null){
                     // pw 변경 로직 추가
                     val navController = findNavController()
-                    navController.navigate(R.id.action_findPWFragment_to_listFragment)
+                    navController.navigate(R.id.action_findPWFragment_to_loginFragment)
                     Toast.makeText(requireContext(),"welcome",Toast.LENGTH_SHORT).show()
                 } else {
                     Log.e("PurchaseFragment", "Fragment is not attached to a context while loading data.")

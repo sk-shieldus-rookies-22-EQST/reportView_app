@@ -13,41 +13,39 @@ import com.example.reportview_003.model.auth.LoginRequest
 import com.example.reportview_003.repository.AuthRepository
 import com.example.reportview_003.utils.SessionManager
 
-class LoginAction() {
+class LoginAction {
 
     fun doLogin(
         context: Context,
         idField: EditText,
         pwField: EditText,
         authAPI: AuthAPI,
-        navContoller: NavController
+        navController: NavController
     ) {
         val id = idField.text.toString()
         val pw = pwField.text.toString()
 
-        val logindata = LoginRequest(
+        val loginData = LoginRequest(
             userid = id,
             passwd = pw
         )
 
         val authRepository = AuthRepository(authAPI)
 
-        authRepository.login(logindata) { response, error ->
-            if (response != null) {
-                Toast.makeText(context, "$response welcome", Toast.LENGTH_SHORT).show()
+        authRepository.login(loginData) { response, error ->
+            if (response != null && response.status) {
+                Toast.makeText(context, "Welcome ${id}", Toast.LENGTH_SHORT).show()
 
-                // 로그인 성공 시 세션 저장
-                val userToken = "your_auth_token"
-                SessionManager.saveLoginSession(context, userToken)
+                // Save login session using actual data from the response
+                SessionManager.saveLoginSession(context, response.status.toString())
+                SessionManager.saveUserID(context, id) // Save user ID for other uses if needed
 
-                // 로그인 성공 시 ListFragment로 이동
-                navContoller.navigate(R.id.action_login_to_list)
+                // Navigate to ListFragment or other desired screen
+                navController.navigate(R.id.action_login_to_list)
 
             } else {
-                Toast.makeText(context, "error: $error", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Login failed: ${error?.message ?: "Unknown error"}", Toast.LENGTH_SHORT).show()
             }
-
         }
-
     }
 }

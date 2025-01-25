@@ -12,7 +12,7 @@ import com.example.reportview_003.App
 import com.example.reportview_003.R
 import com.example.reportview_003.api.UserAPI
 import com.example.reportview_003.model.user.UserpurchaseRequest
-import com.example.reportview_003.ui.purchase.action.GetUserPurchase
+import com.example.reportview_003.ui.user.action.GetUserPurchase
 import com.example.reportview_003.ui.user.action.BuildPurchaseList
 import com.example.reportview_003.utils.SessionManager
 

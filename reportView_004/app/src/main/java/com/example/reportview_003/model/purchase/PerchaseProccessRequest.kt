@@ -1,7 +1,7 @@
 package com.example.reportview_003.model.purchase
 
 data class PerchaseProccessRequest(
-    val userid: String,
-    val bookid: Int,
+    val user_id: String,
+    val cart_id: Int,
     val totalprice: String
 )

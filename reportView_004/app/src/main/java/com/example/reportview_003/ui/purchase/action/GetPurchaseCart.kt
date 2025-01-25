@@ -10,14 +10,11 @@ class GetPurchaseCart(
     private val context: Context,
     private val purchaseAPI: PurchaseAPI
 ) {
-    fun loadPurchaseCart(bookid:MutableList<Int>,callback: (CartResponse?) -> Unit) {
+    fun loadPurchaseCart(userId:CartRequest,callback: (CartResponse?) -> Unit) {
         val purchaseCart = PurchaseRepository(purchaseAPI)
 
-        val cartRequest = CartRequest(
-            bookid = bookid
-        )
 
-        purchaseCart.purchaseCart(cartRequest) { response, error ->
+        purchaseCart.purchaseCart(userId) { response, error ->
             if (response != null) {
                 callback(response)
             } else {

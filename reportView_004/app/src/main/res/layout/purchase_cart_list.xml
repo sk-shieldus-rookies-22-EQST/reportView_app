@@ -22,11 +22,12 @@
         android:text="Book Price"
         android:textSize="20sp" />
 
-    <Button
+    <ImageView
         android:id="@+id/delete_button"
         android:layout_width="0dp"
         android:layout_weight="0.2"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"/>
+        android:layout_marginStart="20dp"
+        android:src="@drawable/delete_black"/>
 
 </LinearLayout>
