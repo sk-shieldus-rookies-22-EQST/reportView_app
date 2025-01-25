@@ -64,6 +64,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/qna_info_box"
+        app:layout_constraintBottom_toTopOf="@id/qna_comment" />
+
+    <TextView
+        android:id="@+id/qna_comment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:hint="내용을 입력하세요"
+        android:gravity="top"
+        android:padding="8dp"
+        android:background="@android:drawable/edit_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/qna_input_text"
         app:layout_constraintBottom_toTopOf="@id/qna_button_box" />
 
     <!-- 삭제 / 수정 / 목록 버튼 -->

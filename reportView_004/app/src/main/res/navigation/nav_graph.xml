@@ -51,13 +51,24 @@
         android:id="@+id/boardFragment"
         android:name="com.example.reportview_003.ui.board.BoardFragment"
         android:label="Board"
-        tools:layout="@layout/board_main" />
+        tools:layout="@layout/board_main">
+        <action
+            android:id="@+id/action_boardFragment_to_eachBoardFragment"
+            app:destination="@id/eachBoardFragment" />
+        <action
+            android:id="@+id/action_boardFragment_to_qnaWriterFragment"
+            app:destination="@id/qnaWriterFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/eachBoardFragment"
         android:name="com.example.reportview_003.ui.board.EachBoardFragment"
         android:label="Board"
-        tools:layout="@layout/qna_detail_main" />
+        tools:layout="@layout/qna_detail_main">
+        <action
+            android:id="@+id/action_eachBoardFragment_to_qnaWriterFragment"
+            app:destination="@id/qnaWriterFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/purchaseFragment"

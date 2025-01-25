@@ -58,7 +58,7 @@ class ActiveMain : AppCompatActivity() {
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.menu_login -> {
+                R.id.loginFragment -> {
                     if (SessionManager.isLoggedIn(this)) {
                         // 로그아웃 로직
                         SessionManager.clearSession(this)
@@ -91,15 +91,19 @@ class ActiveMain : AppCompatActivity() {
 
         // 기본 메뉴 추가
         menu.add(0, R.id.listFragment, 1, "홈").setIcon(R.drawable.home_black)
-        menu.add(0, R.id.boardFragment, 4, "게시판").setIcon(R.drawable.web_black)
-        menu.add(0, R.id.userinfofragment, 2, "내 정보").setIcon(R.drawable.person_black)
+        menu.add(0, R.id.boardFragment, 3, "게시판").setIcon(R.drawable.web_black)
+
+        // 삭제 하거나 이동 가능성이 있는 페이지
+        menu.add(0, R.id.bookDetailFragment, 5, "책 상세").setIcon(R.drawable.books_black)
+        menu.add(0, R.id.purchaseFragment, 6, "결제").setIcon(R.drawable.books_black)
 
         // 로그인 상태에 따라 로그인/로그아웃 메뉴 추가
         if (SessionManager.isLoggedIn(this)) {
-            menu.add(0, R.id.menu_login, 0, "로그아웃").setIcon(R.drawable.logout_black)
-            menu.add(0, R.id.userBookListFragment, 5, "내 서제").setIcon(R.drawable.books_black)
+            menu.add(0, R.id.loginFragment, 0, "로그아웃").setIcon(R.drawable.logout_black)
+            menu.add(0, R.id.userinfofragment, 2, "내 정보").setIcon(R.drawable.person_black)
+            menu.add(0, R.id.userBookListFragment, 4, "내 서제").setIcon(R.drawable.books_black)
         } else {
-            menu.add(0, R.id.menu_login, 0, "로그인").setIcon(R.drawable.login_black)
+            menu.add(0, R.id.loginFragment, 0, "로그인").setIcon(R.drawable.login_black)
         }
 
         // 강제 UI 업데이트

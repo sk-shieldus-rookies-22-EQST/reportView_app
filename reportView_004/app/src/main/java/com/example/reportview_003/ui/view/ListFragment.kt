@@ -51,6 +51,7 @@ class ListFragment : Fragment() , View.OnClickListener{
 
         itemList = view.findViewById(R.id.list_item)
         searchBtn = view.findViewById(R.id.search_bt)
+
         searchBtn.setOnClickListener(this)
 
         val getList = GetList(requireContext(),viewAPI)

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -17,7 +18,9 @@ import com.example.reportview_003.ui.view.action.BuildBooklist
 class BoardFragment : Fragment(), View.OnClickListener {
 
     private lateinit var boardListView: ListView
+    private lateinit var boardWriteButton: ImageView
 
+    // board_id: int, title: String, username: String
     private var boardData: MutableList<MutableMap<String, Any>> = mutableListOf()
 
     private fun updateUI(data: MutableList<MutableMap<String, Any>>) {
@@ -50,9 +53,34 @@ class BoardFragment : Fragment(), View.OnClickListener {
                 requireActivity().runOnUiThread {
                     boardListView.adapter = BoardAdapter(requireContext(), boardData)
                 }
+
+                // 리스트 클릭 리스너 설정
+                boardListView.setOnItemClickListener { _, _, position, _ ->
+                    // 선택된 아이템 데이터 가져오기
+                    val selectedBoard = boardData[position]
+
+                    val boardId = when( val id = selectedBoard["board_id"]) {
+                        is Int -> id
+                        is Double -> id.toInt()
+                        else -> -1
+                    }
+
+                    // 데이터 전달을 위한 Bundle 생성
+                    val bundle = Bundle().apply {
+                        putInt("board_id", boardId)
+                    }
+
+                    // EachBoardFragment로 이동
+                    findNavController().navigate(R.id.action_boardFragment_to_eachBoardFragment, bundle)
+                }
             } else {
                 Log.e("ListFragment", "Fragment is not attached to a context while loading data.")
             }
+        }
+
+        boardWriteButton = view.findViewById(R.id.board_write_button)
+        boardWriteButton.setOnClickListener {
+            findNavController().navigate(R.id.action_boardFragment_to_qnaWriterFragment)
         }
 
         return view

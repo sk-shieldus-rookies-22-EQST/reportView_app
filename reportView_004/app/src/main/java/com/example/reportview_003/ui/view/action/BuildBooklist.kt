@@ -1,12 +1,15 @@
 package com.example.reportview_003.ui.view.action
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.NavController
+import com.bumptech.glide.Glide
 import com.example.reportview_003.R
 
 /*
@@ -36,7 +39,8 @@ class BuildBooklist(
             holder = ViewHolder(
                 view.findViewById(R.id.book_title),
                 view.findViewById(R.id.book_author),
-                view.findViewById(R.id.book_price)
+                view.findViewById(R.id.book_price),
+                view.findViewById(R.id.book_img)
             )
             view.tag = holder
         } else {
@@ -49,10 +53,16 @@ class BuildBooklist(
         val title = item["title"] as? String ?: "unknown Title"
         val price = item["price"] as? String ?: "unknown Price"
         val writer = item["writer"] as? String ?: "unknown writer"
+        val img = item["book_img_path"] as? String ?: ""
 
         holder.bookTitle.text = title
         holder.bookAuthor.text = writer
         holder.bookPrice.text = price
+
+        Glide.with(context)
+            .load(img)
+            .placeholder(R.drawable.download_black)
+            .into(holder.bookImg)
 
         // 클릭 리스너에 NavController 전달
         view.setOnClickListener {
@@ -66,6 +76,7 @@ class BuildBooklist(
     private data class ViewHolder(
         val bookTitle: TextView,
         val bookAuthor: TextView,
-        val bookPrice: TextView
+        val bookPrice: TextView,
+        val bookImg: ImageView
     )
 }

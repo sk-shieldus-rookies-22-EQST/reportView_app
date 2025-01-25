@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
     <!-- 게시글 리스트 -->
     <ListView
         android:id="@+id/board_list_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp" />
 
-</LinearLayout>
+    <!-- 동작 아이콘 -->
+    <ImageView
+        android:id="@+id/board_write_button"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:src="@drawable/edit_board"
+        android:padding="10dp"
+        android:elevation="4dp"
+        android:contentDescription="Action Icon" />
+
+</FrameLayout>
