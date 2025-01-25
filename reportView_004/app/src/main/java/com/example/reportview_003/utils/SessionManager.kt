@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 
 object SessionManager {
-    private const val PREF_NAME = "UserSession"
+    private const val PREF_NAME = "1"
     private const val KEY_IS_LOGGED_IN = "is_logged_in"
     private const val KEY_USER_TOKEN = "user_token"
 
@@ -20,8 +20,8 @@ object SessionManager {
     }
 
     fun getUserID(context: Context): String? {
-        val sharedPreferences = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
-        return sharedPreferences.getString("user_id", "not logined") // 기본값 "guest"
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getString("user_id", "1")
     }
 
     fun getUserToken(context: Context): String? {

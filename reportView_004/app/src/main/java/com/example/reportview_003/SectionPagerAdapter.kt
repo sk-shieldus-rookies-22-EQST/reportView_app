@@ -6,7 +6,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.reportview_003.ui.auth.LoginFragment
 import com.example.reportview_003.ui.board.BoardFragment
 import com.example.reportview_003.ui.view.ListFragment
-import com.example.reportview_003.ui.view.BookViewFragment
 
 class SectionPagerAdapter(
     activity: FragmentActivity,

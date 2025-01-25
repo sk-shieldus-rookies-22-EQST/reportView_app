@@ -20,6 +20,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
     private lateinit var loginBT: Button
     private lateinit var findID: Button
     private lateinit var findPW: Button
+    private lateinit var signupBT: Button
 
     private val LoginAction = LoginAction()
 
@@ -35,10 +36,12 @@ class LoginFragment : Fragment(), View.OnClickListener {
         loginBT = view.findViewById(R.id.login_bt)
         findID = view.findViewById(R.id.find_id)
         findPW = view.findViewById(R.id.find_pw)
+        signupBT = view.findViewById(R.id.signup)
 
         loginBT.setOnClickListener(this)
         findID.setOnClickListener(this)
         findPW.setOnClickListener(this)
+        signupBT.setOnClickListener(this)
 
         inputID = view.findViewById(R.id.id_input)
         inputPW = view.findViewById(R.id.pw_input)
@@ -62,6 +65,10 @@ class LoginFragment : Fragment(), View.OnClickListener {
             R.id.find_pw -> {
                 navController.navigate(R.id.action_loginFragment_to_findPwFragment)
             }
+            R.id.signup -> {
+                navController.navigate(R.id.action_loginFragment_to_signupFragment)
+            }
+
         }
     }
 }

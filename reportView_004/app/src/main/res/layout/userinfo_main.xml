@@ -14,48 +14,52 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:paddingBottom="200dp"
-        android:paddingTop="200dp">
+        android:paddingTop="200dp"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp">
 
         <TextView
             android:id="@+id/userinfo_name"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="사용자 이름" />
+            android:layout_weight="0.4"
+            android:text="사용자 이름"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/userinfo_pw"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="비밀번호" />
+            android:layout_weight="0.5"
+            android:hint="비밀번호" />
 
         <EditText
             android:id="@+id/userinfo_pw_ch"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="비밀번호 확인" />
+            android:layout_weight="0.5"
+            android:hint="비밀번호 확인" />
 
         <EditText
             android:id="@+id/userinfo_phone"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="핸드폰 번호" />
+            android:layout_weight="0.5"
+            android:hint="핸드폰 번호" />
 
         <EditText
             android:id="@+id/userinfo_email"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="이메일" />
+            android:layout_weight="0.5"
+            android:hint="이메일" />
 
         <Button
             android:id="@+id/userinfo_button"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="0.7" />
 
 
     </LinearLayout>

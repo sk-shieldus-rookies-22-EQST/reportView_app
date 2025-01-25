@@ -56,8 +56,7 @@ class BuildBooklist(
 
         // 클릭 리스너에 NavController 전달
         view.setOnClickListener {
-            val fileOpenAction = FileOpenAction()
-            fileOpenAction.openFile(context, title, navController)
+            true
         }
 
         return view

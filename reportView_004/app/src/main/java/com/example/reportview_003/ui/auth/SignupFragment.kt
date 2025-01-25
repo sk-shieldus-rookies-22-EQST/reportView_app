@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.reportview_003.App
 import com.example.reportview_003.R
 import com.example.reportview_003.api.Api
@@ -70,7 +71,9 @@ class SignupFragment: Fragment(), View.OnClickListener {
         signupAction.doSignup(signupRequest) { data ->
             if (isAdded) {
                 if (data != null){
+                    val navController = findNavController()
                     Toast.makeText(requireContext(),"welcome",Toast.LENGTH_SHORT).show()
+                    navController.navigate(R.id.action_signupFragment_to_listFragment)
                 } else {
                     Log.e("PurchaseFragment", "Fragment is not attached to a context while loading data.")
                 }

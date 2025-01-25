@@ -9,6 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class App : Application() {
     lateinit var retrofit: Retrofit
+    lateinit var KMSretrofit: Retrofit
         private set
 
     override fun onCreate() {
@@ -23,10 +24,16 @@ class App : Application() {
             .build()
 
         retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.14.34:8000/")
-
+            .baseUrl("http://192.168.1.187:8000/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
+        KMSretrofit = Retrofit.Builder()
+            .baseUrl("http://54.180.83.232:8080/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
     }
 }

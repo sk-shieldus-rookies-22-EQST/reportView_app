@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.reportview_003.App
@@ -53,6 +54,7 @@ class UserBookListFragment: Fragment() {
 
     private fun updateRecyclerView() {
         val layoutManager = GridLayoutManager(requireContext(), 2) // 2열로 설정
+        val navController = findNavController()
         userBookList.layoutManager = layoutManager
         val adapter = UserBookListAdapter(requireContext(), bookData)
         userBookList.adapter = adapter

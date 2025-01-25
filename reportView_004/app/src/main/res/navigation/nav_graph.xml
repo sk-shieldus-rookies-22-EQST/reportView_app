@@ -24,8 +24,8 @@
             android:id="@+id/action_loginFragment_to_findPwFragment"
             app:destination="@id/findPWFragment" />
         <action
-            android:id="@+id/action_listFragment_to_bookDetailFragment"
-            app:destination="@id/bookDetailFragment" />
+            android:id="@+id/action_loginFragment_to_signupFragment"
+            app:destination="@id/signupFragment" />
     </fragment>
 
     <!-- List Fragment -->
@@ -45,12 +45,6 @@
         android:name="com.example.reportview_003.ui.view.BookDetailFragment"
         android:label="Book Detail"
         tools:layout="@layout/book_detail_main" />
-
-    <fragment
-        android:id="@+id/bookviewFragment"
-        android:name="com.example.reportview_003.ui.view.BookViewFragment"
-        android:label="Book"
-        tools:layout="@layout/book_view" />
 
     <!-- Board Fragment -->
     <fragment
@@ -75,19 +69,34 @@
         android:id="@+id/findIDFragment"
         android:name="com.example.reportview_003.ui.auth.FindIDFragment"
         android:label="find id"
-        tools:layout="@layout/find_id" />
+        tools:layout="@layout/find_id" >
+        <action
+            android:id="@+id/action_findIDFragment_to_findPwFragment"
+            app:destination="@id/findPWFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/findPWFragment"
         android:name="com.example.reportview_003.ui.auth.FindPWFragment"
         android:label="find pw"
-        tools:layout="@layout/find_pw" />
+        tools:layout="@layout/find_pw" >
+        <argument
+            android:name="data"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_findPWFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/signupFragment"
         android:name="com.example.reportview_003.ui.auth.SignupFragment"
         android:label="signup"
-        tools:layout="@layout/signup_main" />
+        tools:layout="@layout/signup_main" >
+        <action
+            android:id="@+id/action_signupFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/userinfofragment"

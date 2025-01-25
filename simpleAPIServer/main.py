@@ -18,12 +18,12 @@ async def login():
     return {"status":True}
 
 # Endpoint: /auth/find/id
-@app.get("/auth/findid")
+@app.post("/auth/find/id")
 async def find_id():
     return {"user_id": "admin"}
 
 # Endpoint: /auth/find/pw
-@app.post("/auth/findpw")
+@app.post("/auth/find/pw")
 async def find_pw():
     return {"status": True}
 
@@ -122,9 +122,9 @@ async def user_info():
 # Endpoint: /user/booklist
 @app.post("/user/booklist")
 async def user_booklist():
-    return {"book_list":[{"book_id":1,"book_title":"title 1"},
-            {"book_id":2,"book_title":"title 2"},
-            {"book_id":3,"book_title":"title 3"},]}
+    return {"book_list":[{"book_id":1000020,"book_title":"title 1","book_img_path":"https://cdn.discordapp.com/attachments/1331425576678068254/1332257219923804211/EQST.png?ex=679498b9&is=67934739&hm=f96667a61d7d0f6998efb23b16960d4454c08863d0606b1a3dd9e215c2196fb7&"},
+            {"book_id":1000020,"book_title":"title 2","book_img_path":"https://cdn.discordapp.com/attachments/1331425576678068254/1332257219923804211/EQST.png?ex=679498b9&is=67934739&hm=f96667a61d7d0f6998efb23b16960d4454c08863d0606b1a3dd9e215c2196fb7&"},
+            {"book_id":1000021,"book_title":"title 3","book_img_path":"https://cdn.discordapp.com/attachments/1331425576678068254/1332257219923804211/EQST.png?ex=679498b9&is=67934739&hm=f96667a61d7d0f6998efb23b16960d4454c08863d0606b1a3dd9e215c2196fb7&"}]}
 
 # Endpoint: /user/purchase
 @app.post("/user/purchase")

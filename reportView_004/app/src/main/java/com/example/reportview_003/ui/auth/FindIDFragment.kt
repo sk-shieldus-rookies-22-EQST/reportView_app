@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.reportview_003.App
 import com.example.reportview_003.R
 import com.example.reportview_003.api.AuthAPI
@@ -53,7 +54,11 @@ class FindIDFragment : Fragment(), View.OnClickListener {
         findIDaction.doFindid(findIDrequest) { data ->
             if (isAdded) {
                 if (data != null) {
-                    println(data)
+                    val navController = findNavController()
+                    val bundle = Bundle().apply {
+                        putString("data", data)
+                    }
+                    navController.navigate(R.id.action_findIDFragment_to_findPwFragment, bundle)
                 } else {
                     Log.e("FindIDFragment", "Fragment is not attached to a context while loading data.")
                 }

@@ -37,26 +37,13 @@
 
     <!-- Phone Input -->
     <EditText
-        android:id="@+id/find_pw_phone"
+        android:id="@+id/find_pw_passwd"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:hint="전화번호 입력"
+        android:hint="변경할 비밀번호"
         android:inputType="phone"
         android:layout_marginBottom="8dp"
         app:layout_constraintTop_toBottomOf="@id/find_pw_id"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.1" />
-
-    <!-- Email Input -->
-    <EditText
-        android:id="@+id/find_pw_email"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:hint="이메일 입력"
-        android:inputType="textEmailAddress"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintTop_toBottomOf="@id/find_pw_phone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.1" />
@@ -67,7 +54,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="확인"
-        app:layout_constraintTop_toBottomOf="@id/find_pw_email"
+        app:layout_constraintTop_toBottomOf="@id/find_pw_passwd"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.12" />

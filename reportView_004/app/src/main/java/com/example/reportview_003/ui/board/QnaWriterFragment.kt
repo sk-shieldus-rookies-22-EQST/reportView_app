@@ -43,7 +43,7 @@ class QnaWriterFragment : Fragment() {
                 writeQnA.submitQnA(title, content) { success ->
                     if (success) {
                         Toast.makeText(requireContext(), "Q&A 작성 완료", Toast.LENGTH_SHORT).show()
-                        requireActivity().onBackPressed()
+                        requireActivity()
                     } else {
                         Toast.makeText(requireContext(), "작성 실패", Toast.LENGTH_SHORT).show()
                     }

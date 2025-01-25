@@ -1,13 +1,13 @@
 <!--Fragment 동작 시 변경되는 메뉴-->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/menu_login"
+        android:icon="@drawable/search_icon_black"
+        android:title="로그인/로그아웃" />
+    <item
         android:id="@+id/listFragment"
         android:icon="@drawable/search_icon_black"
         android:title="메인 페이지" />
-    <item
-        android:id="@+id/bookviewFragment"
-        android:icon="@drawable/search_icon_black"
-        android:title="뷰어 페이지" />
     <item
         android:id="@+id/bookDetailFragment"
         android:icon="@drawable/search_icon_black"
@@ -24,18 +24,6 @@
         android:id="@+id/purchaseFragment"
         android:icon="@drawable/search_icon_black"
         android:title="결제 페이지" />
-    <item
-        android:id="@+id/findIDFragment"
-        android:icon="@drawable/search_icon_black"
-        android:title="아이디 찾기" />
-    <item
-        android:id="@+id/findPWFragment"
-        android:icon="@drawable/search_icon_black"
-        android:title="비밀번호 찾기" />
-    <item
-        android:id="@+id/signupFragment"
-        android:icon="@drawable/search_icon_black"
-        android:title="회원가입" />
     <item
         android:id="@+id/loginFragment"
         android:icon="@drawable/search_icon_black"

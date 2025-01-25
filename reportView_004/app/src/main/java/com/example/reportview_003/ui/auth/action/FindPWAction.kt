@@ -9,7 +9,7 @@ class FindPWAction(
     private val context: Context,
     private val authApi: AuthAPI
 ) {
-    fun doFindPW(findPWRequest: FindPWRequest, callback: (String?) -> Unit) {
+    fun doFindPW(findPWRequest: FindPWRequest, callback: (Boolean?) -> Unit) {
         val findPWRepository = AuthRepository(authApi)
 
         findPWRepository.findPW(findPWRequest) { response, error ->

@@ -12,7 +12,7 @@ import com.example.reportview_003.R
 
 class UserBookListAdapter(
     private val context: Context,
-    private val bookList: List<Map<String, Any>>
+    private val bookList: MutableList<MutableMap<String, Any>>,
 ) : RecyclerView.Adapter<UserBookListAdapter.UserBookViewHolder>() {
 
     inner class UserBookViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -27,13 +27,21 @@ class UserBookListAdapter(
 
     override fun onBindViewHolder(holder: UserBookViewHolder, position: Int) {
         val item = bookList[position]
-        holder.bookTitle.text = item["title"] as? String ?: "Unknown Title"
+        holder.bookTitle.text = item["book_title"] as? String ?: "Unknown Title"
 
         // 이미지를 URL에서 불러오려면 Glide 또는 Picasso 사용
         Glide.with(context)
-            .load(item["imageUrl"] as? String ?: "")
+            .load(item["book_img_path"] as? String ?: "")
             .placeholder(R.drawable.file_open_black)
             .into(holder.bookImage)
+
+        // 클릭 이벤트 설정
+        holder.itemView.setOnClickListener {
+            val fileOpenAction = FileOpenAction(context)
+            fileOpenAction.openFile(
+                book_id = item["book_id"] as? String ?: "Unknown Title"
+            )
+        }
     }
 
     override fun getItemCount(): Int = bookList.size
