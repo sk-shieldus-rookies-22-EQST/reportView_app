@@ -1,6 +1,7 @@
 package com.example.reportview_003
 
 import android.os.Bundle
+import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
@@ -63,17 +64,20 @@ class ActiveMain : AppCompatActivity() {
                         // 로그아웃 로직
                         SessionManager.clearSession(this)
                         Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+                        updateNavigationMenu()
+
+                        navController.navigate(R.id.listFragment)
                     } else {
                         // 로그인 화면으로 이동
                         navController.navigate(R.id.loginFragment)
                     }
-                    // 메뉴 업데이트
-                    updateNavigationMenu()
+                    // 드로어 닫기
+                    drawerLayout.closeDrawers()
                     true
                 }
                 else -> {
                     val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
-                    if (handled) drawerLayout.closeDrawers()
+                    if (handled) drawerLayout.closeDrawers() // 드로어 닫기
                     handled
                 }
             }
@@ -84,29 +88,37 @@ class ActiveMain : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    // 네비게이션 메뉴 업데이트
+    private fun addMenuItem(
+        menu: Menu,
+        itemId: Int,
+        order: Int,
+        title: String,
+        iconRes: Int
+    ) {
+        menu.add(0, itemId, order, title).setIcon(iconRes)
+    }
+
     private fun updateNavigationMenu() {
         val menu = navigationView.menu
         menu.clear()
 
-        // 기본 메뉴 추가
-        menu.add(0, R.id.listFragment, 1, "홈").setIcon(R.drawable.home_black)
-        menu.add(0, R.id.boardFragment, 3, "게시판").setIcon(R.drawable.web_black)
+        // 기본 메뉴
+        addMenuItem(menu, R.id.listFragment, 1, "홈", R.drawable.home_black)
+        addMenuItem(menu, R.id.boardFragment, 3, "게시판", R.drawable.web_black)
+        addMenuItem(menu, R.id.bookDetailFragment, 5, "책 상세", R.drawable.books_black)
+        addMenuItem(menu, R.id.purchaseFragment, 6, "결제", R.drawable.books_black)
 
-        // 삭제 하거나 이동 가능성이 있는 페이지
-        menu.add(0, R.id.bookDetailFragment, 5, "책 상세").setIcon(R.drawable.books_black)
-        menu.add(0, R.id.purchaseFragment, 6, "결제").setIcon(R.drawable.books_black)
-
-        // 로그인 상태에 따라 로그인/로그아웃 메뉴 추가
         if (SessionManager.isLoggedIn(this)) {
-            menu.add(0, R.id.loginFragment, 0, "로그아웃").setIcon(R.drawable.logout_black)
-            menu.add(0, R.id.userinfofragment, 2, "내 정보").setIcon(R.drawable.person_black)
-            menu.add(0, R.id.userBookListFragment, 4, "내 서제").setIcon(R.drawable.books_black)
+            // 로그인 상태 메뉴
+            addMenuItem(menu, R.id.loginFragment, 0, "로그아웃", R.drawable.logout_black)
+            addMenuItem(menu, R.id.userinfofragment, 2, "내 정보", R.drawable.person_black)
+            addMenuItem(menu, R.id.userBookListFragment, 4, "내 서제", R.drawable.books_black)
         } else {
-            menu.add(0, R.id.loginFragment, 0, "로그인").setIcon(R.drawable.login_black)
+            // 로그아웃 상태 메뉴
+            addMenuItem(menu, R.id.loginFragment, 0, "로그인", R.drawable.login_black)
         }
 
         // 강제 UI 업데이트
-        navigationView.invalidate()
+        invalidateOptionsMenu()
     }
 }
