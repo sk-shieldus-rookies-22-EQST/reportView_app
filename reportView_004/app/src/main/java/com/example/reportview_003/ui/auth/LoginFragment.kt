@@ -58,6 +58,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
         when (v?.id) {
             R.id.login_bt -> {
                 LoginAction.doLogin(requireContext(), inputID, inputPW, authAPI, navController)
+
             }
             R.id.find_id -> {
                 navController.navigate(R.id.action_loginFragment_to_findIdFragment)

@@ -4,13 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.reportview_003.utils.SessionManager
@@ -19,9 +16,10 @@ import com.google.android.material.navigation.NavigationView
 class ActiveMain : AppCompatActivity() {
 
     private lateinit var drawerLayout: DrawerLayout
-    private lateinit var navController: NavController
+    private lateinit var navController: androidx.navigation.NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var navigationView: NavigationView
+    lateinit var navigationView: NavigationView
+    private lateinit var toolbar: androidx.appcompat.widget.Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +27,7 @@ class ActiveMain : AppCompatActivity() {
 
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.navigation_view)
-        val toolbar: Toolbar = findViewById(R.id.tool_bar)
+        toolbar = findViewById(R.id.tool_bar)
 
         // Toolbar 설정
         setSupportActionBar(toolbar)
@@ -61,28 +59,31 @@ class ActiveMain : AppCompatActivity() {
         updateNavigationMenu()
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
+            menuItem.isChecked = false // 클릭 후 선택 상태 해제
             when (menuItem.itemId) {
                 R.id.loginFragment -> {
                     if (SessionManager.isLoggedIn(this)) {
-                        // 로그아웃 로직
                         SessionManager.clearSession(this)
                         Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
-
-                        updateNavigationMenu()
-
-                        navController.navigate(R.id.listFragment)
                     } else {
-                        // 로그인 화면으로 이동
                         navController.navigate(R.id.loginFragment)
                     }
-                    // 드로어 닫기
+                    updateNavigationMenu()
+                    drawerLayout.closeDrawers()
+                    true
+                }
+                R.id.logoutFragment -> {
+                    SessionManager.clearSession(this)
+                    Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+                    navController.navigate(R.id.listFragment) // 루트 페이지로 이동
+                    updateNavigationMenu()
                     drawerLayout.closeDrawers()
                     true
                 }
                 else -> {
-                    val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
-                    if (handled) drawerLayout.closeDrawers() // 드로어 닫기
-                    handled
+                    navController.navigate(menuItem.itemId)
+                    drawerLayout.closeDrawers()
+                    true
                 }
             }
         }
@@ -102,29 +103,18 @@ class ActiveMain : AppCompatActivity() {
         menu.add(0, itemId, order, title).setIcon(iconRes)
     }
 
-    private fun updateNavigationMenu() {
+    fun updateNavigationMenu() {
         val menu = navigationView.menu
 
         Log.d("ActiveMain", "updateNavigationMenu 호출됨 세션 확인: ${SessionManager.isLoggedIn(this)}")
 
-        menu.clear()
+        // 로그인 상태에 따라 그룹 가시성 설정
+        menu.setGroupVisible(R.id.group_logged_out, !SessionManager.isLoggedIn(this))
+        menu.setGroupVisible(R.id.group_logged_in, SessionManager.isLoggedIn(this))
 
-        // 기본 메뉴
-        addMenuItem(menu, R.id.listFragment, 1, "홈", R.drawable.home_black)
-        addMenuItem(menu, R.id.boardFragment, 6, "게시판", R.drawable.web_black)
-        addMenuItem(menu, R.id.bookDetailFragment, 7, "책 상세", R.drawable.purchase_black)
-        addMenuItem(menu, R.id.purchaseFragment, 3, "장바구니", R.drawable.cart_black)
-
-        if (SessionManager.isLoggedIn(this)) {
-            // 로그인 상태 메뉴
-            addMenuItem(menu, R.id.loginFragment, 0, "로그아웃", R.drawable.logout_black)
-            addMenuItem(menu, R.id.userinfofragment, 2, "내 정보", R.drawable.person_black)
-            addMenuItem(menu, R.id.userBookListFragment, 4, "내 서제", R.drawable.book_black)
-            addMenuItem(menu, R.id.userPurchaseFragment, 5, "결제내역", R.drawable.purchase_black)
-        } else {
-            // 로그아웃 상태 메뉴
-            addMenuItem(menu, R.id.loginFragment, 0, "로그인", R.drawable.login_black)
-        }
+        // 항상 표시되는 공통 메뉴
+        menu.findItem(R.id.listFragment)?.isVisible = true
+        menu.findItem(R.id.boardFragment)?.isVisible = true
 
         // 강제 UI 업데이트
         invalidateOptionsMenu()

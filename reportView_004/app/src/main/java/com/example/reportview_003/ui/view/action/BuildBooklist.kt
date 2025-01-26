@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.navigation.NavController
 import com.bumptech.glide.Glide
 import com.example.reportview_003.R
+import com.example.reportview_003.utils.SessionManager
 
 /*
 * 리스트 목록을 출력해주는 Adapter
@@ -68,8 +69,13 @@ class BuildBooklist(
 
         // 장바구니 클릭 리스너 설정
         holder.bookCart.setOnClickListener {
-            // 장바구니 동작 구현
-            Toast.makeText(context, "장바구니에 담겼습니다.", Toast.LENGTH_SHORT).show()
+            if (!SessionManager.isLoggedIn(context)) {
+                Toast.makeText(context, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                navController.navigate(R.id.listFragment) // 루트 페이지로 이동
+            } else {
+                // 장바구니 동작 구현
+                Toast.makeText(context, "장바구니에 담겼습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
 
         // 클릭 리스너에 NavController 전달

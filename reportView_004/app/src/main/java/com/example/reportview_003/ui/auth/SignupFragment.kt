@@ -72,7 +72,6 @@ class SignupFragment: Fragment(), View.OnClickListener {
             if (isAdded) {
                 if (data != null){
                     val navController = findNavController()
-                    Toast.makeText(requireContext(),"welcome",Toast.LENGTH_SHORT).show()
                     navController.navigate(R.id.action_signupFragment_to_loginFragment)
                 } else {
                     Log.e("PurchaseFragment", "Fragment is not attached to a context while loading data.")

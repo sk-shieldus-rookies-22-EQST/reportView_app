@@ -45,6 +45,7 @@ class PurchaseCartAdapter(
 
         deleteButton.setOnClickListener {
             if (bookId != -1) {
+                // 삭제 호출 API 작성 필요
                 deleteItemFromCart(deleteCartItemRequest(book_id = bookId), position)
             } else {
                 Toast.makeText(context, "Invalid item ID", Toast.LENGTH_SHORT).show()

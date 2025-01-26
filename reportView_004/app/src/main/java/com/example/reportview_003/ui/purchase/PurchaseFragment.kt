@@ -26,6 +26,7 @@ class PurchaseFragment : Fragment() {
     private lateinit var purchaseCartButton: Button
     private var cartId: Int = 0
     private var cartList: MutableList<MutableMap<String, Any>>? = mutableListOf()
+    private var totalPrice: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +54,14 @@ class PurchaseFragment : Fragment() {
                 if (response != null){
                     cartId = response.cart_id
                     cartList = response.book_list
+                    totalPrice = response.book_list.sumOf {
+                        val priceString = it["price"] as? String
+                        priceString?.toIntOrNull() ?: 0
+                    }
+
                     updateUI(response)
+
+
                 } else {
                     Log.e("PurchaseFragment", "Fragment is not attached to a context while loading data.")
                 }
@@ -64,7 +72,8 @@ class PurchaseFragment : Fragment() {
             // 불러온 값을 다음 단계로 전달
             val bundle = Bundle()
             bundle.putInt("cart_id", cartId)
-            bundle.putSerializable("cart_list", ArrayList(cartList))
+            bundle.putSerializable("cart_list", cartList as ArrayList<MutableMap<String, Any>>)
+            bundle.putInt("total_price", totalPrice)
 
             findNavController().navigate(R.id.action_purchaseFragment_to_purchaseProcessFragment, bundle)
         }
@@ -73,11 +82,6 @@ class PurchaseFragment : Fragment() {
     }
 
     private fun updateUI(cartResponse: CartResponse) {
-        val totalPrice = cartResponse.book_list.sumOf {
-            val priceString = it["price"] as? String
-                priceString?.toIntOrNull() ?: 0
-        }
-
         purchaseCartTotalprice.text = "합계 : ${totalPrice}"
 
         val app = requireActivity().application as App
