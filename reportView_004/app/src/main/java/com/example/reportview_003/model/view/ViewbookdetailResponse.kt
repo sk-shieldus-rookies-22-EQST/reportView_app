@@ -5,5 +5,6 @@ data class ViewbookdetailResponse(
     val detail: String,
     val writer: String,
     val title: String,
-    val price:String
+    val price:String,
+    val book_img_path: String
 )

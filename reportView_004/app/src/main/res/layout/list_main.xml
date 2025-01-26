@@ -24,21 +24,23 @@
             android:inputType="text"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/search_bt"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.1"
             android:background="@android:color/transparent"
-            android:src="@drawable/search_icon_black" />
+            android:src="@drawable/search_icon_black"
+            app:tint="@color/icon_color" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/filter_bt"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.1"
             android:background="@android:color/transparent"
-            android:src="@drawable/filter_black" />
+            android:src="@drawable/filter_black"
+            app:tint="@color/icon_color" />
 
     </LinearLayout>
 

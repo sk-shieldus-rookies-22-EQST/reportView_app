@@ -3,6 +3,10 @@ package com.example.reportview_003.ui.board.action
 import android.content.Context
 import com.example.reportview_003.api.BoardAPI
 import com.example.reportview_003.model.board.BoardCommentRequest
+import com.example.reportview_003.model.board.BoardDeleteRequest
+import com.example.reportview_003.model.board.BoardDeleteResponse
+import com.example.reportview_003.model.board.BoardModifyRequest
+import com.example.reportview_003.model.board.BoardModifyResponse
 import com.example.reportview_003.repository.BoardRepository
 
 class UpdateQnA(
@@ -11,17 +15,16 @@ class UpdateQnA(
 ) {
 
     fun updateComment(
-        boardCommentRequest: BoardCommentRequest,
-        callback: (Boolean) -> Unit
+        boardModifyRequest: BoardModifyRequest,
+        callback: (BoardModifyResponse) -> Unit
     ) {
         val boardRepository = BoardRepository(boardAPI)
 
-        boardRepository.writeComment(boardCommentRequest) { response, error ->
-            if (response != null && response.status == "success") {
-                callback(true)
+        boardRepository.modifyQnA(boardModifyRequest) { response, error ->
+            if (response != null) {
+                callback(response)
             } else {
                 error?.printStackTrace()
-                callback(false)
             }
         }
     }

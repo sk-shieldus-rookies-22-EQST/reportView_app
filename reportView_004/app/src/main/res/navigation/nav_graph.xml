@@ -66,8 +66,8 @@
         android:label="Board"
         tools:layout="@layout/qna_detail_main">
         <action
-            android:id="@+id/action_eachBoardFragment_to_qnaWriterFragment"
-            app:destination="@id/qnaWriterFragment" />
+            android:id="@+id/action_eachBoardFragment_to_reWriterFragment"
+            app:destination="@id/reWriterFragment" />
     </fragment>
 
     <fragment
@@ -149,7 +149,7 @@
 
     <fragment
         android:id="@+id/reWriterFragment"
-        android:name="com.example.reportview_003.ui.board.ReWriteFragment"
+        android:name="com.example.reportview_003.ui.board.QnaModifyFragment"
         android:label="글 수정"
         tools:layout="@layout/qna_write_main" />
 </navigation>

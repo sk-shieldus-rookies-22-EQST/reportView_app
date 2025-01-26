@@ -1,7 +1,7 @@
 package com.example.reportview_003.ui.view.action
 
 import android.content.Context
-import android.util.Log
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.navigation.NavController
 import com.bumptech.glide.Glide
 import com.example.reportview_003.R
+import com.example.reportview_003.model.view.ViewbooklistResponse
 import com.example.reportview_003.utils.SessionManager
 
 /*
@@ -21,9 +22,9 @@ import com.example.reportview_003.utils.SessionManager
 
 class BuildBooklist(
     private val context: Context,
-    private val data : List<Map<String, Any>>,
+    private val data: List<Map<String, Any>>,
     private val navController: NavController
-): BaseAdapter() {
+) : BaseAdapter() {
 
     override fun getCount(): Int = data.size
 
@@ -43,7 +44,7 @@ class BuildBooklist(
                 view.findViewById(R.id.book_author),
                 view.findViewById(R.id.book_price),
                 view.findViewById(R.id.book_img),
-                view.findViewById(R.id.book_cart)
+                view.findViewById(R.id.book_cart),
             )
             view.tag = holder
         } else {
@@ -78,9 +79,14 @@ class BuildBooklist(
             }
         }
 
-        // 클릭 리스너에 NavController 전달
+        // 아이템 클릭 리스너: BookDetailFragment로 이동하며 book_id 전달
         view.setOnClickListener {
-            true
+            val item = getItem(position)
+            val bookId = (item["book_id"] as? Double)?.toInt() ?: -1
+            val bundle = Bundle().apply {
+                putInt("book_id", bookId)
+            }
+            navController.navigate(R.id.action_listFragment_to_bookDetailFragment, bundle)
         }
 
         return view
@@ -92,6 +98,6 @@ class BuildBooklist(
         val bookAuthor: TextView,
         val bookPrice: TextView,
         val bookImg: ImageView,
-        val bookCart: ImageView
+        val bookCart: ImageView,
     )
 }

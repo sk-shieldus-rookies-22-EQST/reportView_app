@@ -12,8 +12,11 @@ import androidx.navigation.fragment.findNavController
 import com.example.reportview_003.App
 import com.example.reportview_003.R
 import com.example.reportview_003.api.BoardAPI
+import com.example.reportview_003.model.board.BoardDeleteRequest
 import com.example.reportview_003.model.board.BoardQnAResponse
+import com.example.reportview_003.ui.board.action.DeleteQnA
 import com.example.reportview_003.ui.board.action.GetEachBoard
+import com.example.reportview_003.utils.SessionManager
 
 class EachBoardFragment : Fragment() {
 
@@ -24,10 +27,8 @@ class EachBoardFragment : Fragment() {
     private lateinit var qnaInputText: TextView
     private lateinit var qnaCommentText: TextView
     private lateinit var deleteButton: Button
-    private lateinit var editButton: Button
+    private lateinit var modifyButton: Button
     private lateinit var listButton: Button
-
-    private var bundle: Bundle? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,7 +48,7 @@ class EachBoardFragment : Fragment() {
         qnaInputText = view.findViewById(R.id.qna_input_text)
         qnaCommentText = view.findViewById(R.id.qna_comment)
         deleteButton = view.findViewById(R.id.qna_delete_button)
-        editButton = view.findViewById(R.id.qna_edit_button)
+        modifyButton = view.findViewById(R.id.qna_edit_button)
         listButton = view.findViewById(R.id.qna_list_button)
 
         val boardId = arguments?.getInt("board_id",-1) ?: -1
@@ -58,12 +59,27 @@ class EachBoardFragment : Fragment() {
         }
 
         deleteButton.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            val boardDeleteData = BoardDeleteRequest(
+                board_id = boardId,
+                user_id = SessionManager.getUserID(requireContext()).toString()
+            )
+            val deleteQnA = DeleteQnA(requireContext(), boardAPI)
+            deleteQnA.deleteQnA(boardDeleteData) { response ->
+                if (response != null) {
+                    navController.popBackStack()
+                } else {
+                    Log.e("EachBoardFragment", "Failed to delete board.")
+                }
+            }
         }
 
-        editButton.setOnClickListener {
-            bundle.apply { "board_id" to boardId }
-            navController.navigate(R.id.action_eachBoardFragment_to_qnaWriterFragment, bundle)
+        modifyButton.setOnClickListener {
+            val bundle = Bundle().apply {
+                putInt("board_id", boardId)
+                putString("title", qnaTitle.text.toString())
+                putString("content", qnaInputText.text.toString())
+            }
+            navController.navigate(R.id.action_eachBoardFragment_to_reWriterFragment, bundle)
         }
 
         listButton.setOnClickListener {

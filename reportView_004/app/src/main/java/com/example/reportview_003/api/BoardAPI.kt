@@ -18,4 +18,10 @@ interface BoardAPI {
 
     @POST("board/qna/comment")
     fun writeComment(@Body request: BoardCommentRequest): Call<BoardCommentResponse>
+
+    @POST("board/delete")
+    fun deleteQnA(@Body request: BoardDeleteRequest): Call<BoardDeleteResponse>
+
+    @POST("board/modify")
+    fun modifyQnA(@Body request: BoardModifyRequest): Call<BoardModifyResponse>
 }

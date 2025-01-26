@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.reportview_003.App
 import com.example.reportview_003.R
 import com.example.reportview_003.api.ViewAPI
@@ -43,8 +44,10 @@ class BookDetailFragment: Fragment() {
         bookDetailCart = view.findViewById(R.id.book_detail_cart)
         bookDetailContent = view.findViewById(R.id.book_detail_content)
 
+        val bookId = arguments?.getInt("book_id") ?: -1
+
         val getBookDetail = GetBookDetail(requireContext(),viewAPI)
-        getBookDetail.viewbookdetail(1) { response ->
+        getBookDetail.viewbookdetail(bookId) { response ->
             if (isAdded) {
                 if (response != null){
                     updateUI(response)
@@ -65,5 +68,8 @@ class BookDetailFragment: Fragment() {
         bookDetailPrice.text = "${viewbookdetailResponse.price} 원" // 가격 예시
         bookDetailContent.text = viewbookdetailResponse.detail
         // bookDetailImage는 이미지 URL을 받아 로드하는 로직 필요 (예: Glide, Picasso 사용)
+        Glide.with(requireContext())
+            .load(viewbookdetailResponse.book_img_path)
+            .into(bookDetailImage)
     }
 }

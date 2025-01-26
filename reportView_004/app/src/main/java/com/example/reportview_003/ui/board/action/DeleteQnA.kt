@@ -2,23 +2,28 @@ package com.example.reportview_003.ui.board.action
 
 import android.content.Context
 import com.example.reportview_003.api.BoardAPI
-import com.example.reportview_003.model.board.BoardResponse
-import com.example.reportview_003.model.view.ViewbooklistResponse
+import com.example.reportview_003.model.board.BoardDeleteRequest
+import com.example.reportview_003.model.board.BoardDeleteResponse
 import com.example.reportview_003.repository.BoardRepository
 
-class GetBoard(
+class DeleteQnA(
     private val context: Context,
     private val boardAPI: BoardAPI
 ) {
-    fun loadBoardList(callback: (BoardResponse) -> Unit) {
-        val boardlist = BoardRepository(boardAPI)
+    fun deleteQnA(
+        boardDeleteRequest: BoardDeleteRequest,
+        callback: (BoardDeleteResponse) -> Unit
+    ) {
+        val boardRepository = BoardRepository(boardAPI)
 
-        boardlist.render { response, error ->
+        boardRepository.deleteQnA(boardDeleteRequest) { response, error ->
             if (response != null) {
                 callback(response)
             } else {
                 error?.printStackTrace()
             }
         }
+
     }
+
 }

@@ -20,7 +20,8 @@ class GetBookDetail(
                     detail = response.detail?: "No detail available",
                     writer = response.writer?: "No writer available",
                     title = response.title?: "No title available",
-                    price = response.price?: "No price available"
+                    price = response.price?: "No price available",
+                    book_img_path = response.book_img_path?: ""
                 )
                 callback(viewbookdetailResponse)
             } else {

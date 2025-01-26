@@ -29,17 +29,18 @@ book_img = [
 
 
 def create_book_list():
-    return [{"id": 1, "title": "Sample 1123 Report", "price":"10000", "writer":"작자미상","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"id": 2, "title": "Sample ㄴㅇㅁ1 Report", "price":"11000", "writer":"작자","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"id": 3, "title": "Sample 12ㅇㄹ Report", "price":"12000", "writer":"김 아무개","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"id": 4, "title": "Sample ㅛ숫3 Report", "price":"18500", "writer":"토마스","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"id": 5, "title": "Sample 123ㅁㅇ3 Report", "price":"19000", "writer":"123","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"id": 6, "title": "Sample ㄴㅇㄹ4 Report", "price":"17000", "writer":"ㅁㄴㅇ","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"id": 7, "title": "Sample ㅁㅁ2ㅁㅇㅊ Report", "price":"20000", "writer":"ㄹ호","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"id": 8, "title": "Sample asd22 Report", "price":"10000", "writer":"윌리엄","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"id": 9, "title": "Sample tgbbt4 Report", "price":"15000", "writer":"4ㄱ5ㅅ","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"id": 10, "title": "Sample 6rds3 Report", "price":"20000", "writer":"작자미상","write_date":"20221015","book_img_path":random.choice(book_img)}]
+    return [{"book_id": 1, "title": "Sample 1123 Report", "price":"10000", "writer":"작자미상","write_date":"20221010","book_img_path":random.choice(book_img)},
+                {"book_id": 2, "title": "Sample ㄴㅇㅁ1 Report", "price":"11000", "writer":"작자","write_date":"20221010","book_img_path":random.choice(book_img)},
+                {"book_id": 3, "title": "Sample 12ㅇㄹ Report", "price":"12000", "writer":"김 아무개","write_date":"20221010","book_img_path":random.choice(book_img)},
+                {"book_id": 4, "title": "Sample ㅛ숫3 Report", "price":"18500", "writer":"토마스","write_date":"20221010","book_img_path":random.choice(book_img)},
+                {"book_id": 5, "title": "Sample 123ㅁㅇ3 Report", "price":"19000", "writer":"123","write_date":"20221010","book_img_path":random.choice(book_img)},
+                {"book_id": 6, "title": "Sample ㄴㅇㄹ4 Report", "price":"17000", "writer":"ㅁㄴㅇ","write_date":"20221010","book_img_path":random.choice(book_img)},
+                {"book_id": 7, "title": "Sample ㅁㅁ2ㅁㅇㅊ Report", "price":"20000", "writer":"ㄹ호","write_date":"20221010","book_img_path":random.choice(book_img)},
+                {"book_id": 8, "title": "Sample asd22 Report", "price":"10000", "writer":"윌리엄","write_date":"20221010","book_img_path":random.choice(book_img)},
+                {"book_id": 9, "title": "Sample tgbbt4 Report", "price":"15000", "writer":"4ㄱ5ㅅ","write_date":"20221010","book_img_path":random.choice(book_img)},
+                {"book_id": 10, "title": "Sample 6rds3 Report", "price":"20000", "writer":"작자미상","write_date":"20221015","book_img_path":random.choice(book_img)}]
 
+filtered = []
 
 # Endpoint: /auth/login
 @app.post("/auth/login")
@@ -59,6 +60,7 @@ async def find_pw():
 # Endpoint: /view/booklist
 @app.post("/view/booklist")
 async def view_report(params: Optional[SearchPrams] = None ):
+    global filtered 
     filtered = create_book_list()
 
     if params:
@@ -74,7 +76,10 @@ async def view_report(params: Optional[SearchPrams] = None ):
 # Endpoint: /view/bookdetail/{id}
 @app.post("/view/bookdetail/{id}")
 async def view_detail(id: int):
-    return {"id":1, "price":"10000", "title":"책 제목", "writer":"작자 미상", "detail":"책 관련 내용"}
+    global filtered
+    book_detail = filtered[id-1]
+    book_detail["detail"] = f"{id} 번호의 책"
+    return book_detail
 
 # Endpoint: /view/book/viewer
 @app.get("/view/book/viewer")
@@ -97,6 +102,18 @@ async def view_board():
                    {"board_id":2,"title":"title 2","user_id":"admin"},
                    {"board_id":3,"title":"title 3","user_id":"admin1"},
                    {"board_id":4,"title":"title 4","user_id":"admin2"}]}
+
+# Endpoint: /board/modify
+@app.post("/board/modify")
+async def modify_QnA():
+    return {"status":True}
+
+
+# Endpoint: /board/delete
+@app.post("/board/delete")
+async def delete_QnA():
+    return {"status":True}
+
 
 # Endpoint: /board/qna/{id}
 @app.post("/board/qna/{id}")
@@ -154,6 +171,9 @@ async def user_info():
     return {"purchase":[{"id":1,"title":"title 1", "price":10000, "date":"20151212"},
                         {"id":2,"title":"title 2", "price":12000, "date":"20151212"},
                         {"id":3,"title":"title 3", "price":13000, "date":"20151212"}]}
+
+
+
 
 # Instructions to build and run the FastAPI server
 # 1. Save this script as `main.py`.

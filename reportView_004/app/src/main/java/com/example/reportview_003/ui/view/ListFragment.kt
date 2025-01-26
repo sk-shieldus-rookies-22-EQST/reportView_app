@@ -6,13 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.reportview_003.App
 import com.example.reportview_003.R
 import com.example.reportview_003.api.ViewAPI
+import com.example.reportview_003.model.view.ViewbooklistResponse
 import com.example.reportview_003.ui.view.action.*
 
 /*
@@ -20,19 +21,20 @@ import com.example.reportview_003.ui.view.action.*
 * data에 모든 값을 저장하고 필터링 된 값을 리스트 뷰에 뿌려주는 형식
 * */
 
-class ListFragment : Fragment() , View.OnClickListener{
+class ListFragment : Fragment() {
 
     private lateinit var itemList : ListView
     private lateinit var searchReport : EditText
-    private lateinit var searchBtn : ImageButton
+    private lateinit var searchBtn : ImageView
+    private lateinit var filterBtn : ImageView
 
-    private var renderData : MutableList<MutableMap<String,Any>> = mutableListOf()
+    private lateinit var resData : ViewbooklistResponse
 
-    private fun updateUI(data: MutableList<MutableMap<String, Any>>) {
+    private fun updateUI(data: ViewbooklistResponse) {
         if (isAdded) { // Fragment가 Activity에 연결되어 있는지 확인
             val context = requireContext() // 안전하게 context 호출
             val navController = findNavController()
-            val adapter = BuildBooklist(context, data, navController)
+            val adapter = BuildBooklist(context, data.book_list, navController)
             itemList.adapter = adapter
         } else {
             Log.e("ListFragment", "Fragment is not attached to a context.")
@@ -52,31 +54,29 @@ class ListFragment : Fragment() , View.OnClickListener{
         itemList = view.findViewById(R.id.list_item)
         searchBtn = view.findViewById(R.id.search_bt)
 
-        searchBtn.setOnClickListener(this)
-
         val getList = GetList(requireContext(),viewAPI)
         getList.loadBookList { data ->
             if (isAdded) { // Fragment가 Context에 연결된 상태에서만 처리
-                renderData = data
+                resData = data
                 requireActivity().runOnUiThread {
-                    updateUI(renderData)
+                    updateUI(resData)
                 }
             } else {
                 Log.e("ListFragment", "Fragment is not attached to a context while loading data.")
             }
         }
 
-        return view
-    }
+        // 검색버튼 클릭시
+        searchBtn.setOnClickListener {
+            resData = SearchFunction(resData, searchReport)
+            if (isAdded) { // Fragment 상태 확인
+                updateUI(resData)
+            } else {
+                Log.e("ListFragment", "Fragment is not attached to a context while handling click.")
+            }
 
-    override fun onClick(v: View?) {
-        searchReport = requireView().findViewById(R.id.search_report)
-        renderData = SearchFunction(renderData, searchReport)
-        if (isAdded) { // Fragment 상태 확인
-            updateUI(renderData)
-        } else {
-            Log.e("ListFragment", "Fragment is not attached to a context while handling click.")
         }
+        return view
     }
 
 }

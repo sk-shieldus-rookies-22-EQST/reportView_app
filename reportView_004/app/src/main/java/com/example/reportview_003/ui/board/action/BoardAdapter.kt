@@ -6,16 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import androidx.navigation.NavController
 import com.example.reportview_003.R
+import com.example.reportview_003.model.board.BoardResponse
 
 class BoardAdapter(
     private val context: Context,
-    private val data: List<MutableMap<String, Any>>
+    private val data: BoardResponse,
+    private val navController: NavController
 ) : BaseAdapter() {
 
-    override fun getCount(): Int = data.size
+    override fun getCount(): Int = data.qna.size
 
-    override fun getItem(position: Int): MutableMap<String, Any> = data[position]
+    override fun getItem(position: Int): MutableMap<String, Any> = data.qna[position]
 
     override fun getItemId(position: Int): Long = position.toLong()
 

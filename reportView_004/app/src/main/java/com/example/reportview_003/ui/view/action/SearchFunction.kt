@@ -1,20 +1,23 @@
 package com.example.reportview_003.ui.view.action
 
 import android.widget.EditText
+import com.example.reportview_003.model.view.ViewbooklistResponse
 
 
 fun SearchFunction(
-    data: MutableList<MutableMap<String, Any>>,
+    data: ViewbooklistResponse,
     searchReport: EditText
-): MutableList<MutableMap<String, Any>> {
+): ViewbooklistResponse {
 
     // 검색할 내용
     val keyword = searchReport.text.toString()
 
-    val filteredData = data.filter { item ->
+    val filteredData = data.book_list.filter { item ->
         val title = item["title"] as? String
         title?.contains(keyword, ignoreCase = true) == true
     }
 
-    return filteredData.toMutableList()
+    return ViewbooklistResponse(
+        book_list = filteredData.toMutableList()
+    )
 }

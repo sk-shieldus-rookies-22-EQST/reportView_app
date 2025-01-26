@@ -28,7 +28,7 @@ class QnaWriterFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // 로그인 상태에 따라 페이지 이동 
+        // 로그인 상태에 따라 페이지 이동
         if (!SessionManager.isLoggedIn(requireContext())) {
             Toast.makeText(requireContext(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
 
@@ -45,10 +45,15 @@ class QnaWriterFragment : Fragment() {
         titleInput = view.findViewById(R.id.edit_text_title)
         contentInput = view.findViewById(R.id.edit_text_content)
         submitButton = view.findViewById(R.id.button_submit)
+        cancelButton = view.findViewById(R.id.button_cancel)
 
         val app = requireActivity().application as App
         val boardAPI = app.retrofit.create(BoardAPI::class.java)
         val writeQnA = WriteQnA(requireContext(), boardAPI)
+
+        cancelButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         submitButton.setOnClickListener {
             val title = titleInput.text.toString()

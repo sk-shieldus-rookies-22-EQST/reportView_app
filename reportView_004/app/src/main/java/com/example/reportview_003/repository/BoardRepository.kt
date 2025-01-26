@@ -72,4 +72,34 @@ class BoardRepository(private val api: BoardAPI) {
         })
     }
 
+    fun modifyQnA(boardModifyRequest:BoardModifyRequest , callback: (BoardModifyResponse?, Throwable?) -> Unit) {
+        api.modifyQnA(boardModifyRequest).enqueue(object : Callback<BoardModifyResponse>{
+            override fun onResponse(call: Call<BoardModifyResponse>, response: Response<BoardModifyResponse>) {
+                if (response.isSuccessful) {
+                    callback(response.body(), null)
+                } else {
+                    callback(null, Throwable("failed"))
+                }
+            }
+            override fun onFailure(call: Call<BoardModifyResponse>, t: Throwable) {
+                callback(null, t)
+            }
+        })
+    }
+
+    fun deleteQnA(boardDeleteRequest:BoardDeleteRequest , callback: (BoardDeleteResponse?, Throwable?) -> Unit) {
+        api.deleteQnA(boardDeleteRequest).enqueue(object : Callback<BoardDeleteResponse>{
+            override fun onResponse(call: Call<BoardDeleteResponse>, response: Response<BoardDeleteResponse>) {
+                if (response.isSuccessful) {
+                    callback(response.body(), null)
+                } else {
+                    callback(null, Throwable("failed"))
+                }
+            }
+            override fun onFailure(call: Call<BoardDeleteResponse>, t: Throwable) {
+                callback(null, t)
+            }
+        })
+    }
+
 }
