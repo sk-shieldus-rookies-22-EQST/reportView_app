@@ -10,5 +10,9 @@
     <color name="orange">#FF5722</color>"
     <color name="orange_dark">#875B00</color>"
     <color name="icon_color">#FF000000</color>
-    <color name="bg_color">#FC9918</color>"
+    <color name="bg_color">#FFEFD5</color>"
+    <color name="clear">#00000000</color>"
+    <color name="button_text_color_primary">#FFFFFF</color> <!-- 기본 테마 색 -->
+    <color name="button_text_color_secondary">#FF0000</color> <!-- 보조 테마 색 -->
+    <color name="button_text_color_dark">#000000</color> <!-- 어두운 테마 색 -->
 </resources>

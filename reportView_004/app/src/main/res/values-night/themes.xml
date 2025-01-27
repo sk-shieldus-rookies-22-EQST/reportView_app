@@ -3,12 +3,12 @@
     <style name="Theme.ReportView_003" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/bg_color</item>
-        <item name="colorPrimaryVariant">@color/orange_dark</item>
+        <item name="colorPrimaryVariant">@color/bg_color</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondary">#525252</item>
+        <item name="colorSecondaryVariant">#2F2F2F</item>
+        <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
@@ -19,5 +19,6 @@
 
 <!--        Navigation Bar Color      -->
         <item name="android:navigationBarColor">@color/bg_color</item>
+        <item name="android:tint">@color/white</item>
     </style>
 </resources>

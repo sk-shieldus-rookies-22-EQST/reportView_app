@@ -14,7 +14,7 @@
         app:layout_constraintHeight_percent="0.07"
         android:hint="제목을 입력하세요"
         android:padding="10dp"
-        android:background="@android:drawable/edit_text"
+        android:background="?attr/colorSecondary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,7 +29,7 @@
         android:gravity="top"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        android:background="@android:drawable/edit_text"
+        android:background="?attr/colorSecondary"
         android:inputType="textMultiLine"
         android:minHeight="200dp"
         app:layout_constraintHeight_percent="0.8"
@@ -59,6 +59,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="취소"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSecondary"
             android:layout_marginEnd="10dp"/>
 
         <!-- 글 작성/수정 버튼 -->
@@ -68,6 +70,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="글 작성"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSecondary"
             android:layout_marginStart="10dp"/>
     </LinearLayout>
 

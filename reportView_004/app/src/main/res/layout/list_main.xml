@@ -8,39 +8,70 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/search_box"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.06"
-        android:layout_margin="10dp"
-        app:layout_constraintTop_toTopOf="parent" >
-
-        <EditText
-            android:id="@+id/search_report"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+        android:layout_weight="0.15"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/search_box"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:hint="Search"
-            android:inputType="text"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_margin="10dp"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintTop_toTopOf="parent" >
 
-        <ImageView
-            android:id="@+id/search_bt"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.1"
-            android:background="@android:color/transparent"
-            android:src="@drawable/search_icon_black"
-            app:tint="@color/icon_color" />
+            <EditText
+                android:id="@+id/search_report"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Search"
+                android:inputType="text"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/filter_bt"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.1"
-            android:background="@android:color/transparent"
-            android:src="@drawable/filter_black"
-            app:tint="@color/icon_color" />
+            <ImageView
+                android:id="@+id/search_bt"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.1"
+                android:background="@android:color/transparent"
+                android:src="@drawable/search_icon_black" />
+
+            <ImageView
+                android:id="@+id/filter_bt"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.1"
+                android:background="@android:color/transparent"
+                android:src="@drawable/filter_black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:id="@+id/search_sdate"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/search_edate"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

@@ -41,7 +41,6 @@
         android:src="@drawable/edit_board"
         android:padding="10dp"
         android:elevation="4dp"
-        android:contentDescription="Action Icon"
-        app:tint="@color/icon_color" />
+        android:contentDescription="Action Icon" />
 
 </FrameLayout>

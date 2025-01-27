@@ -12,6 +12,7 @@
         android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.05"
         android:hint="제목을 입력하세요"
+        android:background="?attr/colorSecondary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -66,7 +67,7 @@
         app:layout_constraintHeight_percent="0.35"
         android:gravity="top"
         android:padding="15dp"
-        android:background="@android:drawable/edit_text"
+        android:background="?attr/colorSecondary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/qna_info_box"
@@ -79,7 +80,7 @@
         app:layout_constraintHeight_percent="0.35"
         android:gravity="top"
         android:padding="15dp"
-        android:background="@android:drawable/edit_text"
+        android:background="?attr/colorSecondary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/qna_input_text"
@@ -103,6 +104,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSecondary"
             android:text="삭제" />
 
         <Button
@@ -112,6 +115,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
             android:layout_marginStart="5dp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSecondary"
             android:text="수정" />
 
         <Button
@@ -120,6 +125,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSecondary"
             android:text="목록" />
     </LinearLayout>
 

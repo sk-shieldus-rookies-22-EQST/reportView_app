@@ -1,5 +1,6 @@
 package com.example.reportview_003.ui.view
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,13 +9,18 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.reportview_003.App
 import com.example.reportview_003.R
 import com.example.reportview_003.api.ViewAPI
 import com.example.reportview_003.model.view.ViewbooklistResponse
+import com.example.reportview_003.model.view.ViewbooksearchRequest
 import com.example.reportview_003.ui.view.action.*
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 /*
 * 필터링 검색 기능을 가지고 있어야 함
@@ -27,8 +33,12 @@ class ListFragment : Fragment() {
     private lateinit var searchReport : EditText
     private lateinit var searchBtn : ImageView
     private lateinit var filterBtn : ImageView
+    private lateinit var searchSdate : TextView
+    private lateinit var searchEdate : TextView
 
     private lateinit var resData : ViewbooklistResponse
+
+    val formatter = SimpleDateFormat("yyyy-MM-dd")
 
     private fun updateUI(data: ViewbooklistResponse) {
         if (isAdded) { // Fragment가 Activity에 연결되어 있는지 확인
@@ -53,6 +63,10 @@ class ListFragment : Fragment() {
 
         itemList = view.findViewById(R.id.list_item)
         searchBtn = view.findViewById(R.id.search_bt)
+        filterBtn = view.findViewById(R.id.filter_bt)
+        searchSdate = view.findViewById(R.id.search_sdate)
+        searchEdate = view.findViewById(R.id.search_edate)
+        searchReport = view.findViewById(R.id.search_report)
 
         val getList = GetList(requireContext(),viewAPI)
         getList.loadBookList { data ->
@@ -68,15 +82,69 @@ class ListFragment : Fragment() {
 
         // 검색버튼 클릭시
         searchBtn.setOnClickListener {
-            resData = SearchFunction(resData, searchReport)
-            if (isAdded) { // Fragment 상태 확인
-                updateUI(resData)
-            } else {
-                Log.e("ListFragment", "Fragment is not attached to a context while handling click.")
+            // 서버에 search 요청 전송
+            val viewSearchRequest = ViewbooksearchRequest(
+                keyword = searchReport.text.toString()as? String ?: null,
+                sdate = searchSdate.text.toString() as? String ?: null,
+                edate = searchEdate.text.toString() as? String ?: null
+            )
+            if ((viewSearchRequest.sdate == null) xor (viewSearchRequest.edate == null)) {
+                Toast.makeText(requireContext(), "날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-
+            val viewSearch = ViewSearch(requireContext(),viewAPI)
+            viewSearch.search(viewSearchRequest) { response, error ->
+                if (response != null) {
+                    resData = ViewbooklistResponse(response.book_list)
+                    requireActivity().runOnUiThread {
+                        updateUI(resData)
+                    }
+                }
+            }
         }
+
+        filterBtn.setOnClickListener {
+            // 날짜 선택 리스트 출력
+            // 시작 날짜 ~ 끝 날짜
+            showDatePicker()
+        }
+
         return view
     }
+
+    private fun showDatePicker() {
+        val calendar = Calendar.getInstance()
+
+        // 시작 날짜 선택
+        DatePickerDialog(
+            requireContext(),
+            R.style.CustomDatePickerDialog,
+            { _, year, month, dayOfMonth ->
+                val startCalendar = Calendar.getInstance()
+                startCalendar.set(year, month, dayOfMonth)
+                searchSdate.text = formatter.format(startCalendar.time)
+
+                // 끝 날짜 선택
+                DatePickerDialog(
+                    requireContext(),
+                    R.style.CustomDatePickerDialog,
+                    { _, endYear, endMonth, endDayOfMonth ->
+                        val endCalendar = Calendar.getInstance()
+                        endCalendar.set(endYear, endMonth, endDayOfMonth)
+                        searchEdate.text = formatter.format(endCalendar.time)
+
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+                ).show()
+
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+
 
 }

@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.reportview_003.ActiveMain
 import com.example.reportview_003.App
 import com.example.reportview_003.R
 import com.example.reportview_003.api.BoardAPI
@@ -59,6 +61,17 @@ class EachBoardFragment : Fragment() {
         }
 
         deleteButton.setOnClickListener {
+            // 로그인 상태에 따라 페이지 이동
+            if (!SessionManager.isLoggedIn(requireContext())) {
+                Toast.makeText(requireContext(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+
+                findNavController().navigate(R.id.listFragment) // 루트 페이지로 이동
+
+                (activity as? ActiveMain)?.apply {
+                    navigationView.setCheckedItem(R.id.listFragment)
+                }
+                return@setOnClickListener
+            }
             val boardDeleteData = BoardDeleteRequest(
                 board_id = boardId,
                 user_id = SessionManager.getUserID(requireContext()).toString()

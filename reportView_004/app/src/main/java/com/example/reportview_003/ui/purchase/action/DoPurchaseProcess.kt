@@ -9,7 +9,9 @@ class DoPurchaseProcess(
     private val context: Context,
     private val purchaseAPI: PurchaseAPI
 ) {
-    fun doPurchaseProcess(perchaseProccessRequest: PerchaseProccessRequest, callback: (PerchaseProccessResponse?) -> Unit) {
+    fun doPurchaseProcess(
+        perchaseProccessRequest: PerchaseProccessRequest,
+        callback: (PerchaseProccessResponse?) -> Unit) {
         val purchaseRepository = PurchaseRepository(purchaseAPI)
 
         purchaseRepository.pruchaseProcess(perchaseProccessRequest) { response, error ->

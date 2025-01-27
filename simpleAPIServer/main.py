@@ -29,16 +29,16 @@ book_img = [
 
 
 def create_book_list():
-    return [{"book_id": 1, "title": "Sample 1123 Report", "price":"10000", "writer":"작자미상","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"book_id": 2, "title": "Sample ㄴㅇㅁ1 Report", "price":"11000", "writer":"작자","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"book_id": 3, "title": "Sample 12ㅇㄹ Report", "price":"12000", "writer":"김 아무개","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"book_id": 4, "title": "Sample ㅛ숫3 Report", "price":"18500", "writer":"토마스","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"book_id": 5, "title": "Sample 123ㅁㅇ3 Report", "price":"19000", "writer":"123","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"book_id": 6, "title": "Sample ㄴㅇㄹ4 Report", "price":"17000", "writer":"ㅁㄴㅇ","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"book_id": 7, "title": "Sample ㅁㅁ2ㅁㅇㅊ Report", "price":"20000", "writer":"ㄹ호","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"book_id": 8, "title": "Sample asd22 Report", "price":"10000", "writer":"윌리엄","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"book_id": 9, "title": "Sample tgbbt4 Report", "price":"15000", "writer":"4ㄱ5ㅅ","write_date":"20221010","book_img_path":random.choice(book_img)},
-                {"book_id": 10, "title": "Sample 6rds3 Report", "price":"20000", "writer":"작자미상","write_date":"20221015","book_img_path":random.choice(book_img)}]
+    return [{"book_id": 1, "title": "Sample 1123 Report", "price":"10000", "writer":"작자미상","write_date":"2025-01-10","book_img_path":random.choice(book_img)},
+                {"book_id": 2, "title": "Sample 1124 Report", "price":"11000", "writer":"작자","write_date":"2025-01-10","book_img_path":random.choice(book_img)},
+                {"book_id": 3, "title": "Sample 1212 Report", "price":"12000", "writer":"김 아무개","write_date":"2025-01-25","book_img_path":random.choice(book_img)},
+                {"book_id": 4, "title": "Sample 1313 Report", "price":"18500", "writer":"토마스","write_date":"2025-01-25","book_img_path":random.choice(book_img)},
+                {"book_id": 5, "title": "Sample 13 Report", "price":"19000", "writer":"123","write_date":"2025-01-15","book_img_path":random.choice(book_img)},
+                {"book_id": 6, "title": "Sample 124 Report", "price":"17000", "writer":"ㅁㄴㅇ","write_date":"2025-01-15","book_img_path":random.choice(book_img)},
+                {"book_id": 7, "title": "Sample asd Report", "price":"20000", "writer":"ㄹ호","write_date":"2025-01-20","book_img_path":random.choice(book_img)},
+                {"book_id": 8, "title": "Sample asd22 Report", "price":"10000", "writer":"윌리엄","write_date":"2025-01-20","book_img_path":random.choice(book_img)},
+                {"book_id": 9, "title": "Sample 333 Report", "price":"15000", "writer":"4ㄱ5ㅅ","write_date":"2025-01-30","book_img_path":random.choice(book_img)},
+                {"book_id": 10, "title": "Sample 63 Report", "price":"20000", "writer":"작자미상","write_date":"2025-01-30","book_img_path":random.choice(book_img)}]
 
 filtered = []
 
@@ -59,9 +59,16 @@ async def find_pw():
 
 # Endpoint: /view/booklist
 @app.post("/view/booklist")
-async def view_report(params: Optional[SearchPrams] = None ):
+async def view_report():
     global filtered 
     filtered = create_book_list()
+
+    return {"book_list":filtered}
+
+# Endpoint: /view/booklist
+@app.post("/view/search")
+async def view_report(params: Optional[SearchPrams] = None ):
+    global filtered 
 
     if params:
         print(params)
@@ -69,8 +76,8 @@ async def view_report(params: Optional[SearchPrams] = None ):
             filtered = [book for book in filtered if params.keyword in book["title"]]
         if params.sdate:
             filtered = [book for book in filtered if params.sdate < book["write_date"] and params.edate > book["write_date"]]
-        if params.theme:
-            filtered
+        if len(filtered) == 0:
+            filtered = create_book_list()
     return {"book_list":filtered}
 
 # Endpoint: /view/bookdetail/{id}

@@ -78,6 +78,7 @@
             app:layout_constraintHeight_percent="0.078"
             android:text="결제"
             android:textSize="20dp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSecondary"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
