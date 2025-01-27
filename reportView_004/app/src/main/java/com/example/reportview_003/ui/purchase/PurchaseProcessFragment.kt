@@ -76,7 +76,16 @@ class PurchaseProcessFragment: Fragment() {
                             navigationView.setCheckedItem(R.id.userPurchaseFragment)
                         }
                     } else{
-                        Toast.makeText(requireContext(), "구매에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "포인트가 부족합니다.", Toast.LENGTH_SHORT).show()
+                        // 이전 프래그먼트 제거 (purchaseFragment)
+                        findNavController().popBackStack(R.id.purchaseFragment, true)
+
+                        // userPurchaseFragment로 이동
+                        findNavController().navigate(R.id.chargePointFragment)
+                        // 네비게이션 메뉴의 상태를 userPurchaseFragment로 설정
+                        (activity as? ActiveMain)?.apply {
+                            navigationView.setCheckedItem(0)
+                        }
                     }
                 }
             }

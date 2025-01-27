@@ -9,10 +9,15 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavController
 import com.bumptech.glide.Glide
+import com.example.reportview_003.App
 import com.example.reportview_003.R
+import com.example.reportview_003.api.PurchaseAPI
+import com.example.reportview_003.model.purchase.CartGetItemRequest
 import com.example.reportview_003.model.view.ViewbooklistResponse
+import com.example.reportview_003.ui.purchase.action.InsertCartItem
 import com.example.reportview_003.utils.SessionManager
 
 /*
@@ -75,7 +80,27 @@ class BuildBooklist(
                 navController.navigate(R.id.listFragment) // 루트 페이지로 이동
             } else {
                 // 장바구니 동작 구현
-                Toast.makeText(context, "장바구니에 담겼습니다.", Toast.LENGTH_SHORT).show()
+                val bookId = when (val id = item["book_id"]) {
+                    is Int -> id // 이미 Int인 경우
+                    is Double -> id.toInt() // Double인 경우 Int로 변환
+                    is String -> id.toIntOrNull() ?: -1 // String인 경우 안전하게 Int로 변환
+                    else -> -1 // 잘못된 형식인 경우
+                }
+                val userId = SessionManager.getUserID(context).toString()
+                val cartGetItemRequest = CartGetItemRequest(
+                    user_id = userId,
+                    book_id = bookId
+                )
+                val app = context.applicationContext as App
+                val purchaseAPI = app.retrofit.create(PurchaseAPI::class.java)
+                val insertCartItem = InsertCartItem(context, purchaseAPI)
+                insertCartItem.insertCartItem(cartGetItemRequest) { response ->
+                    if (response != null) {
+                        Toast.makeText(context, "장바구니에 담겼습니다.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "장바구니 담기 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 

@@ -81,13 +81,24 @@ class PurchaseFragment : Fragment() {
         return view
     }
 
+    private fun updateTotalPrice() {
+        totalPrice = cartList?.sumOf {
+            val priceString = it["price"] as? String
+            priceString?.toIntOrNull() ?: 0
+        } ?: 0
+        purchaseCartTotalprice.text = "합계 : $totalPrice"
+    }
+
     private fun updateUI(cartResponse: CartResponse) {
-        purchaseCartTotalprice.text = "합계 : ${totalPrice}"
+        purchaseCartTotalprice.text = "합계 : $totalPrice"
 
         val app = requireActivity().application as App
         val purchaseAPI = app.retrofit.create(PurchaseAPI::class.java)
 
-        val adapter = PurchaseCartAdapter(requireContext(), cartResponse.book_list, purchaseAPI)
+        val adapter = PurchaseCartAdapter(requireContext(), cartResponse, purchaseAPI) { updatedCart ->
+            cartList = updatedCart
+            updateTotalPrice()
+        }
         purchaseCartList.adapter = adapter
     }
 }

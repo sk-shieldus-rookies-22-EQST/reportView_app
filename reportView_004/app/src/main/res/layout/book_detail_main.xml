@@ -51,6 +51,8 @@
                     android:layout_margin="5dp"
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:text="장바구니"
+                    android:textStyle="bold"
                     android:layout_height="match_parent"/>
 
                 <Button
@@ -58,6 +60,8 @@
                     android:layout_margin="5dp"
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:text="결제"
+                    android:textStyle="bold"
                     android:layout_height="match_parent"/>
 
             </LinearLayout>

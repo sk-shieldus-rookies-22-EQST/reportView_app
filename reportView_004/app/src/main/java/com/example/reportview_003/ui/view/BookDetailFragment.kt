@@ -8,13 +8,19 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.reportview_003.App
 import com.example.reportview_003.R
+import com.example.reportview_003.api.PurchaseAPI
 import com.example.reportview_003.api.ViewAPI
+import com.example.reportview_003.model.purchase.CartGetItemRequest
 import com.example.reportview_003.model.view.ViewbookdetailResponse
+import com.example.reportview_003.ui.purchase.action.InsertCartItem
 import com.example.reportview_003.ui.view.action.GetBookDetail
+import com.example.reportview_003.utils.SessionManager
 
 class BookDetailFragment: Fragment() {
 
@@ -24,8 +30,10 @@ class BookDetailFragment: Fragment() {
     private lateinit var bookDetailWriter : TextView
     private lateinit var bookDetailContent : TextView
     private lateinit var bookDetailCart : Button
+    private lateinit var bookDetailBuy : Button
 
     private var bookDetailData : MutableMap<String,Any> = mutableMapOf()
+    private var bookId : Int = -1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,14 +45,17 @@ class BookDetailFragment: Fragment() {
         val app = requireActivity().application as App
         val viewAPI = app.retrofit.create(ViewAPI::class.java)
 
+        val navController = findNavController()
+
         bookDetailImage = view.findViewById(R.id.book_detail_image)
         bookDetailTitle = view.findViewById(R.id.book_detail_title)
         bookDetailPrice = view.findViewById(R.id.book_detail_price)
         bookDetailWriter = view.findViewById(R.id.book_detail_writer)
         bookDetailCart = view.findViewById(R.id.book_detail_cart)
+        bookDetailBuy = view.findViewById(R.id.book_detail_buy)
         bookDetailContent = view.findViewById(R.id.book_detail_content)
 
-        val bookId = arguments?.getInt("book_id") ?: -1
+        bookId = arguments?.getInt("book_id") ?: -1
 
         val getBookDetail = GetBookDetail(requireContext(),viewAPI)
         getBookDetail.viewbookdetail(bookId) { response ->
@@ -56,6 +67,29 @@ class BookDetailFragment: Fragment() {
                 }
             } else {
                 Log.e("BookDetailFragment", "Fragment is not attached to a context while loading data.")
+            }
+        }
+
+        bookDetailCart.setOnClickListener {
+            // 장바구니 동작 구현
+            if (!SessionManager.isLoggedIn(requireContext())) {
+                Toast.makeText(context, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                navController.navigate(R.id.listFragment) // 루트 페이지로 이동
+            } else {
+                // 장바구니 동작 구현
+                insertCart()
+            }
+        }
+
+        bookDetailBuy.setOnClickListener {
+            // 결제 동작 구현
+            if (!SessionManager.isLoggedIn(requireContext())) {
+                Toast.makeText(requireContext(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                navController.navigate(R.id.listFragment) // 루트 페이지로 이동
+            } else {
+                // 장바구니 동작 구현
+                insertCart()
+                navController.navigate(R.id.action_bookDetailFragment_to_purchaseFragment)
             }
         }
 
@@ -71,5 +105,21 @@ class BookDetailFragment: Fragment() {
         Glide.with(requireContext())
             .load(viewbookdetailResponse.book_img_path)
             .into(bookDetailImage)
+    }
+
+    private fun insertCart() {
+        val userId = SessionManager.getUserID(requireContext()).toString()
+        val cartGetItemRequest = CartGetItemRequest(
+            user_id = userId,
+            book_id = bookId
+        )
+        val app = requireContext().applicationContext as App
+        val purchaseAPI = app.retrofit.create(PurchaseAPI::class.java)
+        val insertCartItem = InsertCartItem(requireContext(), purchaseAPI)
+        insertCartItem.insertCartItem(cartGetItemRequest) { response ->
+            if (response != null) {
+                true
+            }
+        }
     }
 }

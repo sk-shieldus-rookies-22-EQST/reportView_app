@@ -44,7 +44,11 @@
         android:id="@+id/bookDetailFragment"
         android:name="com.example.reportview_003.ui.view.BookDetailFragment"
         android:label=""
-        tools:layout="@layout/book_detail_main" />
+        tools:layout="@layout/book_detail_main">
+        <action
+            android:id="@+id/action_bookDetailFragment_to_purchaseFragment"
+            app:destination="@id/purchaseFragment" />
+    </fragment>
 
     <!-- Board Fragment -->
     <fragment
@@ -152,4 +156,14 @@
         android:name="com.example.reportview_003.ui.board.QnaModifyFragment"
         android:label="글 수정"
         tools:layout="@layout/qna_write_main" />
+
+    <fragment
+        android:id="@+id/chargePointFragment"
+        android:name="com.example.reportview_003.ui.purchase.PointFragment"
+        android:label="포인트 충전"
+        tools:layout="@layout/charge_point" >
+        <action
+            android:id="@+id/action_chargePointFragment_to_purchaseFragment"
+            app:destination="@id/purchaseFragment" />
+    </fragment>
 </navigation>

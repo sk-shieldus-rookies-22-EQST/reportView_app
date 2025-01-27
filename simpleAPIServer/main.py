@@ -149,6 +149,16 @@ async def purchase_cart():
             }
 
 # Endpoint: /purchase/proess
+@app.post("/purchase/delete")
+async def purchase_delete():
+    return {"status":True}
+
+# Endpoint: /purchase/item
+@app.post("/purchase/item")
+async def purchase_item():
+    return {"status":True}
+
+# Endpoint: /purchase/proess
 @app.post("/purchase/process")
 async def purchase_proccess():
     return {"status":True}
