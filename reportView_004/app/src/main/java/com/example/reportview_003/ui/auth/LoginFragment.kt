@@ -6,12 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.reportview_003.ActiveMain
 import com.example.reportview_003.App
 import com.example.reportview_003.R
 import com.example.reportview_003.api.AuthAPI
 import com.example.reportview_003.ui.auth.action.*
+import com.example.reportview_003.utils.SessionManager
 
 class LoginFragment : Fragment(), View.OnClickListener {
 
@@ -57,7 +60,13 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
         when (v?.id) {
             R.id.login_bt -> {
-                LoginAction.doLogin(requireContext(), inputID, inputPW, authAPI, navController)
+                LoginAction.doLogin(requireContext(), inputID, inputPW, authAPI, navController) { success, error ->
+                    if (success) {
+                        SessionManager.saveUserID(requireContext(), inputID.text.toString())
+                    } else {
+                        Toast.makeText(context, "로그인 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
 
             }
             R.id.find_id -> {

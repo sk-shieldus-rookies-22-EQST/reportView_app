@@ -71,7 +71,11 @@ class EachBoardFragment : Fragment() {
                     navigationView.setCheckedItem(R.id.listFragment)
                 }
                 return@setOnClickListener
+            } else if (qnaUser.text != SessionManager.getUserID(requireContext())) {
+                Toast.makeText(requireContext(), "작성자만 삭제할 수 있습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
             val boardDeleteData = BoardDeleteRequest(
                 board_id = boardId,
                 user_id = SessionManager.getUserID(requireContext()).toString()
@@ -87,6 +91,21 @@ class EachBoardFragment : Fragment() {
         }
 
         modifyButton.setOnClickListener {
+            // 로그인 상태에 따라 페이지 이동
+            if (!SessionManager.isLoggedIn(requireContext())) {
+                Toast.makeText(requireContext(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+
+                findNavController().navigate(R.id.listFragment) // 루트 페이지로 이동
+
+                (activity as? ActiveMain)?.apply {
+                    navigationView.setCheckedItem(R.id.listFragment)
+                }
+                return@setOnClickListener
+            } else if (qnaUser.text != SessionManager.getUserID(requireContext())) {
+                Toast.makeText(requireContext(), "작성자만 수정할 수 있습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val bundle = Bundle().apply {
                 putInt("board_id", boardId)
                 putString("title", qnaTitle.text.toString())
@@ -116,9 +135,9 @@ class EachBoardFragment : Fragment() {
     // 서버로부터 받은 응답값으로 UI를 업데이트하는 함수
     private fun updateUI(boardQnAResponse: BoardQnAResponse) {
         qnaTitle.text = boardQnAResponse.title
-        qnaId.text = "ID: ${boardQnAResponse.board_id}"
-        qnaUser.text = "작성자: ${boardQnAResponse.user_id}"
-        qnaDate.text = "날짜: ${boardQnAResponse.date}"
+        qnaId.text = "${boardQnAResponse.board_id}"
+        qnaUser.text = "${boardQnAResponse.user_id}"
+        qnaDate.text = "${boardQnAResponse.date}"
         qnaInputText.text = boardQnAResponse.content
         qnaCommentText.text = boardQnAResponse.comment
     }

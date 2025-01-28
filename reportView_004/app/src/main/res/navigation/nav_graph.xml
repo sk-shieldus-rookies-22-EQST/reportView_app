@@ -15,7 +15,7 @@
         android:label="Login"
         tools:layout="@layout/login_main">
         <action
-            android:id="@+id/action_login_to_list"
+            android:id="@+id/action_loginFragment_to_listFragment"
             app:destination="@id/listFragment" />
         <action
             android:id="@+id/action_loginFragment_to_findIdFragment"

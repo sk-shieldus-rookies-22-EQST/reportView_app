@@ -21,7 +21,7 @@ retrofit = Retrofit.Builder()
 
 -------------------------------------------------------------
 network_security_config.xml
-# 테스트용 서버 동작시키는 주소소
+# 테스트용 서버 동작시키는 주소
 <domain includeSubdomains="true">[변경]</domain>
 
 ```

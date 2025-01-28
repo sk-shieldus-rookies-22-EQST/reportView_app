@@ -10,6 +10,10 @@ import com.example.reportview_003.model.auth.LoginRequest
 import com.example.reportview_003.repository.AuthRepository
 import com.example.reportview_003.utils.SessionManager
 import com.example.reportview_003.ActiveMain
+import com.example.reportview_003.model.auth.LoginResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginAction {
 
@@ -18,36 +22,41 @@ class LoginAction {
         idField: EditText,
         pwField: EditText,
         authAPI: AuthAPI,
-        navController: NavController
+        navController: NavController,
+        callback: (Boolean, String?) -> Unit
     ) {
         val id = idField.text.toString()
         val pw = pwField.text.toString()
 
-        val loginData = LoginRequest(
+        if (id.isBlank() || pw.isBlank()) {
+            Toast.makeText(context, "ID와 PW를 입력하세요.", Toast.LENGTH_SHORT).show()
+            callback(false, null)
+            return
+        }
+        val loginData = LoginRequest (
             userid = id,
             passwd = pw
         )
 
-        val authRepository = AuthRepository(authAPI)
-
-        authRepository.login(loginData) { response, error ->
-            if (response != null && response.status) {
-                Toast.makeText(context, "Welcome ${id}", Toast.LENGTH_SHORT).show()
-
-                // Save login session
-                SessionManager.saveLoginSession(context, true.toString())
-                SessionManager.saveUserID(context, id) // Save user ID
-
-                // Update the navigation menu
-                if (context is ActiveMain) {
-                    context.updateNavigationMenu()
+        authAPI.login(loginData).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                if (response.isSuccessful && response.body() != null) {
+                    SessionManager.saveLoginSession(context, response.body()!!.token)
+                    callback(true, id)
+                    navController.navigate(R.id.action_loginFragment_to_listFragment)
+                    (context as ActiveMain).updateNavigationMenu()
+                } else {
+                    Toast.makeText(context, "로그인 실패", Toast.LENGTH_SHORT).show()
+                    callback(false, null)
                 }
-
-                // Navigate to ListFragment or other desired screen
-                navController.navigate(R.id.action_login_to_list)
-            } else {
-                Toast.makeText(context, "Login failed: ${error?.message ?: "Unknown error"}", Toast.LENGTH_SHORT).show()
             }
-        }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                t.printStackTrace()
+                Toast.makeText(context, "로그인 실패: ${t.message}", Toast.LENGTH_SHORT).show()
+                callback(false, null)
+            }
+        })
+
     }
 }
