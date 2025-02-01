@@ -19,7 +19,7 @@ class WriteQnA(
         val request = BoardWriteRequest(
             title = title,
             content = content,
-            userID = userId
+            writer = userId
         )
 
         boardRepository.writeQnA(request) { response, error ->

@@ -70,7 +70,7 @@ class QnaModifyFragment : Fragment() {
                 val updateQnA = UpdateQnA(requireContext(), boardAPI)
                 val boardModifyResponse = BoardModifyRequest(
                     board_id = qnaId,
-                    user_id = SessionManager.getUserID(requireContext()).toString(),
+                    writer = SessionManager.getUserID(requireContext()).toString(),
                     title = title,
                     content = content
                 )

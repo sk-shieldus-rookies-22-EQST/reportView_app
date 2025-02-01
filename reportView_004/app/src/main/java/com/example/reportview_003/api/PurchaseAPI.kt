@@ -8,6 +8,7 @@ import retrofit2.http.POST
 
 interface PurchaseAPI {
 
+    // 서버 측 API 확인 필요
     @POST("purchase/cart")
     fun purchaseCart(@Body request: CartRequest): Call<CartResponse>
 

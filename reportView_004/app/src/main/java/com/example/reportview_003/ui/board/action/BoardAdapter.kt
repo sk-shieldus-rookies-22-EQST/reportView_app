@@ -30,7 +30,7 @@ class BoardAdapter(
 
         val item = getItem(position)
         val title = item["title"] as? String ?: "No Title"
-        val author = item["author"] as? String ?: "Anonymous"
+        val author = item["user_id"] as? String ?: "Anonymous"
 
         titleTextView.text = title
         authorTextView.text = author

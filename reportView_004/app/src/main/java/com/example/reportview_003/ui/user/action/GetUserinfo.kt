@@ -13,7 +13,7 @@ class GetUserinfo (
         val userText = UserRepository(userAPI)
 
         val userinfoData = UserinfoRequest(
-            userid = userid
+            user_id = userid
         )
 
         userText.userInfo(userinfoData) { response, error ->

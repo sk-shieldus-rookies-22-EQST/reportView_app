@@ -12,6 +12,6 @@ interface AuthAPI {
     @POST("auth/find/id")
     fun findID(@Body request: FindIDRequest): Call<FindIDResponse>
 
-    @POST("auth/find/pw")
+    @POST("auth/modify/pw")
     fun findPW(@Body request: FindPWRequest): Call<FindPWResponse>
 }

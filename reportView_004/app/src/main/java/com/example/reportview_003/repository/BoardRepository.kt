@@ -1,6 +1,7 @@
 package com.example.reportview_003.repository
 
 import com.example.reportview_003.api.BoardAPI
+import com.example.reportview_003.model.StatusResponse
 import com.example.reportview_003.model.board.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -56,9 +57,9 @@ class BoardRepository(private val api: BoardAPI) {
         })
     }
 
-    fun writeComment(boardCommentRequest:BoardCommentRequest , callback: (BoardCommentResponse?, Throwable?) -> Unit) {
-        api.writeComment(boardCommentRequest).enqueue(object : Callback<BoardCommentResponse>{
-            override fun onResponse(call: Call<BoardCommentResponse>, response: Response<BoardCommentResponse>) {
+    fun writeComment(boardCommentRequest:BoardCommentRequest , callback: (StatusResponse?, Throwable?) -> Unit) {
+        api.writeComment(boardCommentRequest).enqueue(object : Callback<StatusResponse>{
+            override fun onResponse(call: Call<StatusResponse>, response: Response<StatusResponse>) {
                 if (response.isSuccessful) {
                     callback(response.body(), null)
                 } else {
@@ -66,7 +67,7 @@ class BoardRepository(private val api: BoardAPI) {
                 }
             }
 
-            override fun onFailure(call: Call<BoardCommentResponse>, t: Throwable) {
+            override fun onFailure(call: Call<StatusResponse>, t: Throwable) {
                 callback(null, t)
             }
         })

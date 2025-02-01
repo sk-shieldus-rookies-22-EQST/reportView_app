@@ -18,8 +18,11 @@ import com.example.reportview_003.R
 import com.example.reportview_003.api.ViewAPI
 import com.example.reportview_003.model.view.ViewbooklistResponse
 import com.example.reportview_003.model.view.ViewbooksearchRequest
-import com.example.reportview_003.ui.view.action.*
+import com.example.reportview_003.ui.view.action.BuildBooklist
+import com.example.reportview_003.ui.view.action.GetList
+import com.example.reportview_003.ui.view.action.ViewSearch
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.Calendar
 
 /*
@@ -29,15 +32,19 @@ import java.util.Calendar
 
 class ListFragment : Fragment() {
 
-    private lateinit var itemList : ListView
-    private lateinit var searchReport : EditText
-    private lateinit var searchBtn : ImageView
-    private lateinit var filterBtn : ImageView
-    private lateinit var searchSdate : TextView
-    private lateinit var searchEdate : TextView
+    private lateinit var itemList: ListView
+    private lateinit var searchReport: EditText
+    private lateinit var searchBtn: ImageView
+    private lateinit var filterBtn: ImageView
+    private lateinit var searchSdate: TextView
+    private lateinit var searchEdate: TextView
 
-    private lateinit var resData : ViewbooklistResponse
+    private lateinit var resData: ViewbooklistResponse
+    // 서버 전송용 날짜를 저장할 변수 (LocalDateTime 타입)
+    private var sFilterDate: LocalDateTime? = null
+    private var eFilterDate: LocalDateTime? = null
 
+    // UI에 표시할 형식 ("yyyy-MM-dd")
     val formatter = SimpleDateFormat("yyyy-MM-dd")
 
     private fun updateUI(data: ViewbooklistResponse) {
@@ -53,7 +60,7 @@ class ListFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
-        container:ViewGroup?,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.list_main, container, false)
@@ -68,7 +75,7 @@ class ListFragment : Fragment() {
         searchEdate = view.findViewById(R.id.search_edate)
         searchReport = view.findViewById(R.id.search_report)
 
-        val getList = GetList(requireContext(),viewAPI)
+        val getList = GetList(requireContext(), viewAPI)
         getList.loadBookList { data ->
             if (isAdded) { // Fragment가 Context에 연결된 상태에서만 처리
                 resData = data
@@ -80,19 +87,23 @@ class ListFragment : Fragment() {
             }
         }
 
-        // 검색버튼 클릭시
+        // 검색버튼 클릭 시
         searchBtn.setOnClickListener {
-            // 서버에 search 요청 전송
-            val viewSearchRequest = ViewbooksearchRequest(
-                keyword = searchReport.text.toString()as? String ?: null,
-                sdate = searchSdate.text.toString() as? String ?: null,
-                edate = searchEdate.text.toString() as? String ?: null
-            )
-            if ((viewSearchRequest.sdate == null) xor (viewSearchRequest.edate == null)) {
+            // DatePicker로 선택된 날짜 값은 이미 sFilterDate와 eFilterDate에 저장되어 있습니다.
+            // 텍스트뷰의 값은 UI용으로만 사용되므로, 여기서는 이를 파싱할 필요가 없습니다.
+            if ( (sFilterDate == null) xor (eFilterDate == null) ) {
                 Toast.makeText(requireContext(), "날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val viewSearch = ViewSearch(requireContext(),viewAPI)
+
+            // 서버에 보낼 요청 객체 생성 (ViewbooksearchRequest의 sdate, edate 타입은 LocalDateTime? 여야 함)
+            val viewSearchRequest = ViewbooksearchRequest(
+                keyword = searchReport.text.toString(),
+                sdate = sFilterDate,
+                edate = eFilterDate
+            )
+
+            val viewSearch = ViewSearch(requireContext(), viewAPI)
             viewSearch.search(viewSearchRequest) { response, error ->
                 if (response != null) {
                     resData = ViewbooklistResponse(response.book_list)
@@ -104,8 +115,7 @@ class ListFragment : Fragment() {
         }
 
         filterBtn.setOnClickListener {
-            // 날짜 선택 리스트 출력
-            // 시작 날짜 ~ 끝 날짜
+            // 날짜 선택 리스트 출력: 시작 날짜 ~ 끝 날짜
             showDatePicker()
         }
 
@@ -122,7 +132,12 @@ class ListFragment : Fragment() {
             { _, year, month, dayOfMonth ->
                 val startCalendar = Calendar.getInstance()
                 startCalendar.set(year, month, dayOfMonth)
+                // UI에 표시할 형식으로 포맷 (yyyy-MM-dd)
                 searchSdate.text = formatter.format(startCalendar.time)
+                // 서버 전송용 LocalDateTime으로 변환
+                sFilterDate = startCalendar.time.toInstant()
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toLocalDateTime()
 
                 // 끝 날짜 선택
                 DatePickerDialog(
@@ -132,7 +147,9 @@ class ListFragment : Fragment() {
                         val endCalendar = Calendar.getInstance()
                         endCalendar.set(endYear, endMonth, endDayOfMonth)
                         searchEdate.text = formatter.format(endCalendar.time)
-
+                        eFilterDate = endCalendar.time.toInstant()
+                            .atZone(java.time.ZoneId.systemDefault())
+                            .toLocalDateTime()
                     },
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH),
@@ -145,6 +162,4 @@ class ListFragment : Fragment() {
             calendar.get(Calendar.DAY_OF_MONTH)
         ).show()
     }
-
-
 }

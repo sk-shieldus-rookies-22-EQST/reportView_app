@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -14,23 +16,36 @@ import com.example.reportview_003.ActiveMain
 import com.example.reportview_003.App
 import com.example.reportview_003.R
 import com.example.reportview_003.api.BoardAPI
+import com.example.reportview_003.model.board.BoardCommentRequest
 import com.example.reportview_003.model.board.BoardDeleteRequest
 import com.example.reportview_003.model.board.BoardQnAResponse
+import com.example.reportview_003.repository.BoardRepository
+import com.example.reportview_003.ui.board.action.CommentAdapter
 import com.example.reportview_003.ui.board.action.DeleteQnA
 import com.example.reportview_003.ui.board.action.GetEachBoard
 import com.example.reportview_003.utils.SessionManager
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class EachBoardFragment : Fragment() {
 
-    private lateinit var qnaTitle: TextView
-    private lateinit var qnaId: TextView
-    private lateinit var qnaUser: TextView
-    private lateinit var qnaDate: TextView
-    private lateinit var qnaInputText: TextView
-    private lateinit var qnaCommentText: TextView
-    private lateinit var deleteButton: Button
-    private lateinit var modifyButton: Button
-    private lateinit var listButton: Button
+    private lateinit var qnaTitle: TextView // 제목
+    private lateinit var qnaId: TextView // 게시글 번호
+    private lateinit var qnaFileDownload: ImageView // 파일 다운로드 버튼
+    private lateinit var qnaUser: TextView // 작성자
+    private lateinit var qnaDate: TextView // 작성일
+    private lateinit var qnaInputText: TextView // 게시글 내용
+    private lateinit var qnaCommentList: ListView // 댓글 내용
+    private lateinit var qnaCommentInput: TextView // 댓글 입력
+    private lateinit var qnaCommentButton: Button // 댓글 등록
+    private lateinit var deleteButton: Button // 삭제 버튼
+    private lateinit var modifyButton: Button // 수정 버튼
+    private lateinit var listButton: Button // 목록 버튼
+
+    // LocalDateTime 입력 포맷: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+    // 출력 포맷: "yyyy-MM-dd"
+    val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,16 +63,43 @@ class EachBoardFragment : Fragment() {
         qnaUser = view.findViewById(R.id.qna_user)
         qnaDate = view.findViewById(R.id.qna_date)
         qnaInputText = view.findViewById(R.id.qna_input_text)
-        qnaCommentText = view.findViewById(R.id.qna_comment)
+        qnaCommentList = view.findViewById(R.id.qna_comment)
         deleteButton = view.findViewById(R.id.qna_delete_button)
         modifyButton = view.findViewById(R.id.qna_edit_button)
         listButton = view.findViewById(R.id.qna_list_button)
+        qnaFileDownload = view.findViewById(R.id.qna_file_download)
+        qnaCommentInput = view.findViewById(R.id.qna_comment_input)
+        qnaCommentButton = view.findViewById(R.id.qna_comment_button)
 
         val boardId = arguments?.getInt("board_id",-1) ?: -1
         if (boardId != -1) {
             loadBoardDetails(boardAPI, boardId)
         } else {
             Log.e("EachBoardFragment", "Invalid board ID")
+        }
+
+        qnaFileDownload.setOnClickListener{
+            // 파일 다운로드 기능 추가
+        }
+
+        qnaCommentButton.setOnClickListener {
+            val boardCommentRequest = BoardCommentRequest(
+                qna_id = boardId,
+                writer = SessionManager.getUserID(requireContext()).toString(),
+                content = qnaCommentInput.text.toString()
+            )
+            // 댓글 등록 기능 추가
+            BoardRepository(boardAPI).writeComment(boardCommentRequest) { response, error ->
+                if (response != null) {
+                    if (response.status) {
+                        loadBoardDetails(boardAPI, boardId)
+                    } else {
+                        Toast.makeText(requireContext(), "댓글 등록에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "댓글 등록에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         deleteButton.setOnClickListener {
@@ -78,7 +120,7 @@ class EachBoardFragment : Fragment() {
 
             val boardDeleteData = BoardDeleteRequest(
                 board_id = boardId,
-                user_id = SessionManager.getUserID(requireContext()).toString()
+                writer = SessionManager.getUserID(requireContext()).toString()
             )
             val deleteQnA = DeleteQnA(requireContext(), boardAPI)
             deleteQnA.deleteQnA(boardDeleteData) { response ->
@@ -126,6 +168,9 @@ class EachBoardFragment : Fragment() {
         getEachBoard.getBoardDetails(boardId) { response ->
             if (response != null) {
                 updateUI(response)
+                // comment는 리스트 형태로 서버에서 응답 받으며 복수의 comment가 등록 될 수 있음
+                val adapter = CommentAdapter(requireContext(),response.comment)
+                qnaCommentList.adapter = adapter
             } else {
                 Log.e("EachBoardFragment", "Failed to load board details.")
             }
@@ -135,10 +180,10 @@ class EachBoardFragment : Fragment() {
     // 서버로부터 받은 응답값으로 UI를 업데이트하는 함수
     private fun updateUI(boardQnAResponse: BoardQnAResponse) {
         qnaTitle.text = boardQnAResponse.title
-        qnaId.text = "${boardQnAResponse.board_id}"
-        qnaUser.text = "${boardQnAResponse.user_id}"
-        qnaDate.text = "${boardQnAResponse.date}"
+        qnaId.text = boardQnAResponse.board_id.toString()
+        qnaUser.text = boardQnAResponse.writer
         qnaInputText.text = boardQnAResponse.content
-        qnaCommentText.text = boardQnAResponse.comment
+        val createdAtDateTime = LocalDateTime.parse(boardQnAResponse.created_at, inputFormatter)
+        qnaDate.text = createdAtDateTime.format(outputFormatter)
     }
 }

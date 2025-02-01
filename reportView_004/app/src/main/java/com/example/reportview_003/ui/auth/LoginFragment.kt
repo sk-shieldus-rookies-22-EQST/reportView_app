@@ -60,7 +60,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
         when (v?.id) {
             R.id.login_bt -> {
-                LoginAction.doLogin(requireContext(), inputID, inputPW, authAPI, navController) { success, error ->
+                LoginAction.doLogin(requireContext(), inputID, inputPW, authAPI, navController) { success ->
                     if (success) {
                         SessionManager.saveUserID(requireContext(), inputID.text.toString())
                     } else {

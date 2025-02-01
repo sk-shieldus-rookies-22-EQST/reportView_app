@@ -14,7 +14,7 @@ interface ViewAPI {
     fun viewsearch(@Body request: ViewbooksearchRequest): Call<ViewbooksearchResponse>
 
     @POST("view/bookdetail/{bookid}")
-    fun viewbookdetail(@Path("bookid") id: Int): Call<ViewbookdetailResponse>
+    fun viewbookdetail(@Path("bookid") book_id: Int): Call<ViewbookdetailResponse>
 
     @POST("view/book/viewer")
     fun viewbookviewer(@Body request: ViewbookviewerRequest): Call<ViewbookviewerResponse>

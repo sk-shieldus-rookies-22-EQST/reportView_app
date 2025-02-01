@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.reportview_003.App
@@ -43,8 +44,8 @@ class FindIDFragment : Fragment(), View.OnClickListener {
         val userEmail = findIDemail.text.toString()
 
         val findIDrequest = FindIDRequest(
-            phone = userPhone,
-            email = userEmail
+            user_phone = userPhone,
+            user_email = userEmail
         )
 
         val app = requireActivity().application as App
@@ -54,11 +55,15 @@ class FindIDFragment : Fragment(), View.OnClickListener {
         findIDaction.doFindid(findIDrequest) { data ->
             if (isAdded) {
                 if (data != null) {
-                    val navController = findNavController()
-                    val bundle = Bundle().apply {
-                        putString("data", data)
+                    if (data == "no_users") {
+                        Toast.makeText(requireContext(), "해당하는 회원이 없습니다.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        val navController = findNavController()
+                        val bundle = Bundle().apply {
+                            putString("data", data)
+                        }
+                        navController.navigate(R.id.action_findIDFragment_to_findPwFragment, bundle)
                     }
-                    navController.navigate(R.id.action_findIDFragment_to_findPwFragment, bundle)
                 } else {
                     Log.e("FindIDFragment", "Fragment is not attached to a context while loading data.")
                 }

@@ -47,7 +47,7 @@ class FindPWFragment: Fragment(), View.OnClickListener {
 
         val findPWRequest = FindPWRequest(
             user_id = userID,
-            user_new_pw = userPhone,
+            user_pw = userPhone,
         )
 
         val app = requireActivity().application as App

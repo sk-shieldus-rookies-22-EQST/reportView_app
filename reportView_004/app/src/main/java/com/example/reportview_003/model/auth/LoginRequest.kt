@@ -1,6 +1,6 @@
 package com.example.reportview_003.model.auth
 
 data class LoginRequest(
-    val userid: String,
-    val passwd: String
+    val user_id: String,
+    val user_pw: String
 )
