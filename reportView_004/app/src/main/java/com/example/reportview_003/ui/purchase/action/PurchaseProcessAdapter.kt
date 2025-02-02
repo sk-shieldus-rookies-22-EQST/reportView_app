@@ -8,7 +8,9 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import com.example.reportview_003.R
 import com.example.reportview_003.api.PurchaseAPI
+import java.text.NumberFormat
 import java.util.ArrayList
+import java.util.Locale
 
 class PurchaseProcessAdapter(
     private val context: Context,
@@ -29,8 +31,16 @@ class PurchaseProcessAdapter(
         val bookPrice = view.findViewById<TextView>(R.id.purchase_process_item_price)
 
         val item = getItem(position)
+
+        val price = when (val priceValue = item["price"]) {
+            is Int -> priceValue
+            is Double -> priceValue.toInt()
+            is String -> priceValue.toIntOrNull() ?: 0
+            else -> 0
+        }
+
         bookTitle.text = item["title"] as? String ?: "Unknown"
-        bookPrice.text = "₩ ${item["price"] as? String ?: "0"}"
+        bookPrice.text = "${NumberFormat.getNumberInstance(Locale.US).format(price as? Int ?: 0)} 원"
 
         return view
     }

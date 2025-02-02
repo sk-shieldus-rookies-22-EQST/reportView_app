@@ -25,8 +25,8 @@ class BoardRepository(private val api: BoardAPI) {
         })
     }
 
-    fun showQna(id: Int,callback: (BoardQnAResponse?, Throwable?) -> Unit) {
-        api.showQna(id).enqueue(object : Callback<BoardQnAResponse> {
+    fun showQna(id: Long,callback: (BoardQnAResponse?, Throwable?) -> Unit) {
+        api.showQna(id.toString()).enqueue(object : Callback<BoardQnAResponse> {
             override fun onResponse(call: Call<BoardQnAResponse>, response: Response<BoardQnAResponse>) {
                 if (response.isSuccessful) {
                     callback(response.body(), null)

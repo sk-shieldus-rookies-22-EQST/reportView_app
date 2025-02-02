@@ -33,7 +33,7 @@ class BookDetailFragment: Fragment() {
     private lateinit var bookDetailBuy : Button
 
     private var bookDetailData : MutableMap<String,Any> = mutableMapOf()
-    private var bookId : Int = -1
+    private var bookId : Long = -1L
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,7 +55,7 @@ class BookDetailFragment: Fragment() {
         bookDetailBuy = view.findViewById(R.id.book_detail_buy)
         bookDetailContent = view.findViewById(R.id.book_detail_content)
 
-        bookId = arguments?.getInt("book_id") ?: -1
+        bookId = arguments?.getLong("book_id") ?: -1
 
         val getBookDetail = GetBookDetail(requireContext(),viewAPI)
         getBookDetail.viewbookdetail(bookId) { response ->
@@ -100,7 +100,7 @@ class BookDetailFragment: Fragment() {
         bookDetailTitle.text = viewbookdetailResponse.title
         bookDetailWriter.text = viewbookdetailResponse.writer
         bookDetailPrice.text = "${viewbookdetailResponse.price} 원" // 가격 예시
-        bookDetailContent.text = viewbookdetailResponse.detail
+        bookDetailContent.text = viewbookdetailResponse.book_summary
         // bookDetailImage는 이미지 URL을 받아 로드하는 로직 필요 (예: Glide, Picasso 사용)
         Glide.with(requireContext())
             .load(viewbookdetailResponse.book_img_path)

@@ -18,13 +18,15 @@ import com.example.reportview_003.model.purchase.CartResponse
 import com.example.reportview_003.ui.purchase.action.GetPurchaseCart
 import com.example.reportview_003.ui.purchase.action.PurchaseCartAdapter
 import com.example.reportview_003.utils.SessionManager
+import java.text.NumberFormat
+import java.util.Locale
 
 class PurchaseFragment : Fragment() {
 
     private lateinit var purchaseCartList: ListView
     private lateinit var purchaseCartTotalprice: TextView
     private lateinit var purchaseCartButton: Button
-    private var cartId: Int = 0
+    private var cartId: Long = -1L
     private var cartList: MutableList<MutableMap<String, Any>>? = mutableListOf()
     private var totalPrice: Int = 0
 
@@ -52,15 +54,14 @@ class PurchaseFragment : Fragment() {
         getPurchaseCart.loadPurchaseCart(cartreq) { response ->
             if (isAdded) {
                 if (response != null){
-                    cartId = response.cart_id
-                    cartList = response.book_list
-                    totalPrice = response.book_list.sumOf {
-                        val priceString = it["price"] as? String
-                        priceString?.toIntOrNull() ?: 0
-                    }
+                    cartList = response.purchaseCartDtoList
+                    cartId = cartList?.firstOrNull()
+                        ?.takeIf { "cart_id" in it }
+                        ?.get("cart_id")
+                        ?.toString()
+                        ?.toLongOrNull() ?: -1L
 
                     updateUI(response)
-
 
                 } else {
                     Log.e("PurchaseFragment", "Fragment is not attached to a context while loading data.")
@@ -71,7 +72,7 @@ class PurchaseFragment : Fragment() {
         purchaseCartButton.setOnClickListener {
             // 불러온 값을 다음 단계로 전달
             val bundle = Bundle()
-            bundle.putInt("cart_id", cartId)
+            bundle.putLong("cart_id", cartId)
             bundle.putSerializable("cart_list", cartList as ArrayList<MutableMap<String, Any>>)
             bundle.putInt("total_price", totalPrice)
 
@@ -83,19 +84,22 @@ class PurchaseFragment : Fragment() {
 
     private fun updateTotalPrice() {
         totalPrice = cartList?.sumOf {
-            val priceString = it["price"] as? String
-            priceString?.toIntOrNull() ?: 0
+            when (val priceValue = it["price"]) {
+                is Int -> priceValue
+                is Double -> priceValue.toInt()
+                is String -> priceValue.toIntOrNull() ?: 0
+                else -> 0
+            }
         } ?: 0
-        purchaseCartTotalprice.text = "합계 : $totalPrice"
+        purchaseCartTotalprice.text = "합계 : ${NumberFormat.getNumberInstance(Locale.US).format(totalPrice)} 원"
     }
 
+
+
     private fun updateUI(cartResponse: CartResponse) {
-        purchaseCartTotalprice.text = "합계 : $totalPrice"
+        updateTotalPrice()
 
-        val app = requireActivity().application as App
-        val purchaseAPI = app.retrofit.create(PurchaseAPI::class.java)
-
-        val adapter = PurchaseCartAdapter(requireContext(), cartResponse, purchaseAPI) { updatedCart ->
+        val adapter = PurchaseCartAdapter(requireContext(), cartResponse) { updatedCart ->
             cartList = updatedCart
             updateTotalPrice()
         }

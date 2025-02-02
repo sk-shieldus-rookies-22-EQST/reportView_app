@@ -1,6 +1,9 @@
 package com.example.reportview_003.repository
 
 import com.example.reportview_003.api.UserAPI
+import com.example.reportview_003.model.StatusResponse
+import com.example.reportview_003.model.purchase.UserpointRequest
+import com.example.reportview_003.model.purchase.UserpointResponse
 import com.example.reportview_003.model.user.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,6 +27,24 @@ class UserRepository(private val api: UserAPI) {
         })
     }
 
+    fun userUpdate(userUpdateRequest: UserupdateRequest, callback: (StatusResponse?, Throwable?) -> Unit) {
+        api.userUpdate(userUpdateRequest).enqueue(object : Callback<StatusResponse> {
+            override fun onResponse(
+                call: Call<StatusResponse>,
+                response: Response<StatusResponse>
+            ) {
+                if (response.isSuccessful) {
+                    callback(response.body(), null)
+                } else {
+                    callback(null, Throwable("failed"))
+                }
+            }
+            override fun onFailure(call: Call<StatusResponse>, t: Throwable) {
+                callback(null, t)
+            }
+        })
+    }
+
     fun userBooklist(userbooklistRequest:UserbooklistRequest, callback: (UserbooklistResponse?, Throwable?) -> Unit) {
         api.userBooklist(userbooklistRequest).enqueue(object : Callback<UserbooklistResponse>{
             override fun onResponse(call: Call<UserbooklistResponse>, response: Response<UserbooklistResponse>) {
@@ -39,6 +60,8 @@ class UserRepository(private val api: UserAPI) {
             }
         })
     }
+
+
 
     fun userPurchase(userpurchaseRequest:UserpurchaseRequest, callback: (UserpurchaseResponse?, Throwable?) -> Unit) {
         api.userPurchase(userpurchaseRequest).enqueue(object : Callback<UserpurchaseResponse>{

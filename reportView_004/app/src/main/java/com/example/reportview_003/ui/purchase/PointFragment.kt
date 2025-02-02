@@ -38,14 +38,14 @@ class PointFragment: Fragment() {
 
         val chargePointRequest = ChargePointRequest(
             user_id = SessionManager.getUserID(requireContext()).toString(),
-            point = pointView.text.toString().toInt()
+            charge_point = pointView.text.toString().toInt()
         )
 
         pointButton.setOnClickListener {
             val chargePointRepository = PurchaseRepository(purchaseApi)
             chargePointRepository.chargePoint(chargePointRequest) { response, error ->
                 if (response != null) {
-                    if (response.status){
+                    if (response.user_point > 0){
                         // 이전 프래그먼트 제거 (purchaseFragment)
                         findNavController().popBackStack(R.id.chargePointFragment, true)
 

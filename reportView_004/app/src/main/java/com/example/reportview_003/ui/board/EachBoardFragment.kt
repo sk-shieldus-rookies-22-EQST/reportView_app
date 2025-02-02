@@ -72,12 +72,8 @@ class EachBoardFragment : Fragment() {
         qnaCommentInput = view.findViewById(R.id.qna_comment_input)
         qnaCommentButton = view.findViewById(R.id.qna_comment_button)
 
-        val boardId = arguments?.getInt("qna_id",-1) ?: -1
-        if (boardId != -1) {
-            loadBoardDetails(boardAPI, boardId)
-        } else {
-            Log.e("EachBoardFragment", "Invalid board ID")
-        }
+        val boardId = arguments?.getLong("qna_id",-1) ?: -1
+        loadBoardDetails(boardAPI, boardId)
 
         qnaFileDownload.setOnClickListener{
             // 파일 다운로드 기능 추가
@@ -120,7 +116,7 @@ class EachBoardFragment : Fragment() {
             }
 
             val boardDeleteData = BoardDeleteRequest(
-                board_id = boardId,
+                qna_id = boardId,
                 writer = SessionManager.getUserID(requireContext()).toString()
             )
             val deleteQnA = DeleteQnA(requireContext(), boardAPI)
@@ -150,7 +146,7 @@ class EachBoardFragment : Fragment() {
             }
 
             val bundle = Bundle().apply {
-                putInt("qna_id", boardId)
+                putLong("qna_id", boardId)
                 putString("title", qnaTitle.text.toString())
                 putString("content", qnaInputText.text.toString())
             }
@@ -164,7 +160,7 @@ class EachBoardFragment : Fragment() {
         return view
     }
 
-    private fun loadBoardDetails(boardAPI: BoardAPI, boardId: Int) {
+    private fun loadBoardDetails(boardAPI: BoardAPI, boardId: Long) {
         val getEachBoard = GetEachBoard(requireContext(), boardAPI)
         getEachBoard.getBoardDetails(boardId) { response ->
             if (response != null) {
@@ -181,7 +177,7 @@ class EachBoardFragment : Fragment() {
     // 서버로부터 받은 응답값으로 UI를 업데이트하는 함수
     private fun updateUI(boardQnAResponse: BoardQnAResponse) {
         qnaTitle.text = boardQnAResponse.title
-        qnaId.text = boardQnAResponse.board_id.toString()
+        qnaId.text = boardQnAResponse.qna_id.toString()
         qnaUser.text = boardQnAResponse.writer
         qnaInputText.text = boardQnAResponse.content
         val createdAt = boardQnAResponse.created_at

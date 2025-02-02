@@ -8,16 +8,15 @@ import retrofit2.http.POST
 
 interface UserAPI {
 
-    @POST("user/info")
+    @POST("api/user/info")
     fun userInfo(@Body request: UserinfoRequest): Call<UserinfoResponse>
 
-    @POST("user/update")
+    @POST("api/user/update")
     fun userUpdate(@Body request: UserupdateRequest): Call<StatusResponse>
 
-    @POST("user/booklist")
+    @POST("api/user/booklist")
     fun userBooklist(@Body request: UserbooklistRequest): Call<UserbooklistResponse>
 
-    @POST("user/purchase")
+    @POST("api/user/purchase")
     fun userPurchase(@Body request: UserpurchaseRequest): Call<UserpurchaseResponse>
-
 }

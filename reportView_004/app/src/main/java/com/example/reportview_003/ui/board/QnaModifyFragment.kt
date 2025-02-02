@@ -23,7 +23,7 @@ class QnaModifyFragment : Fragment() {
     private lateinit var editTextContent: EditText
     private lateinit var buttonSubmit: Button
     private lateinit var buttonCancel: Button
-    private var qnaId: Int = -1 // 수정할 글의 ID
+    private var qnaId: Long = -1 // 수정할 글의 ID
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,7 +54,7 @@ class QnaModifyFragment : Fragment() {
 
         // 기존 데이터를 전달받아 초기화
         arguments?.let {
-            qnaId = it.getInt("board_id", -1)
+            qnaId = it.getLong("qna_id", -1)
             editTextTitle.setText(it.getString("title", ""))
             editTextContent.setText(it.getString("content", ""))
         }
@@ -69,7 +69,7 @@ class QnaModifyFragment : Fragment() {
             if (title.isNotEmpty() && content.isNotEmpty()) {
                 val updateQnA = UpdateQnA(requireContext(), boardAPI)
                 val boardModifyResponse = BoardModifyRequest(
-                    board_id = qnaId,
+                    qna_id = qnaId,
                     writer = SessionManager.getUserID(requireContext()).toString(),
                     title = title,
                     content = content

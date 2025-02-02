@@ -13,18 +13,20 @@ import com.example.reportview_003.R
 import com.example.reportview_003.api.PurchaseAPI
 import com.example.reportview_003.model.purchase.CartResponse
 import com.example.reportview_003.model.purchase.DeleteItemRequest
+import com.example.reportview_003.utils.SessionManager
+import java.text.NumberFormat
+import java.util.Locale
 
 class PurchaseCartAdapter(
     private val context: Context,
     private val cartResponse: CartResponse,
-    private val purchaseApi: PurchaseAPI,
     private val onCartUpdated: (MutableList<MutableMap<String, Any>>) -> Unit
 ) : BaseAdapter() {
 
-    override fun getCount(): Int = cartResponse.book_list.size
+    override fun getCount(): Int = cartResponse.purchaseCartDtoList.size
 
     override fun getItem(position: Int): MutableMap<String, Any> {
-        return cartResponse.book_list[position]
+        return cartResponse.purchaseCartDtoList[position]
     }
 
     override fun getItemId(position: Int): Long = position.toLong()
@@ -37,36 +39,41 @@ class PurchaseCartAdapter(
         val deleteButton: ImageView = view.findViewById(R.id.delete_button)
 
         val item = getItem(position)
-        val cartId = cartResponse.cart_id as? Int ?: -1
+        val userId = SessionManager.getUserID(context).toString()
 
         // Extract title and price from item
         val title = item["title"] as? String ?: "Unknown Title"
-        val price = item["price"] as? String ?: "Unknown Price"
+        val price = when (val priceValue = item["price"]) {
+            is Int -> priceValue
+            is Double -> priceValue.toInt()
+            is String -> priceValue.toIntOrNull() ?: 0
+            else -> 0
+        }
         val bookId = when (val id = item["book_id"]) {
-            is Int -> id // 이미 Int인 경우
-            is Double -> id.toInt() // Double인 경우 Int로 변환
-            is String -> id.toIntOrNull() ?: -1 // String인 경우 안전하게 Int로 변환
+            is Long -> id // 이미 Int인 경우
+            is Double -> id.toLong() // Double인 경우 Int로 변환
+            is String -> id.toLongOrNull() ?: -1 // String인 경우 안전하게 Int로 변환
             else -> -1 // 잘못된 형식인 경우
         }
 
         // Set data to views
         bookTitle.text = title
-        bookPrice.text = price
+        bookPrice.text = "${NumberFormat.getNumberInstance(Locale.US).format(price)} 원"
 
         deleteButton.setOnClickListener {
-            if (bookId != -1) {
+            if (bookId != -1L) {
                 val app = context.applicationContext as App
                 val purchaseAPI = app.retrofit.create(PurchaseAPI::class.java)
 
-                val deleteItemRequest = DeleteItemRequest(cartId, bookId)
+                val deleteItemRequest = DeleteItemRequest(userId, bookId)
 
                 val doDelete = DoDelete(context, purchaseAPI)
                 doDelete.doDelet(deleteItemRequest) { response ->
                     if (response != null) {
                         Toast.makeText(context, "삭제 완료", Toast.LENGTH_SHORT).show()
 
-                        cartResponse.book_list.removeAt(position)
-                        onCartUpdated(cartResponse.book_list) // Notify the fragment
+                        cartResponse.purchaseCartDtoList.removeAt(position)
+                        onCartUpdated(cartResponse.purchaseCartDtoList) // Notify the fragment
                         notifyDataSetChanged()
                     } else {
                         Toast.makeText(context, "삭제 실패", Toast.LENGTH_SHORT).show()

@@ -41,4 +41,8 @@
             android:icon="@drawable/login_black"
             android:title="로그아웃" />
     </group>
+
+    <item
+        android:id="@+id/chargePointFragment"
+        android:title=""/>
 </menu>

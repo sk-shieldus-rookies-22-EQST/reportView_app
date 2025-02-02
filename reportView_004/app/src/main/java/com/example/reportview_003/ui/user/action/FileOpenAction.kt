@@ -23,9 +23,9 @@ class FileOpenAction(private val context: Context) {
     private var download_url: String? = null
     private val client = OkHttpClient()
 
-    fun openFile(book_id: String) {
+    fun openFile(book_id: Long) {
         val user_id = SessionManager.getUserID(context).toString()
-        val gemerateRequest = GemerateRequest(user_id = user_id, book_id = book_id)
+        val gemerateRequest = GemerateRequest(user_id = user_id, book_id = book_id.toString())
 
         val app = context.applicationContext as App
         val kmsapi = app.KMSretrofit.create(KMSAPI::class.java)

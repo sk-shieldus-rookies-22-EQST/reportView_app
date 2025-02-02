@@ -9,7 +9,7 @@ class GetEachBoard(
     private val context: Context,
     private val boardAPI: BoardAPI
 ) {
-    fun getBoardDetails(boardId: Int, callback: (BoardQnAResponse?) -> Unit) {
+    fun getBoardDetails(boardId: Long, callback: (BoardQnAResponse?) -> Unit) {
         val boardRepository = BoardRepository(boardAPI)
 
         boardRepository.showQna(boardId) { response, error ->

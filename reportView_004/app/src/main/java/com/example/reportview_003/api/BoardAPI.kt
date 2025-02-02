@@ -14,7 +14,7 @@ interface BoardAPI {
 
     // API 수정 필요
     @GET("board/qna/{id}")
-    fun showQna(@Path("id") id: Int): Call<BoardQnAResponse>
+    fun showQna(@Path("id") id: String): Call<BoardQnAResponse>
 
     @POST("board/qna/write")
     fun writeQnA(@Body request: BoardWriteRequest): Call<BoardWriteResponse>
@@ -23,9 +23,9 @@ interface BoardAPI {
     @POST("board/qna/comment")
     fun writeComment(@Body request: BoardCommentRequest): Call<StatusResponse>
 
-    @POST("board/delete")
+    @POST("board/qna/delete")
     fun deleteQnA(@Body request: BoardDeleteRequest): Call<BoardDeleteResponse>
 
-    @POST("board/modify")
+    @POST("board/qna/modify")
     fun modifyQnA(@Body request: BoardModifyRequest): Call<BoardModifyResponse>
 }

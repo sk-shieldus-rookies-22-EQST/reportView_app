@@ -3,7 +3,7 @@ package com.example.reportview_003.model.board
 import java.time.LocalDateTime
 
 data class BoardQnAResponse(
-    val board_id: Int,
+    val qna_id: Long,
     val writer: String,
     val created_at: String,
     val title:String,

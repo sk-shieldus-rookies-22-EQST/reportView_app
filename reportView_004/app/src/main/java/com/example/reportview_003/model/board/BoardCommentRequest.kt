@@ -2,7 +2,7 @@ package com.example.reportview_003.model.board
 
 
 data class BoardCommentRequest(
-    val qna_id: Int,
+    val qna_id: Long,
     val writer: String,
     val content: String
 )

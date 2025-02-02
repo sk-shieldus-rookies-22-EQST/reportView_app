@@ -45,8 +45,8 @@ class ViewBooklist(private val api: ViewAPI) {
         })
     }
 
-    fun viewbookdetail(bookid:Int, callback: (ViewbookdetailResponse?, Throwable?) -> Unit) {
-        api.viewbookdetail(bookid).enqueue(object : Callback<ViewbookdetailResponse> {
+    fun viewbookdetail(bookid:Long, callback: (ViewbookdetailResponse?, Throwable?) -> Unit) {
+        api.viewbookdetail(bookid.toString()).enqueue(object : Callback<ViewbookdetailResponse> {
             override fun onResponse(call: Call<ViewbookdetailResponse>, response: Response<ViewbookdetailResponse>) {
                 if (response.isSuccessful) {
                     callback(response.body(), null)

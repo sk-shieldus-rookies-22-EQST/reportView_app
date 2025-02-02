@@ -27,7 +27,7 @@ class UserBookListAdapter(
 
     override fun onBindViewHolder(holder: UserBookViewHolder, position: Int) {
         val item = bookList[position]
-        holder.bookTitle.text = item["book_title"] as? String ?: "Unknown Title"
+        holder.bookTitle.text = item["title"] as? String ?: "Unknown Title"
 
         // 이미지를 URL에서 불러오려면 Glide 또는 Picasso 사용
         Glide.with(context)
@@ -39,7 +39,7 @@ class UserBookListAdapter(
         holder.itemView.setOnClickListener {
             val fileOpenAction = FileOpenAction(context)
             fileOpenAction.openFile(
-                book_id = item["book_id"] as? String ?: "Unknown Title"
+                book_id = (item["book_id"] as? Number)?.toLong() ?: -1L
             )
         }
     }

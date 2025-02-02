@@ -10,14 +10,14 @@ class GetBookDetail(
     private val viewAPI: ViewAPI
 ) {
 
-    fun viewbookdetail(bookid:Int, callback: (ViewbookdetailResponse?) -> Unit) {
+    fun viewbookdetail(bookid:Long, callback: (ViewbookdetailResponse?) -> Unit) {
         val bookdetail = ViewBooklist(viewAPI)
 
         bookdetail.viewbookdetail(bookid) { response, error ->
             if (response != null) {
                 val viewbookdetailResponse = ViewbookdetailResponse(
-                    book_id = response.book_id?: 0,
-                    detail = response.detail?: "No detail available",
+                    book_id = response.book_id,
+                    book_summary = response.book_summary?: "No detail available",
                     writer = response.writer?: "No writer available",
                     title = response.title?: "No title available",
                     price = response.price?: "No price available",

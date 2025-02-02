@@ -19,6 +19,8 @@ import com.example.reportview_003.model.purchase.CartGetItemRequest
 import com.example.reportview_003.model.view.ViewbooklistResponse
 import com.example.reportview_003.ui.purchase.action.InsertCartItem
 import com.example.reportview_003.utils.SessionManager
+import java.text.NumberFormat
+import java.util.Locale
 
 /*
 * 리스트 목록을 출력해주는 Adapter
@@ -60,13 +62,18 @@ class BuildBooklist(
         val item = getItem(position)
 
         val title = item["title"] as? String ?: "unknown Title"
-        val price = item["price"] as? String ?: "unknown Price"
+        val price = when (val priceValue = item["price"]) {
+            is Int -> priceValue
+            is Double -> priceValue.toInt()
+            is String -> priceValue.toIntOrNull() ?: 0
+            else -> 0
+        }
         val writer = item["writer"] as? String ?: "unknown writer"
         val img = item["book_img_path"] as? String ?: ""
 
         holder.bookTitle.text = title
         holder.bookAuthor.text = writer
-        holder.bookPrice.text = price
+        holder.bookPrice.text = "${NumberFormat.getNumberInstance(Locale.US).format(price)} 원"
 
         Glide.with(context)
             .load(img)
@@ -81,9 +88,9 @@ class BuildBooklist(
             } else {
                 // 장바구니 동작 구현
                 val bookId = when (val id = item["book_id"]) {
-                    is Int -> id // 이미 Int인 경우
-                    is Double -> id.toInt() // Double인 경우 Int로 변환
-                    is String -> id.toIntOrNull() ?: -1 // String인 경우 안전하게 Int로 변환
+                    is Long -> id // 이미 Int인 경우
+                    is Double -> id.toLong() // Double인 경우 Int로 변환
+                    is String -> id.toLongOrNull() ?: -1 // String인 경우 안전하게 Int로 변환
                     else -> -1 // 잘못된 형식인 경우
                 }
                 val userId = SessionManager.getUserID(context).toString()
@@ -107,9 +114,9 @@ class BuildBooklist(
         // 아이템 클릭 리스너: BookDetailFragment로 이동하며 book_id 전달
         view.setOnClickListener {
             val item = getItem(position)
-            val bookId = (item["book_id"] as? Double)?.toInt() ?: -1
+            val bookId = (item["book_id"] as? Number)?.toLong() ?: -1L
             val bundle = Bundle().apply {
-                putInt("book_id", bookId)
+                putLong("book_id", bookId)
             }
             navController.navigate(R.id.action_listFragment_to_bookDetailFragment, bundle)
         }

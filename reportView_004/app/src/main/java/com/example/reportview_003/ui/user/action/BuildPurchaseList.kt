@@ -33,6 +33,7 @@ class BuildPurchaseList(
         // 데이터 설정
         purchaseTitle.text = item["title"] as? String ?: "Unknown Title"
         purchasePrice.text = (item["price"] as? Int)?.toString() ?: "0 원"
+        // 구매일자 없음
         purchaseDate.text = item["date"] as? String ?: "Unknown Date"
 
         return view

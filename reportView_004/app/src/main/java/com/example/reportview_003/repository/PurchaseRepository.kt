@@ -79,9 +79,24 @@ class PurchaseRepository(private val api: PurchaseAPI) {
         })
     }
 
-    fun chargePoint(chargePointRequest:ChargePointRequest, callback: (StatusResponse?,Throwable?) -> Unit) {
-        api.chargePoint(chargePointRequest).enqueue(object : Callback<StatusResponse> {
-            override fun onResponse(call: Call<StatusResponse>, response: Response<StatusResponse>) {
+    fun userPoint(userpointRequest: UserpointRequest, callback: (UserpointResponse?, Throwable?) -> Unit) {
+        api.userPoint(userpointRequest).enqueue(object : Callback<UserpointResponse>{
+            override fun onResponse(call: Call<UserpointResponse>, response: Response<UserpointResponse>) {
+                if (response.isSuccessful) {
+                    callback(response.body(), null)
+                } else {
+                    callback(null, Throwable("failed"))
+                }
+            }
+            override fun onFailure(call: Call<UserpointResponse>, t: Throwable) {
+                callback(null, t)
+            }
+        })
+    }
+
+    fun chargePoint(chargePointRequest:ChargePointRequest, callback: (ChargePointResponse?,Throwable?) -> Unit) {
+        api.chargePoint(chargePointRequest).enqueue(object : Callback<ChargePointResponse> {
+            override fun onResponse(call: Call<ChargePointResponse>, response: Response<ChargePointResponse>) {
                 if (response.isSuccessful) {
                     // 성공 시 body 전달
                     callback(response.body(), null)
@@ -91,7 +106,7 @@ class PurchaseRepository(private val api: PurchaseAPI) {
                     callback(null, Throwable(errorMsg))
                 }
             }
-            override fun onFailure(call: Call<StatusResponse>, t: Throwable) {
+            override fun onFailure(call: Call<ChargePointResponse>, t: Throwable) {
                 // 네트워크 실패 또는 기타 오류 처리
                 callback(null, Throwable(t.localizedMessage ?: "Unknown failure"))
             }
