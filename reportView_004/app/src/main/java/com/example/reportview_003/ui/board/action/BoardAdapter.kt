@@ -16,9 +16,9 @@ class BoardAdapter(
     private val navController: NavController
 ) : BaseAdapter() {
 
-    override fun getCount(): Int = data.qna.size
+    override fun getCount(): Int = data.qnaListDto.size
 
-    override fun getItem(position: Int): MutableMap<String, Any> = data.qna[position]
+    override fun getItem(position: Int): MutableMap<String, Any> = data.qnaListDto[position]
 
     override fun getItemId(position: Int): Long = position.toLong()
 

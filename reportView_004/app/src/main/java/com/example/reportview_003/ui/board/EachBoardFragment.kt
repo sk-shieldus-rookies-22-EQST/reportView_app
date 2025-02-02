@@ -26,6 +26,7 @@ import com.example.reportview_003.ui.board.action.GetEachBoard
 import com.example.reportview_003.utils.SessionManager
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 class EachBoardFragment : Fragment() {
 
@@ -43,7 +44,7 @@ class EachBoardFragment : Fragment() {
     private lateinit var listButton: Button // 목록 버튼
 
     // LocalDateTime 입력 포맷: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
-    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     // 출력 포맷: "yyyy-MM-dd"
     val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
@@ -71,7 +72,7 @@ class EachBoardFragment : Fragment() {
         qnaCommentInput = view.findViewById(R.id.qna_comment_input)
         qnaCommentButton = view.findViewById(R.id.qna_comment_button)
 
-        val boardId = arguments?.getInt("board_id",-1) ?: -1
+        val boardId = arguments?.getInt("qna_id",-1) ?: -1
         if (boardId != -1) {
             loadBoardDetails(boardAPI, boardId)
         } else {
@@ -149,7 +150,7 @@ class EachBoardFragment : Fragment() {
             }
 
             val bundle = Bundle().apply {
-                putInt("board_id", boardId)
+                putInt("qna_id", boardId)
                 putString("title", qnaTitle.text.toString())
                 putString("content", qnaInputText.text.toString())
             }
@@ -183,7 +184,13 @@ class EachBoardFragment : Fragment() {
         qnaId.text = boardQnAResponse.board_id.toString()
         qnaUser.text = boardQnAResponse.writer
         qnaInputText.text = boardQnAResponse.content
-        val createdAtDateTime = LocalDateTime.parse(boardQnAResponse.created_at, inputFormatter)
-        qnaDate.text = createdAtDateTime.format(outputFormatter)
+        val createdAt = boardQnAResponse.created_at
+        qnaDate.text = try {
+            val parsedDate = LocalDateTime.parse(createdAt, inputFormatter)
+            parsedDate.format(outputFormatter)
+        } catch (e: DateTimeParseException) {
+            Log.e("EachBoardFragment", "Date parsing error: ${e.message}")
+            "날짜 없음"
+        }
     }
 }

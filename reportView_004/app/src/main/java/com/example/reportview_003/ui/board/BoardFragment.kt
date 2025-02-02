@@ -69,12 +69,12 @@ class BoardFragment : Fragment() {
 
     private fun setItemClickListener() {
         boardListView.setOnItemClickListener { _, _, position, _ ->
-            val selectedBoard = boardData.qna[position]
-            val boardId = (selectedBoard["board_id"] as? Number)?.toInt() ?: -1
+            val selectedBoard = boardData.qnaListDto[position]
+            val boardId = (selectedBoard["qna_id"] as? Number)?.toInt() ?: -1
 
             if (boardId != -1) {
                 val bundle = Bundle().apply {
-                    putInt("board_id", boardId)
+                    putInt("qna_id", boardId)
                 }
                 findNavController().navigate(R.id.action_boardFragment_to_eachBoardFragment, bundle)
             } else {

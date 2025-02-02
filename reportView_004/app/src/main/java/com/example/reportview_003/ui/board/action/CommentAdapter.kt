@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.example.reportview_003.R
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 class CommentAdapter(
     private val context: Context,
@@ -31,13 +32,16 @@ class CommentAdapter(
         val createdAtText = item["qna_re_created_at"] as? String ?: "No Created At"
         val contentText = item["qna_re_content"] as? String ?: "No Content"
 
-        // LocalDateTime 입력 포맷: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
-        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
-        // 출력 포맷: "yyyy-MM-dd"
-        val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
-        val createdAtDateTime = LocalDateTime.parse(createdAtText, inputFormatter)
-        createdAt.text = createdAtDateTime.format(outputFormatter)
+        // Handling `created_at` parsing safely
+        createdAt.text = try {
+            val parsedDate = LocalDateTime.parse(createdAtText, inputFormatter)
+            parsedDate.format(outputFormatter)
+        } catch (e: DateTimeParseException) {
+            "날짜 없음"
+        }
         contentTextView.text = contentText
 
         return view

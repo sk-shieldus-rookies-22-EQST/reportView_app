@@ -9,7 +9,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface BoardAPI {
-    @GET("board/qna")
+    @POST("board/qna")
     fun render(): Call<BoardResponse>
 
     // API 수정 필요
