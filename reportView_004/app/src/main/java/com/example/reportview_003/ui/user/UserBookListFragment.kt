@@ -41,7 +41,7 @@ class UserBookListFragment: Fragment() {
         getUserBookList.loadUserBooklist(userbooklistRequest) { response ->
             if (isAdded) {
                 if (response != null) {
-                    bookData = response.book_list
+                    bookData = response.myBookListDtoList
                     updateRecyclerView()
                 }
             } else {

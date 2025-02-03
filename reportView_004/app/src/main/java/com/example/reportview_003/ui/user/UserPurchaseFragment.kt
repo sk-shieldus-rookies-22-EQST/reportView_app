@@ -40,7 +40,7 @@ class UserPurchaseFragment: Fragment() {
         getUserPurchase.loadUserPurchase(userpurchaseRequest) { response ->
             if (isAdded) {
                 if (response != null) {
-                    purchaseData = response.purchase
+                    purchaseData = response.myPurchaseDto
                     updateListView()
                 }
             } else {
@@ -53,8 +53,7 @@ class UserPurchaseFragment: Fragment() {
     }
 
     private fun updateListView() {
-        val navController = findNavController()
-        val adapter = BuildPurchaseList(requireContext(), purchaseData, navController)
+        val adapter = BuildPurchaseList(requireContext(), purchaseData)
         userpurchaseList.adapter = adapter
     }
 }

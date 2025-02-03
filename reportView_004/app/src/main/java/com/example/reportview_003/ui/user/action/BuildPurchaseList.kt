@@ -8,11 +8,12 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import androidx.navigation.NavController
 import com.example.reportview_003.R
+import java.text.NumberFormat
+import java.util.Locale
 
 class BuildPurchaseList(
     private val context: Context,
     private val data: MutableList<MutableMap<String, Any>>,
-    private val navController: NavController
 ): BaseAdapter() {
 
     override fun getCount(): Int = data.size
@@ -28,13 +29,17 @@ class BuildPurchaseList(
 
         val purchaseTitle: TextView = view.findViewById(R.id.user_purchase_title)
         val purchasePrice: TextView = view.findViewById(R.id.user_purchase_price)
-        val purchaseDate: TextView = view.findViewById(R.id.user_purchase_date)
+
+        val price = when (val priceValue = item["price"]) {
+            is Int -> priceValue
+            is Double -> priceValue.toInt()
+            is String -> priceValue.toIntOrNull() ?: 0
+            else -> 0
+        }
 
         // 데이터 설정
         purchaseTitle.text = item["title"] as? String ?: "Unknown Title"
-        purchasePrice.text = (item["price"] as? Int)?.toString() ?: "0 원"
-        // 구매일자 없음
-        purchaseDate.text = item["date"] as? String ?: "Unknown Date"
+        purchasePrice.text = "${NumberFormat.getNumberInstance(Locale.US).format(price)} 원"
 
         return view
     }

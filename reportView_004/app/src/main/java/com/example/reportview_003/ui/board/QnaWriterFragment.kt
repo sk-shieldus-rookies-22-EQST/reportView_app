@@ -64,8 +64,10 @@ class QnaWriterFragment : Fragment() {
                     if (success) {
                         Toast.makeText(requireContext(), "Q&A 작성 완료", Toast.LENGTH_SHORT).show()
                         requireActivity()
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
                     } else {
                         Toast.makeText(requireContext(), "작성 실패", Toast.LENGTH_SHORT).show()
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
                     }
                 }
             } else {
