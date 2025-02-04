@@ -1,6 +1,9 @@
 # 앱 개요
 
-# 앱 동작
+- RESTfull API 형태로 동작하는 애플리케이션
+
+<br>
+<br>
 
 # 개인 별 설정 
 
@@ -9,19 +12,4 @@
 local.properties
 # 현재 PC 사용자 이름
 sdk.dir=C\:\\Users\\[변경]\\AppData\\Local\\Android\\Sdk
-
--------------------------------------------------------------
-App.kt
-# 테스트용 서버 동작시키는 주소
-retrofit = Retrofit.Builder()
-            .baseUrl("http://[변경]:8000/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
--------------------------------------------------------------
-network_security_config.xml
-# 테스트용 서버 동작시키는 주소
-<domain includeSubdomains="true">[변경]</domain>
-
 ```
