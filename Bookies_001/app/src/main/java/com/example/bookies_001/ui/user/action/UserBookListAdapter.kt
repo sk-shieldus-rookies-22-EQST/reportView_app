@@ -33,7 +33,7 @@ class UserBookListAdapter(
         holder.itemView.setOnClickListener {
             val fileOpenAction = FileOpenAction(context)
             fileOpenAction.openFile(
-                book_id = (item["book_id"] as? Number)?.toLong() ?: -1L
+                bookId = (item["book_id"] as? Number)?.toLong() ?: -1L
             )
         }
 

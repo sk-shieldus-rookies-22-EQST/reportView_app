@@ -11,6 +11,7 @@ import com.example.bookies_001.App
 import com.example.bookies_001.api.KMSAPI
 import com.example.bookies_001.model.kms.GemerateRequest
 import com.example.bookies_001.ui.user.activity.PdfActivity
+import com.example.bookies_001.utils.AESUtil
 import com.example.bookies_001.utils.SessionManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -22,41 +23,49 @@ import javax.crypto.spec.SecretKeySpec
 
 class FileOpenAction(private val context: Context) {
 
-    private var download_url: String? = null
+    private var downloadUrl: String? = null
     private val client = OkHttpClient()
 
-    fun openFile(book_id: Long) {
-        val user_id = SessionManager.getUserID(context).toString()
-//        val gemerateRequest = GemerateRequest(user_id = user_id, book_id = book_id.toString())
-        val gemerateRequest = GemerateRequest(user_id = user_id, book_id = 1000020.toString())
+    fun openFile(bookId: Long) {
+        val userId = SessionManager.getUserID(context).toString()
+//        val gemerateRequest = GemerateRequest(user_id = userId, book_id = bookId.toString())
+        val gemerateRequest = GemerateRequest(user_id = "123", book_id = 1000020.toString())
 
         val app = context.applicationContext as App
-        val kmsapi = app.KMSretrofit.create(KMSAPI::class.java)
+        val kmsApi = app.KMSretrofit.create(KMSAPI::class.java)
 
-        val getGenerate = GetGenerate(kmsapi)
+        val getGenerate = GetGenerate(kmsApi)
         getGenerate.generate(gemerateRequest) { data ->
-            if (data != null && !data.presigned_url.isNullOrEmpty()) {
-                download_url = data.presigned_url
-                downloadFile(download_url!!) { downloadedFile ->
-                    if (downloadedFile != null) {
-                        try {
-                            val encryptedData = downloadedFile.readBytes()
-                            val aesKey = "ROOKIES".toByteArray(Charsets.US_ASCII).copyOf(16)
-                            val aesIv = "EQST".toByteArray(Charsets.US_ASCII).copyOf(16)
+            if (data?.presigned_url.isNullOrEmpty()) {
+                showToast("파일 다운로드 URL을 가져올 수 없습니다.")
+                return@generate
+            }
 
-                            val decryptedData = decryptAES(encryptedData, aesKey, aesIv)
+            if (data?.error.isNullOrEmpty()) {
+                showToast("파일 다운로드 URL을 가져올 수 없습니다.")
+            }
 
-                            if (decryptedData != null && isPdfFile(decryptedData)) {
-                                saveDecryptedFileAsPdf(decryptedData)
-                            } else {
-                                showToast("복호화 실패 또는 PDF 형식이 아님.")
-                            }
-                        } catch (e: Exception) {
-                            showToast("에러 발생: ${e.message}")
+            downloadUrl = data?.presigned_url
+            downloadFile(downloadUrl!!) { downloadedFile ->
+                if (downloadedFile != null) {
+                    try {
+                        val encryptedData = downloadedFile.readBytes()
+                        val aesKey = AESUtil.key.toByteArray(Charsets.US_ASCII).copyOf(16)
+                        val aesIv = AESUtil.iv.toByteArray(Charsets.US_ASCII).copyOf(16)
+
+                        val decryptedData = decryptAES(encryptedData, aesKey, aesIv)
+                        Log.d("decryptedData", "Decrypted Data Size: ${decryptedData?.size}")
+
+                        if (decryptedData != null) {
+                            saveDecryptedFileAsPdf(decryptedData)
+                        } else {
+                            showToast("복호화 실패")
                         }
-                    } else {
-                        showToast("파일 다운로드 실패")
+                    } catch (e: Exception) {
+                        showToast("에러 발생: ${e.message}")
                     }
+                } else {
+                    showToast("파일 다운로드 실패")
                 }
             }
         }
@@ -70,11 +79,10 @@ class FileOpenAction(private val context: Context) {
                 val response = client.newCall(request).execute()
                 if (response.isSuccessful) {
                     val downloadedFile = File(context.cacheDir, "downloaded_file")
-                    val fos = FileOutputStream(downloadedFile)
-                    fos.write(response.body?.bytes())
-                    fos.close()
+                    FileOutputStream(downloadedFile).use { fos ->
+                        fos.write(response.body?.bytes())
+                    }
 
-                    // 파일 존재 여부 및 파일 경로 로그 출력
                     if (downloadedFile.exists()) {
                         Log.d("FileDownload", "Downloaded file path: ${downloadedFile.absolutePath}")
                     } else {
@@ -95,22 +103,11 @@ class FileOpenAction(private val context: Context) {
     private fun decryptAES(encryptedData: ByteArray, key: ByteArray, iv: ByteArray): ByteArray? {
         return try {
             val cipher = Cipher.getInstance("AES/CBC/NoPadding")
-            val secretKeySpec = SecretKeySpec(key, "AES")
-            val ivSpec = IvParameterSpec(iv)
-            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivSpec)
+            cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(key, "AES"), IvParameterSpec(iv))
             cipher.doFinal(encryptedData)
         } catch (e: Exception) {
             e.printStackTrace()
             null
-        }
-    }
-
-    private fun isPdfFile(data: ByteArray): Boolean {
-        return try {
-            val header = String(data.copyOfRange(0, 4), Charsets.US_ASCII)
-            header.startsWith("%PDF")
-        } catch (e: Exception) {
-            false
         }
     }
 
@@ -120,22 +117,21 @@ class FileOpenAction(private val context: Context) {
             val downloadFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
             val file = File(downloadFolder, fileName)
 
-            val fos = FileOutputStream(file)
-            fos.write(decryptedData)
-            fos.close()
+            FileOutputStream(file).use { fos ->
+                fos.write(decryptedData)
+            }
 
-            showToast("복호화된 PDF 파일이 저장되었습니다: ${file.absolutePath}")
-
-            openPdfViewer(file.absolutePath)
+            showToast("복호화된 PDF 저장 완료: ${file.absolutePath}")
+            openPdfViewer(file.absolutePath) // ✅ PDF 실행
         } catch (e: Exception) {
-            showToast("파일 저장 중 오류 발생: ${e.message}")
+            showToast("파일 저장 오류: ${e.message}")
         }
     }
 
     private fun openPdfViewer(pdfPath: String) {
         Log.d("FileOpenAction", "Opening PdfViewer with path: $pdfPath")
         val intent = Intent(context, PdfActivity::class.java).apply {
-            putExtra("PDF_PATH", pdfPath)
+            putExtra("PDF_PATH", pdfPath)  // ✅ PDF 파일 경로 전달
         }
         context.startActivity(intent)
     }

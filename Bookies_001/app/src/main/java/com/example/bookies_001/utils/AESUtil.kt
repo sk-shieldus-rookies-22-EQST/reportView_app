@@ -21,11 +21,11 @@ object AESUtil {
     // lazy를 사용하여 리소스에서 값을 불러옵니다.
     // lazy { ... } 처음으로 사용될 때 블럭 내의 코드를 동작하도록 함 이후에는 캐시된 값을 재사용 함
     // 반드시 init 함수로 초기화 한 이후에 호출 되어야 함
-    private val key: String by lazy {
+    val key: String by lazy {
         appContext.getString(R.string.aes_key)
     }
 
-    private val iv: String by lazy {
+    val iv: String by lazy {
         appContext.getString(R.string.aes_iv)
     }
 
@@ -39,13 +39,13 @@ object AESUtil {
     }
 
     // keySpec와 ivSpec도 lazy로 선언하여, appContext 초기화 이후에 계산되도록 함.
-    val keySpec: SecretKeySpec by lazy {
+    private val keySpec: SecretKeySpec by lazy {
         val rawKey = key
         val keyBytes = padTo16Bytes(rawKey.toByteArray(Charsets.UTF_8))
         SecretKeySpec(keyBytes, ALGORITHM)
     }
 
-    val ivSpec: IvParameterSpec by lazy {
+    private val ivSpec: IvParameterSpec by lazy {
         val rawIv = iv
         val ivBytes = padTo16Bytes(rawIv.toByteArray(Charsets.UTF_8))
         IvParameterSpec(ivBytes)

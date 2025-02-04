@@ -22,7 +22,7 @@ class PdfActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // FLAG_SECURE를 추가하여 최근 앱 화면 및 스크린샷 보호
+        // FLAG_SECURE 추가 (스크린샷 방지)
         window.setFlags(
             WindowManager.LayoutParams.FLAG_SECURE,
             WindowManager.LayoutParams.FLAG_SECURE
@@ -30,6 +30,7 @@ class PdfActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_pdf)
 
+        // ✅ FileOpenAction에서 전달된 PDF 경로 받기
         pdfFilePath = intent.getStringExtra("PDF_PATH") ?: ""
         if (pdfFilePath.isNullOrEmpty()) {
             Toast.makeText(this, "PDF 경로가 잘못되었습니다.", Toast.LENGTH_SHORT).show()
