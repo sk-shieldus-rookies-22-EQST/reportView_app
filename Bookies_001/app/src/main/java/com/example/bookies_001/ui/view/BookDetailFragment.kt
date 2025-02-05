@@ -24,6 +24,8 @@ import com.example.bookies_001.ui.view.action.GetBookDetail
 import com.example.bookies_001.utils.SessionManager
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import java.text.NumberFormat
+import java.util.Locale
 import kotlin.coroutines.resume
 
 class BookDetailFragment: Fragment() {
@@ -116,13 +118,13 @@ class BookDetailFragment: Fragment() {
     private fun updateUI(viewbookdetailResponse: ViewbookdetailResponse) {
         bookDetailTitle.text = viewbookdetailResponse.title
         bookDetailWriter.text = viewbookdetailResponse.writer
-        bookDetailPrice.text = "${viewbookdetailResponse.price} 원" // 가격 예시
+        bookDetailPrice.text = "${NumberFormat.getNumberInstance(Locale.US).format(viewbookdetailResponse.price.toInt())} 원" // 가격 예시 "${NumberFormat.getNumberInstance(Locale.US).format(price)} 원"
         bookDetailContent.text = viewbookdetailResponse.book_summary
         // bookDetailImage는 이미지 URL을 받아 로드하는 로직 필요 (예: Glide, Picasso 사용)
-//        .load(viewbookdetailResponse.book_img_path)
-       val FIXED_URL = "http://dahaezlge.kro.kr:30303/"
+       val IMG_PATH = "https://3.35.84.46:20202" + viewbookdetailResponse.book_img_path
         Glide.with(requireContext())
-            .load("https://dahaezlge.kro.kr:30303/images/test.jpg")
+            .load(IMG_PATH)
+            .placeholder(R.drawable.bookkies_icon_thick)
             .into(bookDetailImage)
     }
 

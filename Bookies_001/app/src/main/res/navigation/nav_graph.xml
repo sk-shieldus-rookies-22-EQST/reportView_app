@@ -12,7 +12,7 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.bookies_001.ui.auth.LoginFragment"
-        android:label="Login"
+        android:label="로그인"
         tools:layout="@layout/login_main">
         <action
             android:id="@+id/action_loginFragment_to_listFragment"
@@ -46,7 +46,7 @@
     <fragment
         android:id="@+id/bookDetailFragment"
         android:name="com.example.bookies_001.ui.view.BookDetailFragment"
-        android:label=""
+        android:label="상세보기"
         tools:layout="@layout/book_detail_main">
         <action
             android:id="@+id/action_bookDetailFragment_to_purchaseFragment"
@@ -70,7 +70,7 @@
     <fragment
         android:id="@+id/eachBoardFragment"
         android:name="com.example.bookies_001.ui.board.EachBoardFragment"
-        android:label="Board"
+        android:label="게시판"
         tools:layout="@layout/qna_detail_main">
         <action
             android:id="@+id/action_eachBoardFragment_to_reWriterFragment"
@@ -103,7 +103,7 @@
     <fragment
         android:id="@+id/findIDFragment"
         android:name="com.example.bookies_001.ui.auth.FindIDFragment"
-        android:label="find id"
+        android:label="아이디 찾기"
         tools:layout="@layout/find_id" >
         <action
             android:id="@+id/action_findIDFragment_to_findPwFragment"
@@ -113,7 +113,7 @@
     <fragment
         android:id="@+id/findPWFragment"
         android:name="com.example.bookies_001.ui.auth.FindPWFragment"
-        android:label="find pw"
+        android:label="비밀번호 찾기"
         tools:layout="@layout/find_pw" >
         <argument
             android:name="data"
@@ -126,7 +126,7 @@
     <fragment
         android:id="@+id/signupFragment"
         android:name="com.example.bookies_001.ui.auth.SignupFragment"
-        android:label="signup"
+        android:label="회원가입"
         tools:layout="@layout/signup_main" >
         <action
             android:id="@+id/action_signupFragment_to_loginFragment"
@@ -147,12 +147,16 @@
         android:id="@+id/userPurchaseFragment"
         android:name="com.example.bookies_001.ui.user.UserPurchaseFragment"
         android:label="결제내역"
-        tools:layout="@layout/user_purchase_main" />
+        tools:layout="@layout/user_purchase_main">
+        <action
+            android:id="@+id/action_userPurchaseFragment_to_bookDetailFragment"
+            app:destination="@id/bookDetailFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/userBookListFragment"
         android:name="com.example.bookies_001.ui.user.UserBookListFragment"
-        android:label="내 서제"
+        android:label="내 서재"
         tools:layout="@layout/user_book_main" />
 
     <fragment

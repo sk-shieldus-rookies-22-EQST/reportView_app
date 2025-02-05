@@ -28,7 +28,7 @@ import java.util.Calendar
 /*
 * 필터링 검색 기능을 가지고 있어야 함
 * data에 모든 값을 저장하고 필터링 된 값을 리스트 뷰에 뿌려주는 형식
-* */
+*/
 
 class ListFragment : Fragment() {
 
@@ -40,12 +40,13 @@ class ListFragment : Fragment() {
     private lateinit var searchEdate: TextView
 
     private lateinit var resData: ViewbooklistResponse
+
     // 서버 전송용 날짜를 저장할 변수 (LocalDateTime 타입)
     private var sFilterDate: LocalDateTime? = null
     private var eFilterDate: LocalDateTime? = null
 
     // UI에 표시할 형식 ("yyyy-MM-dd")
-    val formatter = SimpleDateFormat("yyyy-MM-dd")
+    private val formatter = SimpleDateFormat("yyyy-MM-dd")
 
     private fun updateUI(data: ViewbooklistResponse) {
         if (isAdded) { // Fragment가 Activity에 연결되어 있는지 확인
@@ -87,21 +88,22 @@ class ListFragment : Fragment() {
             }
         }
 
-        // 검색버튼 클릭 시
+        // 검색 버튼 클릭 시
         searchBtn.setOnClickListener {
-            // DatePicker로 선택된 날짜 값은 이미 sFilterDate와 eFilterDate에 저장되어 있습니다.
-            // 텍스트뷰의 값은 UI용으로만 사용되므로, 여기서는 이를 파싱할 필요가 없습니다.
-            if ( (sFilterDate == null) xor (eFilterDate == null) ) {
+            Log.d("ListFragment", "검색 버튼 클릭 - sFilterDate: $sFilterDate, eFilterDate: $eFilterDate")
+
+            if ((sFilterDate == null) xor (eFilterDate == null)) {
                 Toast.makeText(requireContext(), "날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // 서버에 보낼 요청 객체 생성 (ViewbooksearchRequest의 sdate, edate 타입은 LocalDateTime? 여야 함)
-            val viewSearchRequest = ViewbooksearchRequest(
+            val viewSearchRequest = ViewbooksearchRequest.fromLocalDateTime(
                 keyword = searchReport.text.toString(),
                 sdate = sFilterDate,
                 edate = eFilterDate
             )
+
+            Log.d("ListFragment", "검색 요청 JSON: $viewSearchRequest")
 
             val viewSearch = ViewSearch(requireContext(), viewAPI)
             viewSearch.search(viewSearchRequest) { response, error ->
@@ -110,52 +112,68 @@ class ListFragment : Fragment() {
                     requireActivity().runOnUiThread {
                         updateUI(resData)
                     }
+                } else {
+                    Log.e("ListFragment", "검색 요청 실패: ${error?.message}")
                 }
             }
         }
 
         filterBtn.setOnClickListener {
             // 날짜 선택 리스트 출력: 시작 날짜 ~ 끝 날짜
-            showDatePicker()
+            showStartDatePicker()
         }
 
         return view
     }
 
-    private fun showDatePicker() {
+    private fun showStartDatePicker() {
         val calendar = Calendar.getInstance()
 
-        // 시작 날짜 선택
         DatePickerDialog(
             requireContext(),
             R.style.CustomDatePickerDialog,
             { _, year, month, dayOfMonth ->
                 val startCalendar = Calendar.getInstance()
                 startCalendar.set(year, month, dayOfMonth)
+
                 // UI에 표시할 형식으로 포맷 (yyyy-MM-dd)
                 searchSdate.text = formatter.format(startCalendar.time)
-                // 서버 전송용 LocalDateTime으로 변환
-                sFilterDate = startCalendar.time.toInstant()
-                    .atZone(java.time.ZoneId.systemDefault())
-                    .toLocalDateTime()
+
+                // LocalDateTime 변환 (변환 과정 개선)
+                sFilterDate = LocalDateTime.of(
+                    year, month + 1, dayOfMonth, 0, 0
+                )
+
+                Log.d("ListFragment", "시작 날짜 선택됨: $sFilterDate")
 
                 // 끝 날짜 선택
-                DatePickerDialog(
-                    requireContext(),
-                    R.style.CustomDatePickerDialog,
-                    { _, endYear, endMonth, endDayOfMonth ->
-                        val endCalendar = Calendar.getInstance()
-                        endCalendar.set(endYear, endMonth, endDayOfMonth)
-                        searchEdate.text = formatter.format(endCalendar.time)
-                        eFilterDate = endCalendar.time.toInstant()
-                            .atZone(java.time.ZoneId.systemDefault())
-                            .toLocalDateTime()
-                    },
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)
-                ).show()
+                showEndDatePicker()
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
 
+    private fun showEndDatePicker() {
+        val calendar = Calendar.getInstance()
+
+        DatePickerDialog(
+            requireContext(),
+            R.style.CustomDatePickerDialog,
+            { _, endYear, endMonth, endDayOfMonth ->
+                val endCalendar = Calendar.getInstance()
+                endCalendar.set(endYear, endMonth, endDayOfMonth)
+
+                // UI에 표시할 형식으로 포맷
+                searchEdate.text = formatter.format(endCalendar.time)
+
+                // LocalDateTime 변환 (변환 과정 개선)
+                eFilterDate = LocalDateTime.of(
+                    endYear, endMonth + 1, endDayOfMonth, 23, 59
+                )
+
+                Log.d("ListFragment", "끝 날짜 선택됨: $eFilterDate")
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),

@@ -37,11 +37,12 @@ class UserBookListAdapter(
             )
         }
 
+        val IMG_PATH = "https://3.35.84.46:20202" + item["book_img_path"]
 //        .load(item["book_img_path"] as? String ?: "")
         // 이미지를 URL에서 불러오려면 Glide 또는 Picasso 사용
         Glide.with(context)
-            .load("https://dahaezlge.kro.kr:30303/images/test.jpg")
-            .placeholder(R.drawable.file_open_black)
+            .load(IMG_PATH)
+            .placeholder(R.drawable.bookkies_icon_thick)
             .into(holder.bookImage)
 
 

@@ -34,11 +34,11 @@
         <item
             android:id="@+id/userBookListFragment"
             android:icon="@drawable/book_black"
-            android:title="내 서제" />
+            android:title="내 서재" />
         <item
             android:id="@+id/userPurchaseFragment"
             android:icon="@drawable/purchase_black"
-            android:title="결재내역" />
+            android:title="결제내역" />
 
         <item
             android:id="@+id/logoutFragment"

@@ -70,16 +70,16 @@ class BuildBooklist(
         // 현재 받아오는 값은 상대경로 이미지로 도메인 없이 경로만을 가지고 있음
         // http://도메인:포트/이미지 경로
         // http://도메인:포트/ <-- 하드코딩으로 집어 넣을 예정
-//        val img = item["book_img_path"] as? String ?: ""
-        val img = "https://dahaezlge.kro.kr:30303/images/test.jpg"
+
+        val IMG_PATH = "https://3.35.84.46:20202" + item["book_img_path"] as? String
 
         holder.bookTitle.text = title
         holder.bookAuthor.text = writer
         holder.bookPrice.text = "${NumberFormat.getNumberInstance(Locale.US).format(price)} 원"
 
         Glide.with(context)
-            .load(img)
-            .placeholder(R.drawable.download_black)
+            .load(IMG_PATH)
+            .placeholder(R.drawable.bookkies_icon_thick)
             .into(holder.bookImg)
 
         // 장바구니 클릭 리스너 설정

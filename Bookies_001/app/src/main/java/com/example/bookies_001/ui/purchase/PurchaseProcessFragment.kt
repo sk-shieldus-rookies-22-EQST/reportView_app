@@ -85,6 +85,9 @@ class PurchaseProcessFragment: Fragment() {
             val purchaseProcessData = PerchaseProccessRequest(
                 user_id = userId
             )
+
+            if (user_point - total_price > 0){
+
             doPurchaseProcess.doPurchaseProcess(purchaseProcessData) { response ->
                 if (response != null) {
                     if (response.status){
@@ -115,6 +118,18 @@ class PurchaseProcessFragment: Fragment() {
                     }
                 }
             }
+            } else {
+                Toast.makeText(requireContext(), "포인트가 부족합니다.", Toast.LENGTH_SHORT).show()
+                // chargePointFragment로 이동 (purchaseFragment를 백 스택에서 제거)
+                findNavController().navigate(
+                    R.id.action_purchaseProcessFragment_to_chargePointFragment,
+                    null,
+                    navOptions {
+                        popUpTo(R.id.purchaseFragment) { inclusive = true }
+                    }
+                )
+            }
+
         }
 
         return view

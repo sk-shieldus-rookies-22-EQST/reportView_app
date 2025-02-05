@@ -1,12 +1,14 @@
 package com.example.bookies_001.ui.user
 
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -71,12 +73,27 @@ class UserFragment : Fragment() {
             // 응답 값에 따라 [ true / false ] 동작을 수행
             // true: 탈퇴 완료 및 세션 삭제
             // false: 탈퇴 실패 fragment에 그대로 남아있음
-            val input = EditText(requireContext())
-            input.hint = "비밀번호"
+            val input = EditText(requireContext()).apply {
+                hint = "비밀번호"
+                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                setPadding(50, 30, 50,30)
+
+            }
+
+//            // EditText를 감싸는 레이아웃 (Margin 적용)
+//            val container = FrameLayout(requireContext()).apply {
+//                val params = FrameLayout.LayoutParams(
+//                    ViewGroup.LayoutParams.MATCH_PARENT,
+//                    ViewGroup.LayoutParams.WRAP_CONTENT
+//                )
+//                params.setMargins(150, 20, 150, 20) // ✅ Margin 적용 (좌우 50, 위아래 20)
+//                layoutParams = params
+//                addView(input)
+//            }
 
             AlertDialog.Builder(requireContext())
                 .setTitle("회원 탈퇴")
-                .setMessage("${userID}의 비밀번호를 입력하세요")
+                .setMessage("${userID} 의 비밀번호를 입력해 주세요")
                 .setView(input)
                 .setPositiveButton("확인") { _, _ ->
                     val password = input.text.toString()

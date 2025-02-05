@@ -50,6 +50,11 @@ class ActiveMain : AppCompatActivity() {
                 R.id.signupFragment,
                 R.id.userPurchaseFragment,
                 R.id.userBookListFragment,
+                R.id.chargePointFragment,
+                R.id.purchaseProcessFragment,
+                R.id.qnaWriterFragment,
+                R.id.reWriterFragment,
+                R.id.eachBoardFragment,
             ), drawerLayout
         )
 

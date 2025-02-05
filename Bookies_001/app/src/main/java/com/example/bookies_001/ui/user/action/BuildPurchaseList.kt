@@ -1,6 +1,7 @@
 package com.example.bookies_001.ui.user.action
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import java.util.Locale
 class BuildPurchaseList(
     private val context: Context,
     private val data: MutableList<MutableMap<String, Any>>,
+    private val navController: NavController
 ): BaseAdapter() {
 
     override fun getCount(): Int = data.size
@@ -40,6 +42,15 @@ class BuildPurchaseList(
         // 데이터 설정
         purchaseTitle.text = item["title"] as? String ?: "Unknown Title"
         purchasePrice.text = "${NumberFormat.getNumberInstance(Locale.US).format(price)} 원"
+
+        view.setOnClickListener {
+            val item = getItem(position)
+            val bookId = (item["book_id"] as? Number)?.toLong() ?: -1L
+            val bundle = Bundle().apply {
+                putLong("book_id", bookId)
+            }
+            navController.navigate(R.id.action_userPurchaseFragment_to_bookDetailFragment, bundle)
+        }
 
         return view
     }

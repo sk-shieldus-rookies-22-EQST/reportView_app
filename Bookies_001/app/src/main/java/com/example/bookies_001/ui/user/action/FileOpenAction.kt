@@ -31,7 +31,7 @@ class FileOpenAction(private val context: Context) {
     fun openFile(bookId: Long) {
         val userId = SessionManager.getUserID(context).toString()
 //        val gemerateRequest = GemerateRequest(user_id = userId, book_id = bookId.toString())
-        val gemerateRequest = GemerateRequest(user_id = "123", book_id = 1000020.toString())
+        val gemerateRequest = GemerateRequest(user_id = "4", book_id = 248.toString())
 
         val app = context.applicationContext as App
         val kmsApi = app.KMSretrofit.create(KMSAPI::class.java)
@@ -86,7 +86,7 @@ class FileOpenAction(private val context: Context) {
     private fun downloadFile(url: String, callback: (File?) -> Unit) {
         val request = Request.Builder()
             .url(url)
-            .addHeader("Connection", "close")  // ✅ 연결 종료 강제
+//            .addHeader("Connection", "close")  // ✅ 연결 종료 강제
             .build()
 
         Thread {

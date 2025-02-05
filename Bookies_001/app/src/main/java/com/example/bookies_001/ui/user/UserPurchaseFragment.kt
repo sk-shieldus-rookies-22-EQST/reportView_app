@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.bookies_001.App
 import com.example.bookies_001.R
 import com.example.bookies_001.api.UserAPI
@@ -54,7 +55,7 @@ class UserPurchaseFragment: Fragment() {
     }
 
     private fun updateListView() {
-        val adapter = BuildPurchaseList(requireContext(), purchaseData)
+        val adapter = BuildPurchaseList(requireContext(), purchaseData, findNavController())
         userpurchaseList.adapter = adapter
     }
 }
