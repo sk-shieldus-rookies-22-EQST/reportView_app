@@ -48,17 +48,15 @@ class EachBoardFragment : Fragment() {
     private lateinit var modifyButton: Button // 수정 버튼
     private lateinit var listButton: Button // 목록 버튼
     private lateinit var qnaInnerLock: ImageView
+
     private var fileName = ""
     private var filePath = ""
-
+    private var secret = false
 
     // LocalDateTime 입력 포맷: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
     val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     // 출력 포맷: "yyyy-MM-dd"
     val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-
-    private val BASE_URL = "http://dahaezlge.kro.kr:30303/"
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,11 +93,8 @@ class EachBoardFragment : Fragment() {
         qnaFileDownload.setOnClickListener {
                 // 파일이 존재하는 경우에만 다운로드 실행
                 if (!filePath.isNullOrEmpty() && !fileName.isNullOrEmpty()) {
-                    val fileUrl = "http://dahaezlge.kro.kr:30303/$filePath"
+                    val fileUrl = "https://3.35.84.46:20202/$filePath"
                     downloadFile(fileUrl, fileName)
-                } else {
-                    // 파일이 존재하지 않으면 사용자에게 알림
-                    Toast.makeText(context, "다운로드할 파일이 없습니다.", Toast.LENGTH_SHORT).show()
                 }
         }
 
@@ -174,6 +169,7 @@ class EachBoardFragment : Fragment() {
                 putLong("qna_id", boardId)
                 putString("title", qnaTitle.text.toString())
                 putString("content", qnaInputText.text.toString())
+                putBoolean("secret",secret)
             }
             navController.navigate(R.id.action_eachBoardFragment_to_reWriterFragment, bundle)
         }
@@ -198,7 +194,7 @@ class EachBoardFragment : Fragment() {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
                 runOnUiThread {
-                    Toast.makeText(context, "파일 다운로드 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "파일은 웹을 통해서만 받을 수 있습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -265,9 +261,16 @@ class EachBoardFragment : Fragment() {
         qnaInputText.text = boardQnAResponse.content
         fileName = boardQnAResponse.file_name
         filePath = boardQnAResponse.file_path
+        secret = boardQnAResponse.secret
 
         if (boardQnAResponse.secret) {
             qnaInnerLock.visibility = View.VISIBLE
+        }
+
+        if (filePath.isNullOrEmpty()) {
+            qnaFileDownload.visibility = View.GONE
+        } else {
+            qnaFileDownload.visibility = View.VISIBLE
         }
 
         val createdAt = boardQnAResponse.created_at

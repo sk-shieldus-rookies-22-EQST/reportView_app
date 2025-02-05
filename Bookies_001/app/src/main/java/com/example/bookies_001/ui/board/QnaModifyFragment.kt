@@ -60,6 +60,7 @@ class QnaModifyFragment : Fragment() {
             qnaId = it.getLong("qna_id", -1)
             editTextTitle.setText(it.getString("title", ""))
             editTextContent.setText(it.getString("content", ""))
+            checkSecret.isChecked = it.getBoolean("secret")
         }
 
         buttonSubmit.text = "수정 완료"
