@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/listFragment">
+<!--페이지 to 페이지 동작을 action으로 명시 해줘야 함-->
+    <action
+        android:id="@+id/action_currentFragment_to_listFragment"
+        app:destination="@id/listFragment" />
+    <!-- Login Fragment -->
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.bookies_001.ui.auth.LoginFragment"
+        android:label="로그인"
+        tools:layout="@layout/login_main">
+        <action
+            android:id="@+id/action_loginFragment_to_listFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_findIdFragment"
+            app:destination="@id/findIDFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_findPWConfirmFragment"
+            app:destination="@id/findPWConfirmFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_signupFragment"
+            app:destination="@id/signupFragment" />
+    </fragment>
+
+    <!-- List Fragment -->
+    <fragment
+        android:id="@+id/listFragment"
+        android:name="com.example.bookies_001.ui.view.ListFragment"
+        android:label="BOOKIES"
+        tools:layout="@layout/list_main" >
+        <action
+            android:id="@+id/action_listFragment_to_bookDetailFragment"
+            app:destination="@id/bookDetailFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_purchaseProcessFragment"
+            app:destination="@id/purchaseProcessFragment" />
+    </fragment>
+
+    <!-- Book Detail Fragment -->
+    <fragment
+        android:id="@+id/bookDetailFragment"
+        android:name="com.example.bookies_001.ui.view.BookDetailFragment"
+        android:label="상세보기"
+        tools:layout="@layout/book_detail_main">
+        <action
+            android:id="@+id/action_bookDetailFragment_to_purchaseFragment"
+            app:popUpTo="@id/bookDetailFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/purchaseFragment" />
+    </fragment>
+
+    <!-- Board Fragment -->
+    <fragment
+        android:id="@+id/boardFragment"
+        android:name="com.example.bookies_001.ui.board.BoardFragment"
+        android:label="게시판"
+        tools:layout="@layout/board_main">
+        <action
+            android:id="@+id/action_boardFragment_to_eachBoardFragment"
+            app:destination="@id/eachBoardFragment" />
+        <action
+            android:id="@+id/action_boardFragment_to_qnaWriterFragment"
+            app:destination="@id/qnaWriterFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/eachBoardFragment"
+        android:name="com.example.bookies_001.ui.board.EachBoardFragment"
+        android:label="게시판"
+        tools:layout="@layout/qna_detail_main">
+        <action
+            android:id="@+id/action_eachBoardFragment_to_reWriterFragment"
+            app:destination="@id/reWriterFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/purchaseFragment"
+        android:name="com.example.bookies_001.ui.purchase.PurchaseFragment"
+        android:label="장바구니"
+        tools:layout="@layout/purchase_main">
+        <action
+            android:id="@+id/action_purchaseFragment_to_purchaseProcessFragment"
+            app:destination="@id/purchaseProcessFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/purchaseProcessFragment"
+        android:name="com.example.bookies_001.ui.purchase.PurchaseProcessFragment"
+        android:label="구매 확인"
+        tools:layout="@layout/purchase_process">
+        <action
+            android:id="@+id/action_purchaseProcessFragment_to_userPurchaseFragment"
+            app:popUpTo="@id/purchaseProcessFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/userPurchaseFragment" />
+        <action
+            android:id="@+id/action_purchaseProcessFragment_to_chargePointFragment"
+            app:popUpTo="@id/purchaseProcessFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/chargePointFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/findIDFragment"
+        android:name="com.example.bookies_001.ui.auth.FindIDFragment"
+        android:label="아이디 찾기"
+        tools:layout="@layout/find_id" >
+        <action
+            android:id="@+id/action_findIDFragment_to_findPwFragment"
+            app:popUpTo="@id/findIDFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/findPWFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/findPWConfirmFragment"
+        android:name="com.example.bookies_001.ui.auth.FindPWFragment"
+        android:label="비밀번호 찾기"
+        tools:layout="@layout/find_pw_confirm">
+        <action
+            android:id="@+id/action_findPWConfirmFragment_to_findPWFragment"
+            app:popUpTo="@id/findPWConfirmFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/findPWFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/findPWFragment"
+        android:name="com.example.bookies_001.ui.auth.UpdatePWFragment"
+        android:label="비밀번호 찾기"
+        tools:layout="@layout/find_pw" >
+        <argument
+            android:name="data"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_findPWFragment_to_loginFragment"
+            app:popUpTo="@id/findPWFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signupFragment"
+        android:name="com.example.bookies_001.ui.auth.SignupFragment"
+        android:label="회원가입"
+        tools:layout="@layout/signup_main" >
+        <action
+            android:id="@+id/action_signupFragment_to_loginFragment"
+            app:popUpTo="@id/signupFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/userinfofragment"
+        android:name="com.example.bookies_001.ui.user.UserFragment"
+        android:label="내 정보"
+        tools:layout="@layout/userinfo_main" >
+        <action
+            android:id="@+id/action_userinfofragment_to_listFragment"
+            app:popUpTo="@id/userinfofragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/listFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/userConfirmFragment"
+        android:name="com.example.bookies_001.ui.user.UserConfirmFragment"
+        android:label="내 정보"
+        tools:layout="@layout/user_info_confirm" >
+        <action
+            android:id="@+id/action_userConfirmFragment_to_userinfofragment"
+            app:popUpTo="@id/userConfirmFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/userinfofragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/userPurchaseFragment"
+        android:name="com.example.bookies_001.ui.user.UserPurchaseFragment"
+        android:label="결제내역"
+        tools:layout="@layout/user_purchase_main">
+        <action
+            android:id="@+id/action_userPurchaseFragment_to_bookDetailFragment"
+            app:popUpTo="@id/userPurchaseFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/bookDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/userBookListFragment"
+        android:name="com.example.bookies_001.ui.user.UserBookListFragment"
+        android:label="내 서재"
+        tools:layout="@layout/user_book_main" />
+
+    <fragment
+        android:id="@+id/qnaWriterFragment"
+        android:name="com.example.bookies_001.ui.board.QnaWriterFragment"
+        android:label="글 작성"
+        tools:layout="@layout/qna_write_main" />
+
+    <fragment
+        android:id="@+id/reWriterFragment"
+        android:name="com.example.bookies_001.ui.board.QnaModifyFragment"
+        android:label="글 수정"
+        tools:layout="@layout/qna_write_main" />
+
+    <fragment
+        android:id="@+id/chargePointFragment"
+        android:name="com.example.bookies_001.ui.purchase.PointFragment"
+        android:label="포인트 충전"
+        tools:layout="@layout/charge_point" >
+        <action
+            android:id="@+id/action_chargePointFragment_to_purchaseFragment"
+            app:popUpTo="@id/chargePointFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/purchaseFragment" />
+    </fragment>
+</navigation>

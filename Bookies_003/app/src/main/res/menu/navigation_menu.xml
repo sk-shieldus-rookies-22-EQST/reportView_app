@@ -1,0 +1,48 @@
+<!--Fragment 동작 시 변경되는 메뉴-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/listFragment"
+            android:icon="@drawable/home_black"
+            android:title="BOOKIES" />
+        <item
+            android:id="@+id/boardFragment"
+            android:icon="@drawable/web_black"
+            android:title="게시판" />
+    </group>
+    <group android:checkableBehavior="single"
+        android:id="@+id/group_logged_out">
+        <item
+            android:id="@+id/loginFragment"
+            android:icon="@drawable/login_black"
+            android:title="로그인" />
+    </group>
+    <group android:checkableBehavior="single"
+        android:id="@+id/group_logged_in">
+        <item
+            android:id="@+id/purchaseFragment"
+            android:icon="@drawable/cart_black"
+            android:title="장바구니" />
+        <item
+            android:id="@+id/chargePointFragment"
+            android:icon="@drawable/charge_point"
+            android:title="포인트 충전"/>
+        <item
+            android:id="@+id/userConfirmFragment"
+            android:icon="@drawable/person_black"
+            android:title="내 정보" />
+        <item
+            android:id="@+id/userBookListFragment"
+            android:icon="@drawable/book_black"
+            android:title="내 서재" />
+        <item
+            android:id="@+id/userPurchaseFragment"
+            android:icon="@drawable/purchase_black"
+            android:title="결제내역" />
+
+        <item
+            android:id="@+id/logoutFragment"
+            android:icon="@drawable/login_black"
+            android:title="로그아웃" />
+    </group>
+</menu>
