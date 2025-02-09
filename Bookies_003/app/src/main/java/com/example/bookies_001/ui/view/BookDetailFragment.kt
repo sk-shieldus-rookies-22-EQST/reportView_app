@@ -121,7 +121,7 @@ class BookDetailFragment: Fragment() {
         bookDetailPrice.text = "${NumberFormat.getNumberInstance(Locale.US).format(viewbookdetailResponse.price.toInt())} 원" // 가격 예시 "${NumberFormat.getNumberInstance(Locale.US).format(price)} 원"
         bookDetailContent.text = viewbookdetailResponse.book_summary
         // bookDetailImage는 이미지 URL을 받아 로드하는 로직 필요 (예: Glide, Picasso 사용)
-       val IMG_PATH = "https://3.35.84.46:20202" + viewbookdetailResponse.book_img_path
+       val IMG_PATH = "https://3.35.84.46" + viewbookdetailResponse.book_img_path
         Glide.with(requireContext())
             .load(IMG_PATH)
             .placeholder(R.drawable.bookkies_icon_thick)

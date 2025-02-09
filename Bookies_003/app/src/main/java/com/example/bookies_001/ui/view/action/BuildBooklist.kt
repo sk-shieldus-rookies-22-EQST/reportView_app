@@ -71,7 +71,7 @@ class BuildBooklist(
         // http://도메인:포트/이미지 경로
         // http://도메인:포트/ <-- 하드코딩으로 집어 넣을 예정
 
-        val IMG_PATH = "https://3.35.84.46:20202" + item["book_img_path"] as? String
+        val IMG_PATH = "https://3.35.84.46" + item["book_img_path"] as? String
 
         holder.bookTitle.text = title
         holder.bookAuthor.text = writer
