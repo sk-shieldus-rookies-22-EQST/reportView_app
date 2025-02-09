@@ -11,12 +11,6 @@ object SessionManager {
     private const val AUTO_LOGIN = "auto_login"
     private const val REMEMBER_ID = "remember_id"
 
-    private lateinit var appContext : Context
-
-    fun init(context: Context) {
-        appContext = context.applicationContext
-    }
-
     private fun getPreferences(context: Context): SharedPreferences {
         return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     }
@@ -51,7 +45,7 @@ object SessionManager {
         return sharedPreferences.getString(KEY_USER_ID, "no_user")
     }
 
-    fun getUserLevel(context: Context): Int? {
+    fun getUserLevel(context: Context): Int {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         return sharedPreferences.getInt(USER_LEVEL,-1)
     }
@@ -70,15 +64,25 @@ object SessionManager {
 
     fun clearSession(context: Context) {
         val editor = context.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE).edit()
+
         val autoLogin = isAutoLogin(context)
         val rememberID = isRememberID(context)
         val userID = getUserID(context)
-        editor.clear()
+        val userLevel = getUserLevel(context)
+
+        editor.remove(KEY_IS_LOGGED_IN)
+
         editor.putBoolean(AUTO_LOGIN, autoLogin)
         editor.putBoolean(REMEMBER_ID, rememberID)
-        if (rememberID) {
+
+        if (!rememberID) {
+            editor.remove(KEY_USER_ID)
+            editor.remove(USER_LEVEL)
+        } else {
             editor.putString(KEY_USER_ID, userID)
+            editor.putInt(USER_LEVEL,userLevel)
         }
+
         editor.apply()
     }
 }

@@ -43,8 +43,8 @@ class LoginAction {
         AuthRepository(authAPI).login(aesEncrypt) { response, error ->
             if (response != null) {
                 if (response.status) {
-                    SessionManager.saveAutoLogin(context,remmemberID.isChecked)
-                    SessionManager.saveRememberID(context,autoLogin.isChecked)
+                    SessionManager.saveAutoLogin(context,autoLogin.isChecked)
+                    SessionManager.saveRememberID(context,remmemberID.isChecked)
                     SessionManager.saveLoginSession(context, id)
                     AuthRepository(authAPI).userLevel(id) { res ->
                         if (res != null) {

@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitClient {
 
     val retrofit: Retrofit by lazy {
-        createRetrofit("https://3.35.84.46:20202/")
+        createRetrofit("https://3.35.84.46/")
     }
 
     val KMSretrofit: Retrofit by lazy {

@@ -60,6 +60,10 @@ class LoginFragment : Fragment(), View.OnClickListener {
         inputID = view.findViewById(R.id.id_input)
         inputPW = view.findViewById(R.id.pw_input)
 
+        if (SessionManager.isRememberID(requireContext())) {
+            inputID.setText(SessionManager.getUserID(requireContext()))
+        }
+
         return view
 
     }

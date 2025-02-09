@@ -13,7 +13,7 @@ class App : Application() {
         super.onCreate()
         AESUtil.init(this)
         if (!SessionManager.isAutoLogin(this)){
-            SessionManager.init(this)
+            SessionManager.clearSession(this)
         }
     }
 
