@@ -120,7 +120,7 @@
         <TextView
             android:id="@+id/qna_input_text"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="top"
             android:padding="8dp"
             android:scrollbars="vertical"

@@ -25,6 +25,9 @@ import com.example.bookies_001.utils.SessionManager
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.text.NumberFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.Locale
 import kotlin.coroutines.resume
 
@@ -35,11 +38,16 @@ class BookDetailFragment: Fragment() {
     private lateinit var bookDetailPrice : TextView
     private lateinit var bookDetailWriter : TextView
     private lateinit var bookDetailContent : TextView
+    private lateinit var bookDetailDate : TextView
     private lateinit var bookDetailCart : Button
     private lateinit var bookDetailBuy : Button
 
     private var bookDetailData : MutableMap<String,Any> = mutableMapOf()
     private var bookId : Long = -1L
+    // LocalDateTime 입력 포맷: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS+SS:SS")
+    // 출력 포맷: "yyyy-MM-dd"
+    val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +65,7 @@ class BookDetailFragment: Fragment() {
         bookDetailTitle = view.findViewById(R.id.book_detail_title)
         bookDetailPrice = view.findViewById(R.id.book_detail_price)
         bookDetailWriter = view.findViewById(R.id.book_detail_writer)
+        bookDetailDate = view.findViewById(R.id.book_detail_date)
         bookDetailCart = view.findViewById(R.id.book_detail_cart)
         bookDetailBuy = view.findViewById(R.id.book_detail_buy)
         bookDetailContent = view.findViewById(R.id.book_detail_content)
@@ -118,6 +127,13 @@ class BookDetailFragment: Fragment() {
     private fun updateUI(viewbookdetailResponse: ViewbookdetailResponse) {
         bookDetailTitle.text = viewbookdetailResponse.title
         bookDetailWriter.text = viewbookdetailResponse.writer
+        bookDetailDate.text = try {
+            val parsedDate = LocalDateTime.parse(viewbookdetailResponse.write_date, inputFormatter)
+            parsedDate.format(outputFormatter)
+        } catch (e: DateTimeParseException) {
+            Log.e("EachBoardFragment", "Date parsing error: ${e.message}")
+            "날짜 없음"
+        }
         bookDetailPrice.text = "${NumberFormat.getNumberInstance(Locale.US).format(viewbookdetailResponse.price.toInt())} 원" // 가격 예시 "${NumberFormat.getNumberInstance(Locale.US).format(price)} 원"
         bookDetailContent.text = viewbookdetailResponse.book_summary
         // bookDetailImage는 이미지 URL을 받아 로드하는 로직 필요 (예: Glide, Picasso 사용)

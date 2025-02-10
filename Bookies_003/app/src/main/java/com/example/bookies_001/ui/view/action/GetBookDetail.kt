@@ -21,7 +21,8 @@ class GetBookDetail(
                     writer = response.writer?: "No writer available",
                     title = response.title?: "No title available",
                     price = response.price?: "No price available",
-                    book_img_path = response.book_img_path?: ""
+                    book_img_path = response.book_img_path?: "",
+                    write_date = response.write_date?: "No date available"
                 )
                 callback(viewbookdetailResponse)
             } else {

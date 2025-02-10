@@ -33,6 +33,8 @@ import java.time.format.DateTimeParseException
 import okhttp3.*
 import java.io.File
 import java.io.IOException
+import java.time.format.DateTimeFormatterBuilder
+import java.time.temporal.ChronoField
 
 class EachBoardFragment : Fragment() {
 
@@ -56,9 +58,12 @@ class EachBoardFragment : Fragment() {
     private var secret = false
 
     // LocalDateTime 입력 포맷: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
-    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+    val inputFormatter: DateTimeFormatter = DateTimeFormatterBuilder()
+        .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
+        .appendFraction(ChronoField.MICRO_OF_SECOND, 5, 6, true) // 최소 5자리, 최대 6자리 허용
+        .toFormatter()
     // 출력 포맷: "yyyy-MM-dd"
-    val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val outputFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -281,13 +286,14 @@ class EachBoardFragment : Fragment() {
             qnaFileDownload.visibility = View.VISIBLE
         }
 
-        val createdAt = boardQnAResponse.created_at
-        qnaDate.text = try {
-            val parsedDate = LocalDateTime.parse(createdAt, inputFormatter)
+        val formattedDate = try {
+            val parsedDate = LocalDateTime.parse(boardQnAResponse.created_at, inputFormatter)
             parsedDate.format(outputFormatter)
         } catch (e: DateTimeParseException) {
-            Log.e("EachBoardFragment", "Date parsing error: ${e.message}")
+            Log.e("DateFormatter", "Date parsing error: ${e.message}")
             "날짜 없음"
         }
+
+        qnaDate.text = formattedDate
     }
 }

@@ -1,6 +1,7 @@
 package com.example.bookies_001.ui.board.action
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,9 @@ import android.widget.TextView
 import com.example.bookies_001.R
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
 import java.time.format.DateTimeParseException
+import java.time.temporal.ChronoField
 
 class CommentAdapter(
     private val context: Context,
@@ -32,16 +35,23 @@ class CommentAdapter(
         val createdAtText = item["qna_re_created_at"] as? String ?: "No Created At"
         val contentText = item["qna_re_content"] as? String ?: "No Content"
 
-        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
-        val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+        // LocalDateTime 입력 포맷: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+        val inputFormatter: DateTimeFormatter = DateTimeFormatterBuilder()
+            .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
+            .appendFraction(ChronoField.MICRO_OF_SECOND, 5, 6, true) // 최소 5자리, 최대 6자리 허용
+            .toFormatter()
+        // 출력 포맷: "yyyy-MM-dd"
+        val outputFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
-        // Handling `created_at` parsing safely
-        createdAt.text = try {
+        val formattedDate = try {
             val parsedDate = LocalDateTime.parse(createdAtText, inputFormatter)
             parsedDate.format(outputFormatter)
         } catch (e: DateTimeParseException) {
+            Log.e("DateFormatter", "Date parsing error: ${e.message}")
             "날짜 없음"
         }
+        createdAt.text = formattedDate
+
         contentTextView.text = contentText
 
         return view
