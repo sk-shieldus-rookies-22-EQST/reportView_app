@@ -84,6 +84,7 @@ class FileOpenAction(private val context: Context) {
                         } catch (e: Exception) {
                             showToast("에러 발생: ${e.message}")
                         } finally {
+                            DoRSAUtils.clearKeys()
                             dismissLoading()
                         }
                     }
