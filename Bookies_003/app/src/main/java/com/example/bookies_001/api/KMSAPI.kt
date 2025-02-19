@@ -11,6 +11,6 @@ interface KMSAPI {
     @POST("generate-presigned-url")
     fun generate(@Body request: GemerateRequest): Call<GenerateResponse>
 
-    @GET("get-key")
-    fun getkey(): Call<GetkeyResponse>
+    @POST("get-key")
+    fun getkey(@Body request: GetKeyRequest): Call<GetkeyResponse>
 }

@@ -3,6 +3,7 @@ package com.example.bookies_001.repository
 import com.example.bookies_001.api.KMSAPI
 import com.example.bookies_001.model.kms.GemerateRequest
 import com.example.bookies_001.model.kms.GenerateResponse
+import com.example.bookies_001.model.kms.GetKeyRequest
 import com.example.bookies_001.model.kms.GetkeyResponse
 import org.json.JSONObject
 import retrofit2.Call
@@ -35,8 +36,8 @@ class KmsRepository(private val api: KMSAPI) {
         })
     }
 
-    fun getkey(callback: (GetkeyResponse?, Throwable?) -> Unit) {
-        api.getkey().enqueue(object : Callback<GetkeyResponse> {
+    fun getkey(getKeyRequest: GetKeyRequest,callback: (GetkeyResponse?, Throwable?) -> Unit) {
+        api.getkey(getKeyRequest).enqueue(object : Callback<GetkeyResponse> {
             override fun onResponse(
                 call: Call<GetkeyResponse>,
                 response: Response<GetkeyResponse>

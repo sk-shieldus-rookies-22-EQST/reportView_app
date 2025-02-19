@@ -59,21 +59,31 @@ class FileOpenAction(private val context: Context) {
 
             downloadFile(downloadUrl!!) { downloadedFile ->
                 if (downloadedFile != null) {
-                    try {
-                        val encryptedData = downloadedFile.readBytes()
-                        val aesKey = AESUtil.key.toByteArray(Charsets.US_ASCII).copyOf(16)
-                        val aesIv = AESUtil.iv.toByteArray(Charsets.US_ASCII).copyOf(16)
-
-                        val decryptedData = decryptAES(encryptedData, aesKey, aesIv)
-                        if (decryptedData != null) {
-                            saveDecryptedFileAsPdf(decryptedData)
-                        } else {
-                            showToast("복호화 실패")
+                    val doRSA = DoRSA(kmsRepository)
+                    doRSA.getKeysAsync { key, iv -> // 🔹 AES Key와 IV를 비동기적으로 가져온 후 실행
+                        if (key == null || iv == null) {
+                            showToast("복호화 암호를 가져오는 데 실패했습니다.")
+                            return@getKeysAsync
                         }
-                    } catch (e: Exception) {
-                        showToast("에러 발생: ${e.message}")
-                    } finally {
-                        dismissLoading()
+
+                        try {
+                            val encryptedData = downloadedFile.readBytes()
+
+                            val aesKey = key.copyOf(16)
+                            val aesIv = iv.copyOf(16)
+
+                            val decryptedData = decryptAES(encryptedData, aesKey, aesIv)
+                            if (decryptedData != null) {
+                                saveDecryptedFileAsPdf(decryptedData)
+                            } else {
+                                showToast("복호화 실패")
+                            }
+                        } catch (e: Exception) {
+                            showToast("에러 발생: ${e.message}")
+                        } finally {
+                            doRSA.close()
+                            dismissLoading()
+                        }
                     }
                 } else {
                     showToast("파일 다운로드 실패")
@@ -106,13 +116,11 @@ class FileOpenAction(private val context: Context) {
                         callback(downloadedFile)
                     } else {
                         Log.e("FileDownload", "서버 응답 오류: ${res.code}")
-                        showToast("파일 다운로드 실패 (오류 코드: ${res.code})")
                         callback(null)
                     }
                 }
             } catch (e: Exception) {
                 Log.e("FileDownload", "파일 다운로드 중 오류 발생: ${e.message}")
-                showToast("파일 다운로드 중 오류 발생: ${e.message}")
                 callback(null)
             }
         }.start()
@@ -133,8 +141,8 @@ class FileOpenAction(private val context: Context) {
     private fun saveDecryptedFileAsPdf(decryptedData: ByteArray) {
         try {
             val fileName = "decrypted_file.pdf"
-            val downloadFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val file = File(downloadFolder, fileName)
+            val cacheFolder = context.cacheDir
+            val file = File(cacheFolder, fileName)
 
             FileOutputStream(file).use { fos ->
                 fos.write(decryptedData)
