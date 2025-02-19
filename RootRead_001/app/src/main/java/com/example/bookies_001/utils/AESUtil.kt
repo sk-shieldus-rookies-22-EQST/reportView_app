@@ -1,5 +1,6 @@
 package com.example.bookies_001.utils
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.util.Base64
 import android.util.Log
@@ -16,7 +17,6 @@ object AESUtil {
     private const val ALGORITHM = "AES"
     private const val TRANSFORMATION = "AES/CBC/PKCS5Padding"
 
-
     // 만약 키나 IV가 16바이트가 아닐 경우 16바이트로 맞추기 위한 헬퍼 함수
     private fun padTo16Bytes(input: ByteArray): ByteArray {
         return if (input.size >= 16) {
@@ -28,8 +28,9 @@ object AESUtil {
 
 
     //  평문(plainText)을 AES로 암호화하고, 암호문을 Base64 문자열로 반환합니다.
-    fun encrypt(plainText: String, callback: (String?) -> Unit) {
-        DoRSAUtils.getKeysAsync { aesKey, aesIv ->
+    fun encrypt(plainText: String, kmsRepository: KmsRepository, callback: (String?) -> Unit) {
+        val doRSAUtils = DoRSAUtils(kmsRepository)
+        doRSAUtils.getKeysAsync { aesKey, aesIv ->
             if (aesKey == null || aesIv == null) {
                 Log.e("AESUtil", "AES Key 또는 IV를 가져오는 데 실패했습니다.")
                 callback(null)
@@ -51,14 +52,16 @@ object AESUtil {
             } catch (e: Exception) {
                 Log.e("AESUtil", "AES 암호화 실패: ${e.message}")
                 callback(null)
+            } finally {
+                doRSAUtils.clearKeys()
             }
         }
-        DoRSAUtils.clearKeys()
     }
 
     //  암호화된 Base64 문자열(cipherText)을 복호화하여 평문 문자열로 반환합니다.
-    fun decrypt(cipherText: String, callback: (String?) -> Unit) {
-        DoRSAUtils.getKeysAsync { aesKey, aesIv ->
+    fun decrypt(cipherText: String, kmsRepository: KmsRepository, callback: (String?) -> Unit) {
+        val doRSAUtils = DoRSAUtils(kmsRepository)
+        doRSAUtils.getKeysAsync { aesKey, aesIv ->
             if (aesKey == null || aesIv == null) {
                 Log.e("AESUtil", "AES Key 또는 IV를 가져오는 데 실패했습니다.")
                 callback(null)
@@ -80,8 +83,9 @@ object AESUtil {
             } catch (e: Exception) {
                 Log.e("AESUtil", "AES 복호화 실패: ${e.message}")
                 callback(null)
+            } finally {
+                doRSAUtils.clearKeys()
             }
         }
-        DoRSAUtils.clearKeys()
     }
 }

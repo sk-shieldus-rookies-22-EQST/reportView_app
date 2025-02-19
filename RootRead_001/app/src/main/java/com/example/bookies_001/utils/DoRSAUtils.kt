@@ -10,35 +10,25 @@ import java.security.interfaces.RSAPublicKey
 import java.util.Base64
 import javax.crypto.Cipher
 
-object DoRSAUtils {
+class DoRSAUtils(private val kmsRepository: KmsRepository) {
     private var aesKey: String? = null
     private var aesIv: String? = null
     private var privateKey: RSAPrivateKey? = null
-    private var isInitialized = false
+    private var rsaKeyPair: KeyPair? = null // 🔹 nullable로 변경하여 초기화 시점 조정
     private val keyLoadListeners = mutableListOf<(ByteArray?, ByteArray?) -> Unit>()
-    private lateinit var kmsRepository: KmsRepository
 
-    /**
-     * `kmsRepository` 설정 (외부에서 주입)
-     */
-    fun initialize(repository: KmsRepository) {
-        if (isInitialized) return // 🔹 이미 초기화되었으면 실행하지 않음
-
-        kmsRepository = repository
-        isInitialized = true
-    }
-
-    fun isInitialized(): Boolean {
-        return isInitialized
+    init {
+        initializeRSAKey() // 🔹 객체가 생성될 때 RSA 키 생성
+        requestAESKey() // 🔹 RSA 키 생성 후 AES 키 요청
     }
 
     /**
-     * RSA 2048비트 키 쌍을 한 번만 생성
+     * RSA 2048비트 키 쌍을 미리 생성
      */
-    private val rsaKeyPair: KeyPair by lazy {
+    private fun initializeRSAKey() {
         val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
         keyPairGenerator.initialize(2048)
-        keyPairGenerator.generateKeyPair().also {
+        rsaKeyPair = keyPairGenerator.generateKeyPair().also {
             privateKey = it.private as RSAPrivateKey
         }
     }
@@ -69,10 +59,15 @@ object DoRSAUtils {
     }
 
     /**
-     * 서버에서 AES 키 요청 및 복호화 (키가 필요할 때만 호출)
+     * 서버에서 AES 키 요청 및 복호화
      */
     private fun requestAESKey() {
-        val publicKey = rsaKeyPair.public as RSAPublicKey
+        if (rsaKeyPair == null) {
+            Log.e("DoRSAUtils", "RSA 키가 초기화되지 않음")
+            return
+        }
+
+        val publicKey = rsaKeyPair!!.public as RSAPublicKey
         val publicKeyPEM = convertPublicKeyToPEM(publicKey)
 
         val publicKeyData = GetKeyRequest(rsa_public_key = publicKeyPEM)
@@ -95,25 +90,23 @@ object DoRSAUtils {
     }
 
     /**
-     * 비동기적으로 AES Key & IV를 가져옴 (Base64 디코딩 후 반환, 필요할 때 요청)
+     * 비동기적으로 AES Key & IV를 가져옴 (Base64 디코딩 후 반환)
      */
     fun getKeysAsync(callback: (ByteArray?, ByteArray?) -> Unit) {
         if (aesKey != null && aesIv != null) {
-            // 🔹 이미 키가 있으면 바로 반환
             callback(Base64.getDecoder().decode(aesKey), Base64.getDecoder().decode(aesIv))
         } else {
-            // 🔹 키가 없으면 서버에 요청 후 반환
             keyLoadListeners.add(callback)
-            requestAESKey()
         }
     }
 
     /**
-     * AES 키 삭제 (로그아웃 시 호출)
+     * AES 키 삭제 (객체 사용 후 호출해야 함)
      */
     fun clearKeys() {
         aesKey = null
         aesIv = null
+        privateKey = null
+        rsaKeyPair = null // 🔹 RSA 키도 초기화하여 메모리 해제
     }
 }
-

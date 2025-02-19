@@ -39,17 +39,14 @@ class LoginAction {
             return
         }
 
-        if (!DoRSAUtils.isInitialized()) {
-            val app = context.applicationContext as App
-            val kmsApi = app.KMSretrofit.create(KMSAPI::class.java)
+        val app = context.applicationContext as App
+        val kmsApi = app.KMSretrofit.create(KMSAPI::class.java)
 
-            val kmsRepository = KmsRepository(kmsApi)
-            DoRSAUtils.initialize(kmsRepository)
-        }
+        val kmsRepository = KmsRepository(kmsApi)
 
         val loginData = id+"&&&&"+pw
 
-        AESUtil.encrypt(loginData) { encryptedData ->
+        AESUtil.encrypt(loginData,kmsRepository) { encryptedData ->
             if (encryptedData != null) {
                 val aesEncrypt = LoginRequest(e2e_data = encryptedData) // 🔹 암호화된 데이터 설정
 

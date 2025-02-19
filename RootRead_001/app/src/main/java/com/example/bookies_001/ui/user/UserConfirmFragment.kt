@@ -48,14 +48,11 @@ class UserConfirmFragment : Fragment() {
             val password = inputPW.text.toString()
             val plainText = "$userId&&&&$password"
 
-            if (!DoRSAUtils.isInitialized()) {
-                val kmsApi = app.KMSretrofit.create(KMSAPI::class.java)
+            val kmsApi = app.KMSretrofit.create(KMSAPI::class.java)
 
-                val kmsRepository = KmsRepository(kmsApi)
-                DoRSAUtils.initialize(kmsRepository)
-            }
+            val kmsRepository = KmsRepository(kmsApi)
 
-            AESUtil.encrypt(plainText) { encryptedData ->
+            AESUtil.encrypt(plainText,kmsRepository) { encryptedData ->
                 if (encryptedData != null) {
                     val aesEncrypt = LoginRequest(e2e_data = encryptedData) // 🔹 암호화 완료 후 요청 생성
 

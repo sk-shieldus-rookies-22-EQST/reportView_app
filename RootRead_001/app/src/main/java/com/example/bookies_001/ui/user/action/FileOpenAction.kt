@@ -61,7 +61,8 @@ class FileOpenAction(private val context: Context) {
 
             downloadFile(downloadUrl!!) { downloadedFile ->
                 if (downloadedFile != null) {
-                    DoRSAUtils.getKeysAsync { key, iv -> // 🔹 AES Key와 IV를 비동기적으로 가져온 후 실행
+                    val doRSAUtils = DoRSAUtils(kmsRepository)
+                    doRSAUtils.getKeysAsync { key, iv -> // 🔹 AES Key와 IV를 비동기적으로 가져온 후 실행
                         if (key == null || iv == null) {
                             showToast("복호화 암호를 가져오는 데 실패했습니다.")
                             return@getKeysAsync
@@ -84,7 +85,7 @@ class FileOpenAction(private val context: Context) {
                         } catch (e: Exception) {
                             showToast("에러 발생: ${e.message}")
                         } finally {
-                            DoRSAUtils.clearKeys()
+                            doRSAUtils.clearKeys()
                             dismissLoading()
                         }
                     }
@@ -92,6 +93,7 @@ class FileOpenAction(private val context: Context) {
                     showToast("파일 다운로드 실패")
                     dismissLoading()
                 }
+
             }
 
         }
