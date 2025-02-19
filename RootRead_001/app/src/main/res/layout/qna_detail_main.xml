@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="30dp">
+
+    <LinearLayout
+        android:id="@+id/title_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?attr/colorSecondary"
+        android:gravity="center_vertical"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.06"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- 제목 입력 -->
+        <TextView
+            android:id="@+id/qna_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:text="제목"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/qna_inner_lock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/lock"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- ID / 작성자 / 날짜 -->
+    <LinearLayout
+        android:id="@+id/qna_info_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?attr/colorSecondary"
+        android:orientation="vertical"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_box">
+
+
+        <!-- 작성자와 파일 다운로드 아이콘을 포함한 수평 레이아웃 -->
+        <LinearLayout
+            android:id="@+id/qna_id_box"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- ID 표시 -->
+            <TextView
+                android:id="@+id/qna_id"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:text="ID"
+                android:textSize="14sp" />
+
+            <!-- 파일 다운로드 아이콘 -->
+            <ImageView
+                android:id="@+id/qna_file_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="파일 다운로드"
+                android:src="@drawable/file_download" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/qna_user"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:text="작성자"
+            android:textSize="14sp" />
+        <!-- 날짜 표시 -->
+        <TextView
+            android:id="@+id/qna_date"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:text="날짜"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+
+    <!-- 게시글 내용 -->
+
+    <ScrollView
+        android:id="@+id/contentScrol"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:background="?attr/colorSecondary"
+        android:scrollbars="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.34"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/qna_info_box">
+
+
+        <TextView
+            android:id="@+id/qna_input_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:padding="8dp"
+            android:scrollbars="vertical"
+            android:text="게시글 내용"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </ScrollView>
+
+
+    <!-- 댓글 목록: 기존 qna_comment TextView를 ListView로 변경 -->
+    <ListView
+        android:id="@+id/qna_comment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/qna_comment_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/contentScrol" />
+
+    <!-- 댓글 입력 및 등록 -->
+    <LinearLayout
+        android:id="@+id/qna_comment_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/qna_button_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.09"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/qna_comment">
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="0.8"
+            android:background="?attr/colorSecondary"
+            android:hint="댓글을 입력해 주세요"
+            android:padding="10dp">
+
+            <EditText
+                android:id="@+id/qna_comment_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/colorSecondary"
+                android:hint="댓글을 입력해 주세요"/>
+
+        </ScrollView>
+
+        <Button
+            android:id="@+id/qna_comment_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:text="등록"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- 삭제 / 수정 / 목록 버튼 -->
+    <LinearLayout
+        android:id="@+id/qna_button_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:paddingTop="13dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/qna_delete_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:text="삭제"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/qna_edit_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:text="수정"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/qna_list_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1"
+            android:text="목록"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
