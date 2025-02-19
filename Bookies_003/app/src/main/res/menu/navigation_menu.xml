@@ -4,7 +4,7 @@
         <item
             android:id="@+id/listFragment"
             android:icon="@drawable/home_black"
-            android:title="BOOKIES" />
+            android:title="Root Read" />
         <item
             android:id="@+id/boardFragment"
             android:icon="@drawable/web_black"
