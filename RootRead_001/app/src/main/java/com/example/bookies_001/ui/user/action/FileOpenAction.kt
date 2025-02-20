@@ -14,6 +14,7 @@ import com.example.bookies_001.model.kms.GemerateRequest
 import com.example.bookies_001.network.NetworkClient
 import com.example.bookies_001.repository.KmsRepository
 import com.example.bookies_001.ui.user.activity.PdfActivity
+import com.example.bookies_001.ui.user.activity.ViewerActivity
 import com.example.bookies_001.utils.AESUtil
 import com.example.bookies_001.utils.DoRSAUtils
 import com.example.bookies_001.utils.SessionManager
@@ -146,7 +147,7 @@ class FileOpenAction(private val context: Context) {
 
     private fun saveDecryptedFileAsPdf(decryptedData: ByteArray) {
         try {
-            val fileName = "decrypted_file.pdf"
+            val fileName = "decrypted_file.png"
             val cacheFolder = context.cacheDir
             val file = File(cacheFolder, fileName)
 
@@ -159,10 +160,10 @@ class FileOpenAction(private val context: Context) {
         }
     }
 
-    private fun openPdfViewer(pdfPath: String) {
-        Log.d("FileOpenAction", "Opening PdfViewer with path: $pdfPath")
-        val intent = Intent(context, PdfActivity::class.java).apply {
-            putExtra("PDF_PATH", pdfPath)  // ✅ PDF 파일 경로 전달
+    private fun openPdfViewer(file: String) {
+        Log.d("FileOpenAction", "Opening PdfViewer with path: $file")
+        val intent = Intent(context, ViewerActivity::class.java).apply {
+            putExtra("imgPath", file)  // ✅ PDF 파일 경로 전달
         }
         context.startActivity(intent)
     }
