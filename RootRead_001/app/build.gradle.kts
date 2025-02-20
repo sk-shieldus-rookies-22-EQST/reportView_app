@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.bookies_001"
+    namespace = "com.example.rootread"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.bookies_001"
+        applicationId = "com.example.rootread"
         minSdk = 28
         targetSdk = 35
         versionCode = 1
