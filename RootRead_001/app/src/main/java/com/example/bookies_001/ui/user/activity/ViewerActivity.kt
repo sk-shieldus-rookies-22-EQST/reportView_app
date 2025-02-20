@@ -8,6 +8,7 @@ import android.view.WindowManager
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.bookies_001.R
@@ -38,6 +39,8 @@ class ViewerActivity : AppCompatActivity() {
         Glide.with(this)
             .asBitmap()  // Bitmap으로 로드하여 크기를 측정합니다.
             .load(imgFile)
+            .skipMemoryCache(true)  // 메모리 캐시 사용 안 함
+            .diskCacheStrategy(DiskCacheStrategy.NONE) // 디스크 캐시 사용 안 함
             .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     // 이미지뷰에 Bitmap 설정
