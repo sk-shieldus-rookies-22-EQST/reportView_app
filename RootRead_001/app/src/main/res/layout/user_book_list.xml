@@ -11,9 +11,9 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="0.8"
-        android:padding="5dp"
+        android:padding="20dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/bookkies_icon_thick"
+        android:src="@drawable/root_read_logo"
         app:tint="@color/clear" />
 
     <TextView

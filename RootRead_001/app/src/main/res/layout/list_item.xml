@@ -15,7 +15,7 @@
         android:layout_height="150dp"
         android:padding="5dp"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/bookkies_icon_thick"
+        android:src="@drawable/root_read_logo"
         app:tint="@color/clear" />
 
     <LinearLayout

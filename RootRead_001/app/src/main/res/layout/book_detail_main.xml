@@ -16,7 +16,7 @@
             android:id="@+id/book_detail_image"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:src="@drawable/bookkies_icon_thick"
+            android:src="@drawable/root_read_logo"
             android:layout_height="match_parent"
             android:padding="10dp"
             app:tint="@color/clear"/>
