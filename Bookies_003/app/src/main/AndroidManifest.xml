@@ -39,6 +39,9 @@
         <activity
             android:name=".ui.user.activity.PdfActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.user.activity.ViewerActivity"
+            android:exported="false"/>
 
     </application>
 
