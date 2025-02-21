@@ -1,5 +1,6 @@
 package com.example.rootread.ui.view.action
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,42 +16,32 @@ import com.example.rootread.App
 import com.example.rootread.R
 import com.example.rootread.api.PurchaseAPI
 import com.example.rootread.model.purchase.CartGetItemRequest
+import com.example.rootread.model.view.EachBook
 import com.example.rootread.ui.purchase.action.InsertCartItem
 import com.example.rootread.utils.SessionManager
 import java.text.NumberFormat
 import java.util.Locale
 
-/*
-* 리스트 목록을 출력해주는 Adapter
-* 현재 로컬에 저장되어 있는지 정보와 제목으로 리스트 뷰를 꾸며서 전달해줌
-* */
-
 class BuildBooklist(
     private val context: Context,
-    private val data: List<Map<String, Any>>,
+    private val data: MutableList<EachBook>,
     private val navController: NavController
 ) : BaseAdapter() {
 
     override fun getCount(): Int = data.size
 
-    override fun getItem(position: Int): Map<String, Any> = data[position]
+    override fun getItem(position: Int): EachBook = data[position]
 
     override fun getItemId(position: Int): Long = position.toLong()
 
+    @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view: View
         val holder: ViewHolder
 
-        // View Holder 패턴 적용
         if (convertView == null) {
             view = LayoutInflater.from(context).inflate(R.layout.list_item, parent, false)
-            holder = ViewHolder(
-                view.findViewById(R.id.book_title),
-                view.findViewById(R.id.book_author),
-                view.findViewById(R.id.book_price),
-                view.findViewById(R.id.book_img),
-                view.findViewById(R.id.book_cart),
-            )
+            holder = ViewHolder(view)
             view.tag = holder
         } else {
             view = convertView
@@ -59,83 +50,75 @@ class BuildBooklist(
 
         val item = getItem(position)
 
-        val title = item["title"] as? String ?: "unknown Title"
-        val price = when (val priceValue = item["price"]) {
-            is Int -> priceValue
-            is Double -> priceValue.toInt()
-            is String -> priceValue.toIntOrNull() ?: 0
-            else -> 0
+        // 이미지 경로 처리
+        val baseUrl = "https://3.35.84.46"
+        val imageUrl = if (item.book_img_path.isNullOrEmpty()) {
+            "" // 기본 이미지 사용
+        } else {
+            baseUrl + item.book_img_path
         }
-        val writer = item["writer"] as? String ?: "unknown writer"
-        // 현재 받아오는 값은 상대경로 이미지로 도메인 없이 경로만을 가지고 있음
-        // http://도메인:포트/이미지 경로
-        // http://도메인:포트/ <-- 하드코딩으로 집어 넣을 예정
 
-        val IMG_PATH = "https://3.35.84.46" + item["book_img_path"] as? String
-
-        holder.bookTitle.text = title
-        holder.bookAuthor.text = writer
-        holder.bookPrice.text = "${NumberFormat.getNumberInstance(Locale.US).format(price)} 원"
+        // UI 업데이트
+        holder.title.text = item.title
+        holder.price.text = formatPrice(item.price)
+        holder.writer.text = item.writer
 
         Glide.with(context)
-            .load(IMG_PATH)
+            .load(imageUrl)
             .placeholder(R.drawable.root_read_logo)
-            .into(holder.bookImg)
+            .into(holder.img)
 
-        // 장바구니 클릭 리스너 설정
-        holder.bookCart.setOnClickListener {
-            if (!SessionManager.isLoggedIn(context)) {
-                Toast.makeText(context, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
-                navController.navigate(R.id.listFragment) // 루트 페이지로 이동
-            } else {
-                // 장바구니 동작 구현
-                val bookId = when (val id = item["book_id"]) {
-                    is Long -> id // 이미 Int인 경우
-                    is Double -> id.toLong() // Double인 경우 Int로 변환
-                    is String -> id.toLongOrNull() ?: -1 // String인 경우 안전하게 Int로 변환
-                    else -> -1 // 잘못된 형식인 경우
-                }
-                val userId = SessionManager.getUserID(context).toString()
-                val cartGetItemRequest = CartGetItemRequest(
-                    user_id = userId,
-                    book_id = bookId
-                )
-                val app = context.applicationContext as App
-                val purchaseAPI = app.retrofit.create(PurchaseAPI::class.java)
-                val insertCartItem = InsertCartItem(context, purchaseAPI)
-                insertCartItem.insertCartItem(cartGetItemRequest) { response ->
-                    if (response != null) {
-                        if (response.status) {
-                            Toast.makeText(context, "장바구니에 담겼습니다.", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(context, "장바구니 담기 실패", Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        Toast.makeText(context, "장바구니 담기 실패", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
+        // 장바구니 버튼 클릭 리스너
+        holder.cart.setOnClickListener {
+            handleCartClick(item)
         }
 
         // 아이템 클릭 리스너: BookDetailFragment로 이동하며 book_id 전달
         view.setOnClickListener {
-            val item = getItem(position)
-            val bookId = (item["book_id"] as? Number)?.toLong() ?: -1L
-            val bundle = Bundle().apply {
-                putLong("book_id", bookId)
-            }
-            navController.navigate(R.id.action_listFragment_to_bookDetailFragment, bundle)
+            navigateToDetail(item.book_id)
         }
 
         return view
     }
 
-    // View Holder 클래스
-    private data class ViewHolder(
-        val bookTitle: TextView,
-        val bookAuthor: TextView,
-        val bookPrice: TextView,
-        val bookImg: ImageView,
-        val bookCart: ImageView,
-    )
+    // ViewHolder 패턴 적용 (뷰 재사용 최적화)
+    private class ViewHolder(view: View) {
+        val title: TextView = view.findViewById(R.id.book_title)
+        val price: TextView = view.findViewById(R.id.book_price)
+        val writer: TextView = view.findViewById(R.id.book_author)
+        val img: ImageView = view.findViewById(R.id.book_img)
+        val cart: ImageView = view.findViewById(R.id.book_cart)
+    }
+
+    // 가격을 통화 형식으로 변환하는 함수
+    private fun formatPrice(price: Int): String {
+        return NumberFormat.getNumberInstance(Locale.KOREA).format(price) + " 원"
+    }
+
+    // 장바구니 추가 처리
+    private fun handleCartClick(item: EachBook) {
+        if (!SessionManager.isLoggedIn(context)) {
+            Toast.makeText(context, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+            navController.navigate(R.id.listFragment) // 로그인 화면으로 이동
+            return
+        }
+
+        val userId = SessionManager.getUserID(context).toString()
+        val cartRequest = CartGetItemRequest(user_id = userId, book_id = item.book_id)
+
+        val app = context.applicationContext as App
+        val purchaseAPI = app.retrofit.create(PurchaseAPI::class.java)
+        val insertCartItem = InsertCartItem(context, purchaseAPI)
+
+        insertCartItem.insertCartItem(cartRequest) { response ->
+            val message = if (response?.status == true) "장바구니에 담겼습니다." else "장바구니 담기 실패"
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // 상세 페이지로 이동
+    private fun navigateToDetail(bookId: Long) {
+        val bundle = Bundle().apply { putLong("book_id", bookId) }
+        navController.navigate(R.id.action_listFragment_to_bookDetailFragment, bundle)
+    }
 }

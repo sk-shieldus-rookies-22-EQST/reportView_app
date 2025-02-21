@@ -6,7 +6,7 @@ data class BoardQnAResponse(
     val created_at: String,
     val title:String,
     val content:String,
-    val comment:MutableList<MutableMap<String,Any>>,
+    val comment:MutableList<Comment>,
     val file_name:String,
     val file_path:String,
     val secret:Boolean

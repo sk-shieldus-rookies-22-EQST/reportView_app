@@ -9,10 +9,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.rootread.R
+import com.example.rootread.model.user.UserEachBook
 
 class UserBookListAdapter(
     private val context: Context,
-    private val bookList: MutableList<MutableMap<String, Any>>,
+    private val bookList: MutableList<UserEachBook>,
 ) : RecyclerView.Adapter<UserBookListAdapter.UserBookViewHolder>() {
 
     inner class UserBookViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -27,17 +28,17 @@ class UserBookListAdapter(
 
     override fun onBindViewHolder(holder: UserBookViewHolder, position: Int) {
         val item = bookList[position]
-        holder.bookTitle.text = item["title"] as? String ?: "Unknown Title"
+        holder.bookTitle.text = item.title as? String ?: "Unknown Title"
 
         // 클릭 이벤트 설정
         holder.itemView.setOnClickListener {
             val fileOpenAction = FileOpenAction(context)
             fileOpenAction.openFile(
-                bookId = (item["book_id"] as? Number)?.toLong() ?: -1L
+                bookId = (item.book_id as? Number)?.toLong() ?: -1L
             )
         }
 
-        val IMG_PATH = "https://3.35.84.46" + item["book_img_path"]
+        val IMG_PATH = "https://3.35.84.46" + item.book_img_path
 //        .load(item["book_img_path"] as? String ?: "")
         // 이미지를 URL에서 불러오려면 Glide 또는 Picasso 사용
         Glide.with(context)

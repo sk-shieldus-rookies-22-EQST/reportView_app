@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.rootread.App
 import com.example.rootread.R
 import com.example.rootread.api.UserAPI
+import com.example.rootread.model.user.EachPurchase
 import com.example.rootread.model.user.UserpurchaseRequest
 import com.example.rootread.ui.user.action.GetUserPurchase
 import com.example.rootread.ui.user.action.BuildPurchaseList
@@ -19,7 +20,7 @@ import com.example.rootread.utils.SessionManager
 class UserPurchaseFragment: Fragment() {
 
     private lateinit var userpurchaseList: ListView
-    private var purchaseData: MutableList<MutableMap<String, Any>> = mutableListOf()
+    private var purchaseData: MutableList<EachPurchase> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,

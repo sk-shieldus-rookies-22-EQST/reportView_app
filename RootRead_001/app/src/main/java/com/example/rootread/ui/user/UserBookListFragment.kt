@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.rootread.App
 import com.example.rootread.R
 import com.example.rootread.api.UserAPI
+import com.example.rootread.model.user.UserEachBook
 import com.example.rootread.model.user.UserbooklistRequest
 import com.example.rootread.ui.user.action.GetUserBookList
 import com.example.rootread.ui.user.action.UserBookListAdapter
@@ -20,7 +21,7 @@ import com.example.rootread.utils.SessionManager
 class UserBookListFragment: Fragment() {
 
     private lateinit var userBookList: RecyclerView
-    private var bookData: MutableList<MutableMap<String,Any>> = mutableListOf()
+    private var bookData: MutableList<UserEachBook> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -13,6 +13,7 @@ import com.example.rootread.R
 import com.example.rootread.api.PurchaseAPI
 import com.example.rootread.model.purchase.CartResponse
 import com.example.rootread.model.purchase.DeleteItemRequest
+import com.example.rootread.model.purchase.EachCartItem
 import com.example.rootread.utils.SessionManager
 import java.text.NumberFormat
 import java.util.Locale
@@ -20,12 +21,12 @@ import java.util.Locale
 class PurchaseCartAdapter(
     private val context: Context,
     private val cartResponse: CartResponse,
-    private val onCartUpdated: (MutableList<MutableMap<String, Any>>) -> Unit
+    private val onCartUpdated: (MutableList<EachCartItem>) -> Unit
 ) : BaseAdapter() {
 
     override fun getCount(): Int = cartResponse.purchaseCartDtoList.size
 
-    override fun getItem(position: Int): MutableMap<String, Any> {
+    override fun getItem(position: Int): EachCartItem {
         return cartResponse.purchaseCartDtoList[position]
     }
 
@@ -42,19 +43,9 @@ class PurchaseCartAdapter(
         val userId = SessionManager.getUserID(context).toString()
 
         // Extract title and price from item
-        val title = item["title"] as? String ?: "Unknown Title"
-        val price = when (val priceValue = item["price"]) {
-            is Int -> priceValue
-            is Double -> priceValue.toInt()
-            is String -> priceValue.toIntOrNull() ?: 0
-            else -> 0
-        }
-        val bookId = when (val id = item["book_id"]) {
-            is Long -> id // 이미 Int인 경우
-            is Double -> id.toLong() // Double인 경우 Int로 변환
-            is String -> id.toLongOrNull() ?: -1 // String인 경우 안전하게 Int로 변환
-            else -> -1 // 잘못된 형식인 경우
-        }
+        val title = item.title as? String ?: "Unknown Title"
+        val price = item.price
+        val bookId = item.book_id
 
         // Set data to views
         bookTitle.text = title

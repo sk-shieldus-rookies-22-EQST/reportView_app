@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.example.rootread.R
+import com.example.rootread.model.board.Comment
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
@@ -16,12 +17,12 @@ import java.time.temporal.ChronoField
 
 class CommentAdapter(
     private val context: Context,
-    private val comments: MutableList<MutableMap<String,Any>>
+    private val comments: MutableList<Comment>
     ): BaseAdapter() {
 
     override fun getCount(): Int = comments.size
 
-    override fun getItem(position: Int): MutableMap<String, Any> = comments[position]
+    override fun getItem(position: Int): Comment = comments[position]
 
     override fun getItemId(position: Int): Long = position.toLong()
 
@@ -32,8 +33,8 @@ class CommentAdapter(
         val contentTextView: TextView = view.findViewById(R.id.qna_re_content)
 
         val item = getItem(position)
-        val createdAtText = item["qna_re_created_at"] as? String ?: "No Created At"
-        val contentText = item["qna_re_content"] as? String ?: "No Content"
+        val createdAtText = item.qna_re_created_at.toString() as? String ?: "No Created At"
+        val contentText = item.qna_re_content as? String ?: "No Content"
 
         // LocalDateTime 입력 포맷: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
         val inputFormatter: DateTimeFormatter = DateTimeFormatterBuilder()

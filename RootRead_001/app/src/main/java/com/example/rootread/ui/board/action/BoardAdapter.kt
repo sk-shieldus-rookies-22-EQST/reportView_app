@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.navigation.NavController
 import com.example.rootread.R
 import com.example.rootread.model.board.BoardResponse
+import com.example.rootread.model.board.EachQnA
 
 class BoardAdapter(
     private val context: Context,
@@ -19,7 +20,7 @@ class BoardAdapter(
 
     override fun getCount(): Int = data.qnaListDto.size
 
-    override fun getItem(position: Int): MutableMap<String, Any> = data.qnaListDto[position]
+    override fun getItem(position: Int): EachQnA = data.qnaListDto[position]
 
     override fun getItemId(position: Int): Long = position.toLong()
 
@@ -31,14 +32,14 @@ class BoardAdapter(
         val lockIcom: ImageView = view.findViewById(R.id.qna_lock)
 
         val item = getItem(position)
-        val title = item["title"] as? String ?: "No Title"
-        val author = item["user_id"] as? String ?: "Anonymous"
+        val title = item.title as? String ?: "No Title"
+        val author = item.user_id as? String ?: "Anonymous"
 
         titleTextView.text = title
         authorTextView.text = author
 
         // "secret" 값이 false이거나 존재하지 않으면 lockIcon을 숨김 처리, true이면 표시
-        val secret = item["secret"] as? Boolean ?: false
+        val secret = item.secret as? Boolean ?: false
         lockIcom.visibility = if (secret) View.VISIBLE else View.GONE
 
         return view

@@ -10,6 +10,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.rootread.utils.SecurityUtils
 import com.example.rootread.utils.SessionManager
 import com.google.android.material.navigation.NavigationView
 
@@ -23,6 +24,9 @@ class ActiveMain : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        SecurityUtils.performSecurityCheck(this)
+
         setContentView(R.layout.activity_main)
 
         drawerLayout = findViewById(R.id.drawer_layout)

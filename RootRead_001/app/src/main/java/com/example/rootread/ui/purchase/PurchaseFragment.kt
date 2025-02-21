@@ -15,6 +15,7 @@ import com.example.rootread.R
 import com.example.rootread.api.PurchaseAPI
 import com.example.rootread.model.purchase.CartRequest
 import com.example.rootread.model.purchase.CartResponse
+import com.example.rootread.model.purchase.EachCartItem
 import com.example.rootread.ui.purchase.action.GetPurchaseCart
 import com.example.rootread.ui.purchase.action.PurchaseCartAdapter
 import com.example.rootread.utils.SessionManager
@@ -27,7 +28,7 @@ class PurchaseFragment : Fragment() {
     private lateinit var purchaseCartTotalprice: TextView
     private lateinit var purchaseCartButton: Button
     private var cartId: Long = -1L
-    private var cartList: MutableList<MutableMap<String, Any>>? = mutableListOf()
+    private var cartList: MutableList<EachCartItem>? = mutableListOf()
     private var totalPrice: Int = 0
 
     override fun onCreateView(
@@ -55,11 +56,7 @@ class PurchaseFragment : Fragment() {
             if (isAdded) {
                 if (response != null){
                     cartList = response.purchaseCartDtoList
-                    cartId = cartList?.firstOrNull()
-                        ?.takeIf { "cart_id" in it }
-                        ?.get("cart_id")
-                        ?.toString()
-                        ?.toLongOrNull() ?: -1L
+                    cartId = cartList!![0].cart_id
 
                     updateUI(response)
 
@@ -83,14 +80,7 @@ class PurchaseFragment : Fragment() {
     }
 
     private fun updateTotalPrice() {
-        totalPrice = cartList?.sumOf {
-            when (val priceValue = it["price"]) {
-                is Int -> priceValue
-                is Double -> priceValue.toInt()
-                is String -> priceValue.toIntOrNull() ?: 0
-                else -> 0
-            }
-        } ?: 0
+        totalPrice = cartList?.sumOf { it.price } ?: 0
         purchaseCartTotalprice.text = "합계 : ${NumberFormat.getNumberInstance(Locale.US).format(totalPrice)} 원"
     }
 

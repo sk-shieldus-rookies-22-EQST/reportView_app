@@ -77,8 +77,8 @@ class BoardFragment : Fragment() {
             val userLevel = SessionManager.getUserLevel(requireContext())
 
             // "secret" 키의 값이 true인 경우 확인
-            val isSecret = selectedBoard["secret"] == true
-            val boardOwnerId = selectedBoard["user_id"]?.toString()
+            val isSecret = selectedBoard.secret
+            val boardOwnerId = selectedBoard.user_id
 
             // 비공개 게시글이면서 현재 사용자가 글 작성자가 아니고, userLevel이 123이 아니면 클릭 막기
             if (isSecret && boardOwnerId != userId && userLevel != 123) {
@@ -87,7 +87,7 @@ class BoardFragment : Fragment() {
             }
 
             // qna_id를 Long으로 변환
-            val boardId = (selectedBoard["qna_id"] as? Number)?.toLong() ?: -1L
+            val boardId = (selectedBoard.qna_id as? Number)?.toLong() ?: -1L
 
             if (boardId != -1L) {
                 val bundle = Bundle().apply {

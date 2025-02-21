@@ -13,7 +13,7 @@ fun SearchFunction(
     val keyword = searchReport.text.toString()
 
     val filteredData = data.book_list.filter { item ->
-        val title = item["title"] as? String
+        val title = item.title as? String
         title?.contains(keyword, ignoreCase = true) == true
     }
 
