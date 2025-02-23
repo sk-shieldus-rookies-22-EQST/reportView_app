@@ -15,6 +15,8 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.bookies_001.App
 import com.example.bookies_001.R
 import com.example.bookies_001.api.ViewAPI
@@ -34,7 +36,7 @@ import java.util.Calendar
 
 class ListFragment : Fragment() {
 
-    private lateinit var itemList: ListView
+    private lateinit var itemList: RecyclerView
     private lateinit var searchReport: EditText
     private lateinit var searchBtn: ImageView
     private lateinit var filterBtn: ImageView
@@ -49,9 +51,9 @@ class ListFragment : Fragment() {
 
     private fun updateUI(data: ViewbooklistResponse) {
         if (isAdded) { // Fragment가 Activity에 연결되어 있는지 확인
-            val context = requireContext() // 안전하게 context 호출
-            val navController = findNavController()
-            val adapter = BuildBooklist(context, data.book_list, navController)
+            val layoutManager = GridLayoutManager(requireContext(), 3)
+            itemList.layoutManager = layoutManager
+            val adapter = BuildBooklist(requireContext(), data.book_list, findNavController())
             itemList.adapter = adapter
         } else {
             Log.e("ListFragment", "Fragment is not attached to a context.")
