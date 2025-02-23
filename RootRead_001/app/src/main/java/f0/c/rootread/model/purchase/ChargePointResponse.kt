@@ -1,0 +1,5 @@
+package f0.c.rootread.model.purchase
+
+data class ChargePointResponse(
+    val user_point: Int
+)

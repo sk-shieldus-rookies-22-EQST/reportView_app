@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.rootread"
+    namespace = "f0.c.rootread"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.rootread"
+        applicationId = "f0.c.rootread"
         minSdk = 28
         targetSdk = 35
         versionCode = 1
@@ -53,6 +53,7 @@ dependencies {
 
     // Glide (이미지 로딩 라이브러리)
     implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
     kapt("com.github.bumptech.glide:compiler:4.15.1") // Glide KAPT 추가
     implementation("com.github.bumptech.glide:okhttp3-integration:4.15.1") // Glide & OkHttp 통합
 
