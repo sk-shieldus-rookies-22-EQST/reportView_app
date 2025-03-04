@@ -16,6 +16,7 @@ import f0.c.rootread.api.KMSAPI
 import f0.c.rootread.repository.AuthRepository
 import f0.c.rootread.repository.KmsRepository
 import f0.c.rootread.utils.AESUtil
+import java.util.UUID
 
 class LoginAction {
 
@@ -43,12 +44,15 @@ class LoginAction {
 
         val kmsRepository = KmsRepository(kmsApi)
 
-        val loginData = id+"&&&&"+pw
+        val uuid = UUID.randomUUID().toString()
+        val loginData = id + "&&&&" + pw + "&&&&" + uuid
 
         AESUtil.encrypt(loginData,kmsRepository) { encryptedData ->
             if (encryptedData != null) {
+
                 val aesEncrypt = LoginRequest(e2e_data = encryptedData) // 🔹 암호화된 데이터 설정
                 Log.d("AESUtil", "Encrypted encryptedBase64: $encryptedData")
+                SessionManager.saveUUID(context,uuid)
 
                 AuthRepository(authAPI).login(aesEncrypt) { response, error ->
                     if (response != null) {

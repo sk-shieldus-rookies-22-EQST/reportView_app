@@ -19,6 +19,7 @@ import f0.c.rootread.repository.AuthRepository
 import f0.c.rootread.repository.KmsRepository
 import f0.c.rootread.utils.AESUtil
 import f0.c.rootread.utils.SessionManager
+import java.util.UUID
 
 class UserConfirmFragment : Fragment() {
 
@@ -45,7 +46,8 @@ class UserConfirmFragment : Fragment() {
         confirmBtn.setOnClickListener {
             val userId = SessionManager.getUserID(requireContext())
             val password = inputPW.text.toString()
-            val plainText = "$userId&&&&$password"
+            val uuid = UUID.randomUUID().toString()
+            val plainText = "$userId&&&&$password$&&&$uuid"
 
             val kmsApi = app.KMSretrofit.create(KMSAPI::class.java)
 
@@ -53,7 +55,9 @@ class UserConfirmFragment : Fragment() {
 
             AESUtil.encrypt(plainText,kmsRepository) { encryptedData ->
                 if (encryptedData != null) {
+
                     val aesEncrypt = LoginRequest(e2e_data = encryptedData) // 🔹 암호화 완료 후 요청 생성
+                    SessionManager.saveUUID(requireContext(),uuid)
 
                     // 비밀번호 확인 로직 실행 (AES 암호화 후 요청 전송)
                     AuthRepository(authAPI).login(aesEncrypt) { response, error ->

@@ -19,7 +19,7 @@ import okhttp3.Request
 import okio.IOException
 import java.io.File
 import java.io.FileOutputStream
-import java.util.Base64
+import android.util.Base64
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -68,12 +68,16 @@ class FileOpenAction(private val context: Context) {
                         }
 
                         try {
+                            val decodedKey = Base64.decode(key, Base64.DEFAULT)
+                            val decodedIv = Base64.decode(iv, Base64.DEFAULT)
+
+                            Log.d("KEYCHECK", "key: ${decodedKey} / iv: ${decodedIv}")
+
+                            val aesKey = decodedKey.copyOf(16)
+                            val aesIv = decodedIv.copyOf(16)
+
                             val encryptedData = downloadedFile.readBytes()
 
-                            Log.d("KEYCHECK", "key: ${key} / iv: ${iv}")
-
-                            val aesKey = key.toByteArray(Charsets.UTF_8).copyOf(16)
-                            val aesIv = iv.toByteArray(Charsets.UTF_8).copyOf(16)
 
                             val decryptedData = decryptAES(encryptedData, aesKey, aesIv)
                             if (decryptedData != null) {

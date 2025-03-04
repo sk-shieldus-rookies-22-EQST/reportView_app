@@ -27,7 +27,8 @@ class App : Application() {
             val authAPI = retrofit.create(AuthAPI::class.java)
             val token = TokenRequest(
                 user_id = SessionManager.getUserID(this).toString(),
-                token = SessionManager.getUserToken(this).toString()
+                token = SessionManager.getUserToken(this).toString(),
+                uuid = SessionManager.getUUID(this).toString()
             )
             AuthRepository(authAPI).autoLogin(token) { response, error ->
                 if (response != null) {

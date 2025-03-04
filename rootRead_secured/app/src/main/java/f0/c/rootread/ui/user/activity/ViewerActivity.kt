@@ -68,6 +68,14 @@ class ViewerActivity : AppCompatActivity() {
             })
     }
 
+    override fun onResume() {
+        super.onResume()
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         imgPath?.let { path ->

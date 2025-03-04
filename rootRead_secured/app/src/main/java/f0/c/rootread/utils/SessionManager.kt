@@ -20,26 +20,39 @@ object SessionManager {
     private const val USER_LEVEL = "user_level"
     private const val AUTO_LOGIN = "auto_login"
     private const val REMEMBER_ID = "remember_id"
+    private const val DEVICE_ID = "device_uuid"
 
     private const val KEY_ALIAS = "secure_key"
     private const val ANDROID_KEYSTORE = "AndroidKeyStore"
 
     /**
-     * Android Keystore에서 암호화 키 가져오기
+     * Android Keystore에서 AES 키 가져오기 (오류 발생 시 삭제 후 재생성)
      */
     private fun getSecretKey(): SecretKey {
         val keyStore = java.security.KeyStore.getInstance(ANDROID_KEYSTORE).apply { load(null) }
-        return keyStore.getKey(KEY_ALIAS, null) as? SecretKey ?: run {
-            val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE)
-            keyGenerator.init(
-                KeyGenParameterSpec.Builder(KEY_ALIAS, KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
-                    .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-                    .setUserAuthenticationRequired(false)
-                    .build()
-            )
-            keyGenerator.generateKey()
+
+        return try {
+            keyStore.getKey(KEY_ALIAS, null) as SecretKey
+        } catch (e: Exception) {
+            // 🔥 키가 손상되었거나 존재하지 않는 경우 삭제 후 다시 생성
+            keyStore.deleteEntry(KEY_ALIAS)
+            generateNewKey()
         }
+    }
+
+    /**
+     * 새로운 AES 키 생성
+     */
+    private fun generateNewKey(): SecretKey {
+        val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE)
+        keyGenerator.init(
+            KeyGenParameterSpec.Builder(KEY_ALIAS, KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
+                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                .setUserAuthenticationRequired(false)
+                .build()
+        )
+        return keyGenerator.generateKey()
     }
 
 
@@ -129,6 +142,12 @@ object SessionManager {
         editor.apply()
     }
 
+    fun saveUUID(context: Context, uuid: String) {
+        val editor = getPreferences(context).edit()
+        editor.putString(DEVICE_ID, uuid)
+        editor.apply()
+    }
+
     /**
      * 암호화된 사용자 ID 가져오기
      */
@@ -158,6 +177,11 @@ object SessionManager {
     fun getUserLevel(context: Context): Int {
         val sharedPreferences = getPreferences(context)
         return sharedPreferences.getInt(USER_LEVEL, -1)
+    }
+
+    fun getUUID(context: Context): String? {
+        val sharedPreferences = getPreferences(context)
+        return sharedPreferences.getString(DEVICE_ID, null)
     }
 
     /**
