@@ -3,23 +3,23 @@ package com.example.bookies_001.ui.user.action
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.os.Environment
 import android.util.Log
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import okhttp3.Request
+import okio.IOException
+import java.io.File
+import java.io.FileOutputStream
+import android.util.Base64
 import com.example.bookies_001.App
 import com.example.bookies_001.api.KMSAPI
 import com.example.bookies_001.model.kms.GemerateRequest
 import com.example.bookies_001.network.NetworkClient
 import com.example.bookies_001.repository.KmsRepository
-import com.example.bookies_001.ui.user.activity.PdfActivity
 import com.example.bookies_001.ui.user.activity.ViewerActivity
-import com.example.bookies_001.utils.AESUtil
+import com.example.bookies_001.utils.DoRSAUtils
 import com.example.bookies_001.utils.SessionManager
-import okhttp3.Request
-import java.io.File
-import java.io.FileOutputStream
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -48,30 +48,33 @@ class FileOpenAction(private val context: Context) {
                 return@generate
             }
 
-            // 정상적으로 presigned_url이 반환되지 않은 경우
-            if (data?.signed_url.isNullOrEmpty()) {
+            val presignedUrl = data?.signed_url
+            // 정상적으로 signed_url이 반환되지 않은 경우
+            if (presignedUrl.isNullOrEmpty()) {
                 showToast("파일 다운로드 URL을 가져올 수 없습니다.") // ✅ 에러 메시지 표시
                 dismissLoading()
                 return@generate
             }
 
-            downloadUrl = data?.signed_url
             showLoading("책 여는 중...")
 
-            downloadFile(downloadUrl!!) { downloadedFile ->
+            downloadFile(presignedUrl) { downloadedFile ->
                 if (downloadedFile != null) {
-                    val doRSA = DoRSA(kmsRepository,downloadUrl!!)
-                    doRSA.getKeysAsync { key, iv -> // 🔹 AES Key와 IV를 비동기적으로 가져온 후 실행
+                    val doRSAUtils = DoRSAUtils(kmsRepository,presignedUrl)
+                    doRSAUtils.getKeysAsync { key, iv -> // 🔹 AES Key와 IV를 비동기적으로 가져온 후 실행
                         if (key == null || iv == null) {
-                            showToast("복호화 암호를 가져오는 데 실패했습니다.")
+                            showToast("암호를 가져오는 데 실패했습니다.")
                             return@getKeysAsync
                         }
 
                         try {
+                            val aesKey = key.toByteArray(Charsets.UTF_8).copyOf(16)
+                            val aesIv = iv.toByteArray(Charsets.UTF_8).copyOf(16)
+
+                            Log.d("KEYCHECK", "key: ${aesKey} / iv: ${aesIv}")
+
                             val encryptedData = downloadedFile.readBytes()
 
-                            val aesKey = key.copyOf(16)
-                            val aesIv = iv.copyOf(16)
 
                             val decryptedData = decryptAES(encryptedData, aesKey, aesIv)
                             if (decryptedData != null) {
@@ -82,7 +85,7 @@ class FileOpenAction(private val context: Context) {
                         } catch (e: Exception) {
                             showToast("에러 발생: ${e.message}")
                         } finally {
-                            doRSA.close()
+                            doRSAUtils.clearKeys()
                             dismissLoading()
                         }
                     }
@@ -90,41 +93,61 @@ class FileOpenAction(private val context: Context) {
                     showToast("파일 다운로드 실패")
                     dismissLoading()
                 }
+                dismissLoading()
             }
         }
     }
 
     private fun downloadFile(url: String, callback: (File?) -> Unit) {
+        Log.d("CHECKFILE", "downloadFile 실행됨")
         val request = Request.Builder()
             .url(url)
-//            .addHeader("Connection", "close")  // ✅ 연결 종료 강제
+            // .addHeader("Connection", "close")  // 연결 종료 강제 필요 시 사용
             .build()
 
         Thread {
+            Log.d("CHECKFILE", "Thread 실행됨")
             try {
                 val response = NetworkClient.client.newCall(request).execute()
+                Log.d("CHECKFILE", "response 요청")
+                response.use { res ->
+                    if (!res.isSuccessful) {
+                        Log.e("FileDownload", "서버 응답 오류: ${res.code}")
+                        postToMainThread { callback(null) }
+                        return@use
+                    }
 
-                response.use { res ->  // ✅ response 자동 닫기
-                    if (res.isSuccessful) {
-                        val downloadedFile = File(context.cacheDir, "downloaded_file")
+                    val body = res.body
+                    if (body == null) {
+                        Log.e("FileDownload", "응답 바디가 null입니다.")
+                        postToMainThread { callback(null) }
+                        return@use
+                    }
 
-                        res.body?.byteStream()?.use { inputStream ->
+                    val downloadedFile = File(context.cacheDir, "downloaded_file")
+                    try {
+                        body.byteStream().use { inputStream ->
                             FileOutputStream(downloadedFile).use { outputStream ->
                                 inputStream.copyTo(outputStream)
                             }
                         }
-
-                        callback(downloadedFile)
-                    } else {
-                        Log.e("FileDownload", "서버 응답 오류: ${res.code}")
-                        callback(null)
+                        Log.d("FileDownload", "파일 다운로드 성공: ${downloadedFile.absolutePath}")
+                        postToMainThread { callback(downloadedFile) }
+                    } catch (ioe: IOException) {
+                        Log.e("FileDownload", "파일 저장 중 오류 발생: ${ioe.message}", ioe)
+                        postToMainThread { callback(null) }
                     }
                 }
             } catch (e: Exception) {
                 Log.e("FileDownload", "파일 다운로드 중 오류 발생: ${e.message}")
-                callback(null)
+                postToMainThread { callback(null) }
             }
         }.start()
+    }
+
+    // UI 업데이트가 필요한 callback은 메인 스레드로 전환해서 호출
+    private fun postToMainThread(action: () -> Unit) {
+        Handler(Looper.getMainLooper()).post { action() }
     }
 
 

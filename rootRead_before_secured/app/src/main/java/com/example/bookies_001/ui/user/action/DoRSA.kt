@@ -96,27 +96,11 @@ class DoRSA(
         fileOpenKey()
     }
 
-    fun getKeysAsync(callback: (ByteArray?, ByteArray?) -> Unit) {
-        if (isKeyLoaded) {
-            try {
-                val decodedKey = aesKey?.let { Base64.getDecoder().decode(it) } // 🔹 AES Key Base64 디코딩
-                val decodedIv = aesIv?.let { Base64.getDecoder().decode(it) } // 🔹 AES IV Base64 디코딩
-                callback(decodedKey, decodedIv)
-            } catch (e: Exception) {
-                Log.e("DoRSA", "AES Key or IV Base64 디코딩 실패: ${e.message}")
-                callback(null, null)
-            }
+    fun getKeysAsync(callback: (String?, String?) -> Unit) {
+        if (aesKey != null && aesIv != null) {
+            callback(aesKey, aesIv)
         } else {
-            keyLoadListeners.add { key, iv ->
-                try {
-                    val decodedKey = key?.let { Base64.getDecoder().decode(it) } // 🔹 AES Key Base64 디코딩
-                    val decodedIv = iv?.let { Base64.getDecoder().decode(it) } // 🔹 AES IV Base64 디코딩
-                    callback(decodedKey, decodedIv)
-                } catch (e: Exception) {
-                    Log.e("DoRSA", "AES Key or IV Base64 디코딩 실패 (비동기): ${e.message}")
-                    callback(null, null)
-                }
-            }
+            keyLoadListeners.add(callback)
         }
     }
 

@@ -37,7 +37,7 @@ class UserBookListAdapter(
             )
         }
 
-        val IMG_PATH = "https://3.35.84.46" + item["book_img_path"]
+        val IMG_PATH = "https://ebook.sas2.n-e.kr/" + item["book_img_path"]
 //        .load(item["book_img_path"] as? String ?: "")
         // 이미지를 URL에서 불러오려면 Glide 또는 Picasso 사용
         Glide.with(context)

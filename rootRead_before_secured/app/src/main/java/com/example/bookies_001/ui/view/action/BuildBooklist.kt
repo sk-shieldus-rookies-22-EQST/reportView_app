@@ -50,7 +50,7 @@ class BuildBooklist(
             navigateToDetail(item.book_id)
         }
 
-        val imgUrl = "https://3.35.84.46" + item.book_img_path
+        val imgUrl = "https://ebook.sas2.n-e.kr/" + item.book_img_path
         Glide.with(context)
             .load(imgUrl)
             .placeholder(R.drawable.root_read_logo)
