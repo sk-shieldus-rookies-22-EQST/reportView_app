@@ -105,7 +105,7 @@ class EachBoardFragment : Fragment() {
         qnaFileDownload.setOnClickListener {
                 // 파일이 존재하는 경우에만 다운로드 실행
                 if (!filePath.isNullOrEmpty() && !fileName.isNullOrEmpty()) {
-                    val fileUrl = "https://3.35.84.46:20202/$filePath"
+                    val fileUrl = "https://ebook.sas1.n-e.kr/:20202/$filePath"
                     downloadFile(fileUrl, fileName)
                 }
         }

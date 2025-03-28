@@ -151,31 +151,31 @@ object SecurityUtils {
 
     //  보안 체크 수행 및 앱 종료 처리
     fun performSecurityCheck(activity: Activity) {
-        if (!verifyAppSignature(activity) || checkSuCommand() || isDebuggerAttached() || isBeingTraced() || isDeviceRooted() || isEmulator()) {
-            Toast.makeText(activity, "앱을 정상적으로 실행 할 수 없음", Toast.LENGTH_SHORT).show()
-
-            activity.finishAffinity() // 모든 Activity 종료
-            android.os.Process.killProcess(android.os.Process.myPid()) // 프로세스 종료
-            exitProcess(1)
+//        if (!verifyAppSignature(activity) || checkSuCommand() || isDebuggerAttached() || isBeingTraced() || isDeviceRooted() || isEmulator()) {
+//            Toast.makeText(activity, "앱을 정상적으로 실행 할 수 없음", Toast.LENGTH_SHORT).show()
+//
+//            activity.finishAffinity() // 모든 Activity 종료
+//            android.os.Process.killProcess(android.os.Process.myPid()) // 프로세스 종료
+//            exitProcess(1)
+//        }
+        if (!verifyAppSignature(activity)) {
+            Log.d("SECURITY_CHECK", "verifyAppSignature(activity) ${!verifyAppSignature(activity)}")
         }
-//        if (!verifyAppSignature(activity)) {
-//            Log.d("SECURITY_CHECK", "verifyAppSignature(activity) ${!verifyAppSignature(activity)}")
-//        }
-//        if (checkSuCommand()) {
-//            Log.d("SECURITY_CHECK", "checkSuCommand() ${checkSuCommand()}")
-//        }
-//        if (isDebuggerAttached()) {
-//            Log.d("SECURITY_CHECK", "isDebuggerAttached() ${isDebuggerAttached()}")
-//        }
-//        if (isBeingTraced()) {
-//            Log.d("SECURITY_CHECK", "isBeingTraced() ${isBeingTraced()}")
-//        }
-//        if (isDeviceRooted()) {
-//            Log.d("SECURITY_CHECK", "isDeviceRooted() ${isDeviceRooted()}")
-//        }
-//        if (isEmulator()) {
-//            Log.d("SECURITY_CHECK", "isEmulator() ${isEmulator()}")
-//        }
+        if (checkSuCommand()) {
+            Log.d("SECURITY_CHECK", "checkSuCommand() ${checkSuCommand()}")
+        }
+        if (isDebuggerAttached()) {
+            Log.d("SECURITY_CHECK", "isDebuggerAttached() ${isDebuggerAttached()}")
+        }
+        if (isBeingTraced()) {
+            Log.d("SECURITY_CHECK", "isBeingTraced() ${isBeingTraced()}")
+        }
+        if (isDeviceRooted()) {
+            Log.d("SECURITY_CHECK", "isDeviceRooted() ${isDeviceRooted()}")
+        }
+        if (isEmulator()) {
+            Log.d("SECURITY_CHECK", "isEmulator() ${isEmulator()}")
+        }
     }
 
 }

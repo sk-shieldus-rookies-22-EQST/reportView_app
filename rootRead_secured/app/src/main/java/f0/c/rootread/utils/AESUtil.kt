@@ -34,8 +34,8 @@ object AESUtil {
 
             try {
                 val cipher = Cipher.getInstance(TRANSFORMATION)
-                val keySpec = SecretKeySpec(padTo16Bytes(aesKey.toByteArray(Charsets.UTF_8)), ALGORITHM)
-                val ivSpec = IvParameterSpec(padTo16Bytes(aesIv.toByteArray(Charsets.UTF_8)))
+                val keySpec = SecretKeySpec(padTo16Bytes(aesKey), ALGORITHM)
+                val ivSpec = IvParameterSpec(padTo16Bytes(aesIv))
 
                 cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec)
 
@@ -64,8 +64,8 @@ object AESUtil {
 
             try {
                 val cipher = Cipher.getInstance(TRANSFORMATION)
-                val keySpec = SecretKeySpec(padTo16Bytes(aesKey.toByteArray(Charsets.UTF_8)), ALGORITHM)
-                val ivSpec = IvParameterSpec(padTo16Bytes(aesIv.toByteArray(Charsets.UTF_8)))
+                val keySpec = SecretKeySpec(padTo16Bytes(aesKey), ALGORITHM)
+                val ivSpec = IvParameterSpec(padTo16Bytes(aesIv))
 
                 cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec)
 

@@ -8,15 +8,14 @@ import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
-import java.util.Base64
 import javax.crypto.Cipher
 
-class DoRSAUtils(private val kmsRepository: KmsRepository,private val keyword:String) {
-    private var aesKey: String? = null
-    private var aesIv: String? = null
+class DoRSAUtils(private val kmsRepository: KmsRepository, private val keyword:String) {
+    private var aesKey: ByteArray? = null
+    private var aesIv: ByteArray? = null
     private var privateKey: RSAPrivateKey? = null
     private var rsaKeyPair: KeyPair? = null // 🔹 nullable로 변경하여 초기화 시점 조정
-    private val keyLoadListeners = mutableListOf<(String?, String?) -> Unit>()
+    private val keyLoadListeners = mutableListOf<(ByteArray?, ByteArray?) -> Unit>()
 
     init {
         initializeRSAKey() // 🔹 객체가 생성될 때 RSA 키 생성
@@ -42,7 +41,7 @@ class DoRSAUtils(private val kmsRepository: KmsRepository,private val keyword:St
      * 공개키를 PEM 형식으로 변환
      */
     private fun convertPublicKeyToPEM(publicKey: RSAPublicKey): String {
-        val base64PublicKey = Base64.getEncoder().encodeToString(publicKey.encoded)
+        val base64PublicKey = android.util.Base64.encodeToString(publicKey.encoded, android.util.Base64.NO_WRAP)
         return "-----BEGIN PUBLIC KEY-----\n" +
                 base64PublicKey.chunked(64).joinToString("\n") +
                 "\n-----END PUBLIC KEY-----"
@@ -51,15 +50,15 @@ class DoRSAUtils(private val kmsRepository: KmsRepository,private val keyword:St
     /**
      * RSA 개인키로 Base64 인코딩된 데이터를 복호화
      */
-    private fun decryptWithPrivateKey(encryptedData: String): String {
+    private fun decryptWithPrivateKey(encryptedData: String): ByteArray {
         return try {
             val cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding")
             cipher.init(Cipher.DECRYPT_MODE, privateKey)
-            val decodedData = Base64.getDecoder().decode(encryptedData)
-            String(cipher.doFinal(decodedData), Charsets.UTF_8)
+            val decodedData = android.util.Base64.decode(encryptedData, android.util.Base64.NO_WRAP)
+            cipher.doFinal(decodedData)
         } catch (e: Exception) {
             Log.e("DoRSAUtils", "RSA 복호화 실패: ${e.message}")
-            ""
+            ByteArray(0)
         }
     }
 
@@ -118,6 +117,8 @@ class DoRSAUtils(private val kmsRepository: KmsRepository,private val keyword:St
                 aesKey = decryptWithPrivateKey(response.aes_key)
                 aesIv = decryptWithPrivateKey(response.aes_iv)
 
+                Log.e("DoRSAUtils 복호화 키", "key: ${android.util.Base64.encodeToString(aesKey, android.util.Base64.NO_WRAP)} iv: ${android.util.Base64.encodeToString(aesIv, android.util.Base64.NO_WRAP)}")
+
                 keyLoadListeners.forEach { listener ->
                     listener(aesKey, aesIv)
                 }
@@ -131,7 +132,7 @@ class DoRSAUtils(private val kmsRepository: KmsRepository,private val keyword:St
     /**
      * 비동기적으로 AES Key & IV를 가져옴 (Base64 디코딩 후 반환)
      */
-    fun getKeysAsync(callback: (String?, String?) -> Unit) {
+    fun getKeysAsync(callback: (ByteArray?, ByteArray?) -> Unit) {
         if (aesKey != null && aesIv != null) {
             callback(aesKey, aesIv)
         } else {
@@ -149,3 +150,4 @@ class DoRSAUtils(private val kmsRepository: KmsRepository,private val keyword:St
         rsaKeyPair = null // 🔹 RSA 키도 초기화하여 메모리 해제
     }
 }
+
