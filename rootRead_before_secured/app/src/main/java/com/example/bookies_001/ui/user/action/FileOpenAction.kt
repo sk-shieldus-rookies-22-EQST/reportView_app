@@ -68,13 +68,12 @@ class FileOpenAction(private val context: Context) {
                         }
 
                         try {
-                            val aesKey = key.toByteArray(Charsets.UTF_8).copyOf(16)
-                            val aesIv = iv.toByteArray(Charsets.UTF_8).copyOf(16)
+                            val aesKey = key
+                            val aesIv = iv
 
-                            Log.d("KEYCHECK", "key: ${aesKey} / iv: ${aesIv}")
+                            Log.d("KEYCHECK", "key: ${Base64.encodeToString(aesKey, Base64.NO_WRAP)} / iv: ${Base64.encodeToString(aesIv, Base64.NO_WRAP)}")
 
                             val encryptedData = downloadedFile.readBytes()
-
 
                             val decryptedData = decryptAES(encryptedData, aesKey, aesIv)
                             if (decryptedData != null) {
