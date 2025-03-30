@@ -7,7 +7,7 @@ import retrofit2.http.POST
 
 interface KMSAPI {
 
-    @POST("generate-signed-url")
+    @POST("generate-presigned-url")
     fun generate(@Body request: GemerateRequest): Call<GenerateResponse>
 
     @POST("get-key")
